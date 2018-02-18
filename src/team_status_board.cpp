@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     p1.status_ring2 = 0;
     p1.status_ring3 = 0;
     p1.status_cap = 3;
-    p1.product = 3;
+    p1.status_product = 3;
 
     p2.complexity = 1;
     p2.base = 2;
@@ -59,8 +59,8 @@ int main(int argc, char** argv){
     p2.status_ring1 = 1;
     p2.status_ring2 = 0;
     p2.status_ring3 = 0;
-    p2.status_cap = 1;
-    p2.product = 1;
+    p2.status_cap = 0;
+    p2.status_product = 1;
 
     p3.complexity = 2;
     p3.base = 1;
@@ -72,8 +72,8 @@ int main(int argc, char** argv){
     p3.status_ring1 = 3;
     p3.status_ring2 = 1;
     p3.status_ring3 = 0;
-    p3.status_cap = 3;
-    p3.product = 1;
+    p3.status_cap = 0;
+    p3.status_product = 1;
 
     p4.complexity = 3;
     p4.base = 1;
@@ -86,7 +86,7 @@ int main(int argc, char** argv){
     p4.status_ring2 = 3;
     p4.status_ring3 = 3;
     p4.status_cap = 3;
-    p4.product = 2;
+    p4.status_product = 2;
 
     int res_x = 1920;
     int res_y = 1080;
@@ -104,40 +104,60 @@ int main(int argc, char** argv){
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     header.draw(mat);
 
-    rcll_draw::TeamArea main_area(team);
-    main_area.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-    main_area.setGameInfo("RUNNING", "EXPLORATION", 1234, 50);
-    main_area.setMachineName("Base Station (BS)", 0);
-    main_area.setMachineName("Delivery Station (DS)", 1);
-    main_area.setMachineName("Storage Station (SS)", 2);
-    main_area.setMachineName("Cap Station 1 (CS1)", 3);
-    main_area.setMachineName("Cap Station 2 (CS2)", 4);
-    main_area.setMachineName("Ring Station 1 (RS1)", 5);
-    main_area.setMachineName("Ring Station 2 (RS2)", 6);
+    rcll_draw::TeamAreaProduction main_area_production(team);
+    main_area_production.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    main_area_production.setGameInfo("RUNNING", "PRODUCTION", 1234, 50);
+    main_area_production.setMachineName("Base Station (BS)", 0);
+    main_area_production.setMachineName("Delivery Station (DS)", 1);
+    main_area_production.setMachineName("Storage Station (SS)", 2);
+    main_area_production.setMachineName("Cap Station 1 (CS1)", 3);
+    main_area_production.setMachineName("Cap Station 2 (CS2)", 4);
+    main_area_production.setMachineName("Ring Station 1 (RS1)", 5);
+    main_area_production.setMachineName("Ring Station 2 (RS2)", 6);
 
-    main_area.setMachineStatus("Idle", 0);
-    main_area.setMachineStatus("Broken", 1);
-    main_area.setMachineStatus("Processing", 2);
-    main_area.setMachineStatus("Prepared", 3);
-    main_area.setMachineStatus("Down", 4);
-    main_area.setMachineStatus("Finished", 5);
-    main_area.setMachineStatus("Waiting", 6);
+    main_area_production.setMachineStatus("Idle", 0);
+    main_area_production.setMachineStatus("Broken", 1);
+    main_area_production.setMachineStatus("Processing", 2);
+    main_area_production.setMachineStatus("Prepared", 3);
+    main_area_production.setMachineStatus("Down", 4);
+    main_area_production.setMachineStatus("Finished", 5);
+    main_area_production.setMachineStatus("Waiting", 6);
 
-    main_area.setRobotName("Robot 1", true, 0);
-    main_area.setRobotName("Robot 2", true, 1);
-    main_area.setRobotName("Robot 3", false, 2);
+    main_area_production.setRobotName("Robot 1", true, 0);
+    main_area_production.setRobotName("Robot 2", true, 1);
+    main_area_production.setRobotName("Robot 3", false, 2);
 
-    main_area.setRobotStatus("Get ring 2 at machine RS1 for product P3", 0.98, 0, 1, 0);
-    main_area.setRobotStatus("Get cap at machine CS1 for product P2", 0.55, 1, 1, 1);
-    main_area.setRobotStatus("Offline", 0.0, 0, 0, 2);
+    main_area_production.setRobotStatus("Get ring 2 at machine RS1 for product P3", 0.98, 0, 1, 0);
+    main_area_production.setRobotStatus("Get cap at machine CS1 for product P2", 0.55, 1, 1, 1);
+    main_area_production.setRobotStatus("Offline", 0.0, 0, 0, 2);
 
-    main_area.setProduct(1, p1, 1.0, 567, 20, 20, 0);
-    main_area.setProduct(2, p2, 0.3, 789, 0, 20, 1);
-    main_area.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
-    main_area.setProduct(4, p4, 0.95, 140, 25, 45, 3);
+    main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
+    main_area_production.setProduct(2, p2, 0.3, 789, 0, 20, 1);
+    main_area_production.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
+    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);
+
+    /*rcll_draw::TeamAreaExploration main_area_exploration(team);
+    main_area_exploration.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    main_area_exploration.setGameInfo("RUNNING", "EXPLORATION", 321, 50);
+    main_area_exploration.setMachineName("Base Station (BS)", 0);
+    main_area_exploration.setMachineName("Delivery Station (DS)", 1);
+    main_area_exploration.setMachineName("Storage Station (SS)", 2);
+    main_area_exploration.setMachineName("Cap Station 1 (CS1)", 3);
+    main_area_exploration.setMachineName("Cap Station 2 (CS2)", 4);
+    main_area_exploration.setMachineName("Ring Station 1 (RS1)", 5);
+    main_area_exploration.setMachineName("Ring Station 2 (RS2)", 6);
+
+    main_area_exploration.setMachineStatus(0, 1, 0);
+    main_area_exploration.setMachineStatus(2, 0, 1);
+    main_area_exploration.setMachineStatus(1, 2, 2);
+    main_area_exploration.setMachineStatus(0, 1, 3);
+    main_area_exploration.setMachineStatus(2, 2, 4);
+    main_area_exploration.setMachineStatus(0, 0, 5);
+    main_area_exploration.setMachineStatus(1, 1, 6);*/
 
     while(ros::ok()){
-        main_area.draw(mat);
+        main_area_production.draw(mat);
+        //main_area_exploration.draw(mat);
         cv::imshow(title, mat);
 
         cv::waitKey(3);

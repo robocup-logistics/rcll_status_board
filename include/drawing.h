@@ -134,6 +134,7 @@ namespace rcll_draw {
         void loadImage(std::string file);
         void setAngle(double angle);
         void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, cv::Scalar alpha_color);
 
         static void setImagePath(std::string path);
         static std::string getImagePath();

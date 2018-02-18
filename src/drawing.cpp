@@ -45,7 +45,12 @@ std::vector<std::string> rcll_draw::splitString(std::string s){
 
 cv::Mat rcll_draw::readImage(std::string file){
     cv::Mat result;
-    cv::cvtColor(cv::imread(rcll_draw::Image::getImagePath() + file), result, CV_BGR2BGRA);
+    if (file != ""){
+        cv::cvtColor(cv::imread(rcll_draw::Image::getImagePath() + file), result, CV_BGR2BGRA);
+    } else {
+        result = cv::Mat(10, 10, CV_8UC4);
+        cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+    }
     return result;
 }
 
@@ -56,7 +61,7 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, 
                 if (x_dst + x <= dst.cols){
                     cv::Vec4b & dst_pixel = dst.at<cv::Vec4b>(y_dst + y, x_dst + x);
                     cv::Vec4b & src_pixel = src.at<cv::Vec4b>(y, x);
-                    // if pixel is white
+                    // if pixel is alphacolor
                     if (!(src_pixel[0] == alpha_color[0] && src_pixel[1] == alpha_color[1] && src_pixel[2] == alpha_color[2])){
                         // source pixel is not alpha color
                         // draw source over target
@@ -95,6 +100,22 @@ std::string rcll_draw::getFile(int number, int type){
             return "cap_black.ppm";
         } else if (number == 2){ // grey cap
             return "cap_grey.ppm";
+        }
+    } else if (type == 4){ // status image
+        if (number == 0){ // 0=not started
+            return "";
+        } else if (number == 1){ // 1=construction
+            return "gears.ppm";
+        } else if (number == 2){ // 2=delivery
+            return "arrow.ppm";
+        } else if (number == 3){ // 3=completed
+            return "checkmark.ppm";
+        } else if (number == 4){ // 4=questionmark
+            return "questionmark.ppm";
+        } else if (number == 5){ // 3=checkmark
+            return "checkmark.ppm";
+        } else if (number == 6){ // 3=red cross
+            return "red_cross.ppm";
         }
     }
 
@@ -370,14 +391,25 @@ void rcll_draw::Image::setAngle(double angle){
 
 void rcll_draw::Image::draw(cv::Mat &mat){
     cv::Mat tmp2;
-    cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_LINEAR);
-    if (tmp2.data){
-        cv::Rect rect(x, y, tmp2.cols, tmp2.rows);
-        cv::Mat roi = mat(rect);
-        tmp2.copyTo(roi);
-    } else {
-        ROS_WARN("Could not open or find the picture at '%s'", path.c_str());
+    try {
+        cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_CUBIC);
+        if (tmp2.data){
+            cv::Rect rect(x, y, tmp2.cols, tmp2.rows);
+            cv::Mat roi = mat(rect);
+            tmp2.copyTo(roi);
+        } else {
+            ROS_WARN("Could not open or find the picture at '%s'", path.c_str());
+        }
+    } catch (cv::Exception &e){
+        ROS_ERROR("%s", e.what());
+        ROS_INFO("x=%i y=%i w=%i h=%i", x, y, tmp2.cols, tmp2.rows);
     }
+}
+
+void rcll_draw::Image::draw(cv::Mat &mat, cv::Scalar alpha_color){
+    cv::Mat tmp2;
+    cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_LINEAR);
+    rcll_draw::mergeImages(mat, tmp2, alpha_color, x, y);
 }
 
 void rcll_draw::Image::setImagePath(std::string path){

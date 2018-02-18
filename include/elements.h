@@ -10,7 +10,7 @@ namespace rcll_draw {
         int ring3;  // 1=BLUE, 2=GREEN, 3=ORANGE, 4=YELLOW
         int cap;    // 1=BLACK, 2=GREY
 
-        int product; // 0=not started, 1=construction, 2=delivery, 3=completed
+        int status_product; // 0=not started, 1=construction, 2=delivery, 3=completed
         int status_base;
         int status_ring1;
         int status_ring2;
@@ -36,6 +36,29 @@ namespace rcll_draw {
         VStatusPanel();
         VStatusPanel(Team team);
         ~VStatusPanel();
+
+        void setGeometry(int x, int y, int w, int h);
+        void setContent(std::string gamestate, std::string gamephase, int time, int score);
+        void draw(cv::Mat &mat);
+    private:
+        Team team;
+        BoxLabel blbl_state_header;
+        BoxLabel blbl_state_value;
+        BoxLabel blbl_phase_header;
+        BoxLabel blbl_phase_value;
+        BoxLabel blbl_time_header;
+        BoxLabel blbl_time_value;
+        BoxLabel blbl_score_header;
+        BoxLabel blbl_score_value;
+    };
+
+    // ##################################################
+
+    class HStatusPanel {
+    public:
+        HStatusPanel();
+        HStatusPanel(Team team);
+        ~HStatusPanel();
 
         void setGeometry(int x, int y, int w, int h);
         void setContent(std::string gamestate, std::string gamephase, int time, int score);
@@ -91,10 +114,10 @@ namespace rcll_draw {
 
     // ##################################################
 
-    class MachineLabel {
+    class MachineLabelProduction {
     public:
-        MachineLabel();
-        ~MachineLabel();
+        MachineLabelProduction();
+        ~MachineLabelProduction();
 
         void setGeometry(int x, int y, int w, int h);
         void setMachineName(std::string name);
@@ -115,11 +138,32 @@ namespace rcll_draw {
 
     // ##################################################
 
-    class MachineInfo {
+    class MachineLabelExploration {
     public:
-        MachineInfo();
-        MachineInfo(Team team);
-        ~MachineInfo();
+        MachineLabelExploration();
+        ~MachineLabelExploration();
+
+        void setGeometry(int x, int y, int w, int h);
+        void setMachineName(std::string name, int index);
+        void setMachineStatus(int status1, int status2);
+        void setHeader(std::string status1, std::string status2);
+        void draw(cv::Mat &mat);
+
+    private:
+        BoxLabel blbl_machinename;
+        BoxLabel blbl_status1;
+        BoxLabel blbl_status2;
+        Image img_status1;
+        Image img_status2;
+    };
+
+    // ##################################################
+
+    class MachineInfoProduction {
+    public:
+        MachineInfoProduction();
+        MachineInfoProduction(Team team);
+        ~MachineInfoProduction();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setMachineName(std::string name, int index);
@@ -129,7 +173,27 @@ namespace rcll_draw {
     private:
         Team team;
         BoxLabel blbl_header;
-        std::vector<MachineLabel> machines;
+        std::vector<MachineLabelProduction> machines;
+    };
+
+    // ##################################################
+
+    class MachineInfoExploration {
+    public:
+        MachineInfoExploration();
+        MachineInfoExploration(Team team);
+        ~MachineInfoExploration();
+
+        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setMachineName(std::string name, int index);
+        void setMachineStatus(int status1, int status2, int index);
+        void draw(cv::Mat &mat);
+
+    private:
+        Team team;
+        BoxLabel blbl_header1;
+        BoxLabel blbl_header2;
+        std::vector<MachineLabelExploration> machines;
     };
 
     // ##################################################
@@ -172,10 +236,10 @@ namespace rcll_draw {
 
     // ##################################################
 
-    class TeamArea {
+    class TeamAreaProduction {
     public:
-        TeamArea(Team team);
-        ~TeamArea();
+        TeamAreaProduction(Team team);
+        ~TeamAreaProduction();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(std::string gamestate, std::string gamephase, int time, int score);
@@ -193,8 +257,32 @@ namespace rcll_draw {
         Team team;
         VStatusPanel game_info;
         ProductInfo product_info;
-        MachineInfo machine_info;
+        MachineInfoProduction machine_info;
         RobotInfo robot_info;
+
+
+    };
+
+    // ##################################################
+
+    class TeamAreaExploration {
+    public:
+        TeamAreaExploration(Team team);
+        ~TeamAreaExploration();
+
+        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGameInfo(std::string gamestate, std::string gamephase, int time, int score);
+        void setMachineName(std::string name, int index);
+        void setMachineStatus(int status1, int status2, int index);
+        void draw(cv::Mat &mat);
+
+    private:
+        int x, y = 0;
+        int w, h = 1;
+
+        Team team;
+        HStatusPanel game_info;
+        MachineInfoExploration machine_info;
 
 
     };
