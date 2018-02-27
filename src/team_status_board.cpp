@@ -14,13 +14,14 @@ This node draws the team status board for a given teamcolor
 ====================================================================================================== */
 
 int main(int argc, char** argv){
-    ros::init(argc, argv, "create_map");
+    ros::init(argc, argv, "team_status_board");
     ros::NodeHandle nh;
     ros::Rate loop_rate(4.0);
 
+    ros::Time start = ros::Time::now();
     rcll_draw::Team team = rcll_draw::MAGENTA;
     std::string title;
-    rcll_draw::Image::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
+    rcll_draw::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
 
     if (team == rcll_draw::CYAN){
         title = "STATUS BOARD - CYAN";
@@ -104,9 +105,9 @@ int main(int argc, char** argv){
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     header.draw(mat);
 
-    rcll_draw::TeamAreaProduction main_area_production(team);
+    /*rcll_draw::TeamAreaProduction main_area_production(team);
     main_area_production.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-    main_area_production.setGameInfo("RUNNING", "PRODUCTION", 1234, 50);
+    main_area_production.setGameInfo("RUNNING", "PRODUCTION", (int)(ros::Time::now() - start).toSec(), 50);
     main_area_production.setMachineName("Base Station (BS)", 0);
     main_area_production.setMachineName("Delivery Station (DS)", 1);
     main_area_production.setMachineName("Storage Station (SS)", 2);
@@ -134,11 +135,10 @@ int main(int argc, char** argv){
     main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
     main_area_production.setProduct(2, p2, 0.3, 789, 0, 20, 1);
     main_area_production.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
-    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);
+    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);*/
 
-    /*rcll_draw::TeamAreaExploration main_area_exploration(team);
+    rcll_draw::TeamAreaExploration main_area_exploration(team);
     main_area_exploration.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-    main_area_exploration.setGameInfo("RUNNING", "EXPLORATION", 321, 50);
     main_area_exploration.setMachineName("Base Station (BS)", 0);
     main_area_exploration.setMachineName("Delivery Station (DS)", 1);
     main_area_exploration.setMachineName("Storage Station (SS)", 2);
@@ -153,11 +153,13 @@ int main(int argc, char** argv){
     main_area_exploration.setMachineStatus(0, 1, 3);
     main_area_exploration.setMachineStatus(2, 2, 4);
     main_area_exploration.setMachineStatus(0, 0, 5);
-    main_area_exploration.setMachineStatus(1, 1, 6);*/
+    main_area_exploration.setMachineStatus(1, 1, 6);
 
     while(ros::ok()){
-        main_area_production.draw(mat);
-        //main_area_exploration.draw(mat);
+        //main_area_production.setGameInfo("RUNNING", "PRODUCTION", (int)(ros::Time::now() - start).toSec(), 50);
+        main_area_exploration.setGameInfo("RUNNING", "EXPLORATION", (int)(ros::Time::now() - start).toSec(), 50, 40);
+        //main_area_production.draw(mat);
+        main_area_exploration.draw(mat);
         cv::imshow(title, mat);
 
         cv::waitKey(3);

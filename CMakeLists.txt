@@ -104,8 +104,8 @@ find_package(OpenCV REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
-#  LIBRARIES rcll_status_board
+   INCLUDE_DIRS include include/draw include/elements
+   LIBRARIES rcll_draw
    CATKIN_DEPENDS opencv2 roscpp rospy actionlib
 #  DEPENDS system_lib
 )
@@ -118,26 +118,56 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
+  include/draw
+  include/elements
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/rcll_status_board.cpp
-# )
+add_library(rcll_draw
+    src/util.cpp
+
+    src/draw/Label.cpp
+    src/draw/BoxLabel.cpp
+    src/draw/MultilineBoxLabel.cpp
+    src/draw/Rectangle.cpp
+    src/draw/Circle.cpp
+    src/draw/Image.cpp
+    src/draw/Line.cpp
+
+    src/elements/HeaderPanel.cpp
+    src/elements/TeamHeaderPanel.cpp
+
+    src/elements/HStatusPanel.cpp
+    src/elements/VStatusPanel.cpp
+
+    src/elements/MachineInfoExploration.cpp
+    src/elements/MachineInfoProduction.cpp
+    src/elements/MachineLabelExploration.cpp
+    src/elements/MachineLabelProduction.cpp
+    src/elements/ProductInfo.cpp
+    src/elements/ProductLabel.cpp
+    src/elements/RobotInfo.cpp
+    src/elements/RobotLabel.cpp
+
+    src/elements/GameField.cpp
+
+    src/elements/TeamAreaExploration.cpp
+    src/elements/TeamAreaProduction.cpp
+    src/elements/FieldArea.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rcll_draw ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(team_status_board_node   src/team_status_board.cpp
-                                        src/elements.cpp
-                                        src/drawing.cpp)
+add_executable(team_status_board_node   src/team_status_board.cpp)
+add_executable(field_status_board_node  src/field_status_board.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,9 +178,11 @@ add_executable(team_status_board_node   src/team_status_board.cpp
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(team_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(field_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
+target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 
 #############
 ## Install ##
@@ -167,11 +199,11 @@ target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRAR
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
+install(TARGETS rcll_draw
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

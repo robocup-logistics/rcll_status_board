@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Team Status Board -->
+	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" />
+</launch>
