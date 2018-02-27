@@ -18,6 +18,23 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     ros::Rate loop_rate(4.0);
 
+    std::vector<double> walls = {
+        -7.0, 8.0, 7.0, 8.0,
+        -7.0, 6.5, -7.0, 8.0,
+        7.0, 6.5, 7.0, 8.0,
+        -7.0, 1.0, -7.0, 2.0,
+        7.0, 1.0, 7.0, 2.0,
+        -7.0, 1.0, -5.0, 1.0,
+        5.0, 1.0, 7.0, 1.0,
+        -7.0, 0.0, -4.0, 0.0,
+        4.0, 0.0, 7.0, 0.0,
+        -4.0, 0.0, -4.0, 1.0,
+        4.0, 0.0, 4.0, 1.0,
+        -2.0, 0.0, 2.0, 0.0
+    };
+
+    std::vector<int> insertion_zones = {51, 61, 71};
+
     ros::Time start = ros::Time::now();
     rcll_draw::Team team = rcll_draw::NO_TEAM;
     std::string title;
@@ -45,10 +62,15 @@ int main(int argc, char** argv){
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
     main_area_field.setTeam("Carologistics", rcll_draw::CYAN);
     main_area_field.setTeam("GRIPS", rcll_draw::MAGENTA);
-    main_area_field.setLayout(14.0, 8.0, 14, 8);
+    main_area_field.setLayout(14.0, 8.0, 14, 8, insertion_zones);
+    main_area_field.setWalls(walls);
 
+    std::string phase = "PRE GAME";
+    int gametime = 0;
     while(ros::ok()){
-        main_area_field.setGameInfo("RUNNING", "EXPLORATION", (int)(ros::Time::now() - start).toSec(), 50, 40);
+        gametime = (int)(ros::Time::now() - start).toSec();
+
+        main_area_field.setGameInfo("RUNNING", phase, gametime, 50, 40);
         main_area_field.draw(mat);
         cv::imshow(title, mat);
 

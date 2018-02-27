@@ -9,14 +9,14 @@ rcll_draw::Line::~Line(){
 
 }
 
-void rcll_draw::Line::setLine(int x1, int y1, int x2, int y2){
+void rcll_draw::Line::setLineByPoints(int x1, int y1, int x2, int y2){
     this->x1 = x1;
     this->y1 = y1;
     this->x2 = x2;
     this->y2 = y2;
 }
 
-void rcll_draw::Line::setLine(int x1, int y1, double angle, double length){
+void rcll_draw::Line::setLineByLength(int x1, int y1, double angle, double length){
     this->x1 = x1;
     this->y1 = y1;
     this->x2 = x1 + length * cos(angle);
@@ -59,7 +59,7 @@ rcll_draw::HLine::~HLine(){
 }
 
 void rcll_draw::HLine::setLine(int x1, int y, int x2){
-    Line::setLine(x1, y, x2, y);
+    Line::setLineByPoints(x1, y, x2, y);
 }
 
 
@@ -73,5 +73,5 @@ rcll_draw::VLine::~VLine(){
 }
 
 void rcll_draw::VLine::setLine(int x, int y1, int y2){
-    Line::setLine(x, y1, x, y2);
+    Line::setLineByPoints(x, y1, x, y2);
 }

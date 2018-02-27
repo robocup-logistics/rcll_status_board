@@ -33,7 +33,8 @@ namespace rcll_draw {
         C_GREEN = 8,
         C_RED = 9,
         C_YELLOW = 10,
-        C_TRANSPARENT = 11
+        C_BLUE = 11,
+        C_TRANSPARENT = 12
     };
 
     enum Alignment {

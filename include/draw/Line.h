@@ -8,8 +8,8 @@ namespace rcll_draw {
     public:
         Line();
         ~Line();
-        void setLine(int x1, int y1, int x2, int y2);
-        void setLine(int x1, int y1, double angle, double length);
+        void setLineByPoints(int x1, int y1, int x2, int y2);
+        void setLineByLength(int x1, int y1, double angle, double length);
         void setBorderColor(Color c);
         void setBorderSize(int bordersize);
         void setLineType(LineType linetype);

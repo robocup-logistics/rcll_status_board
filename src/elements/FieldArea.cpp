@@ -25,10 +25,32 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
 
 void rcll_draw::FieldArea::setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta){
     game_info.setContent(gamestate, gamephase, time, score_cyan, score_magenta);
+
+    if (gamephase == "PRE GAME"){
+        gamefield.setPhase(rcll_draw::PRE_GAME);
+    } else if (gamephase == "SETUP"){
+        gamefield.setPhase(rcll_draw::SETUP);
+    } else if (gamephase == "EXPLORATION"){
+        gamefield.setPhase(rcll_draw::EXPLORATION);
+    } else if (gamephase == "PRODUCTION"){
+        gamefield.setPhase(rcll_draw::PRODUCTION);
+    } else if (gamephase == "POST GAME"){
+        gamefield.setPhase(rcll_draw::POST_GAME);
+    } else {
+        gamefield.setPhase(rcll_draw::PRE_GAME);
+    }
 }
 
-void rcll_draw::FieldArea::setLayout(double field_w, double field_h, int zones_x, int zones_y){
-    gamefield.setLayout(field_w, field_h, zones_x, zones_y);
+void rcll_draw::FieldArea::setLayout(double field_w, double field_h, int zones_x, int zones_y, std::vector<int> insertion_zones){
+    gamefield.setLayout(field_w, field_h, zones_x, zones_y, insertion_zones);
+}
+
+void rcll_draw::FieldArea::setWalls(std::vector<double> wall_coordinates){
+    for (size_t i = 0; i < wall_coordinates.size(); i+=4){
+        if (i + 3 < wall_coordinates.size()){
+            gamefield.addWall(wall_coordinates[i], wall_coordinates[i + 1], wall_coordinates[i + 2], wall_coordinates[i + 3]);
+        }
+    }
 }
 
 void rcll_draw::FieldArea::setTeam(std::string team_name, rcll_draw::Team team_color){
