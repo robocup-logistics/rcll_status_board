@@ -16,11 +16,12 @@ rcll_draw::RobotMarker::RobotMarker(Team team){
     crc_robot.setBorderColor(rcll_draw::C_BLACK);
     ln_direction.setBorderColor(rcll_draw::C_BLACK);
     blbl_id.setBorderColor(rcll_draw::C_TRANSPARENT);
+    arr_heading.setColor(rcll_draw::C_BLACK);
 
     crc_robot.setBorderSize(2);
     ln_direction.setBorderSize(2);
 
-    blbl_id.setFontSize(0.7);
+    blbl_id.setFontSize(0.6);
     blbl_id.setFrontColor(rcll_draw::C_WHITE);
 }
 
@@ -38,15 +39,14 @@ void rcll_draw::RobotMarker::setPos(double x, double y, double yaw){
     double ang = -(yaw+M_PI);
     int offset_x = x0 - x * pixel_per_meter;
     int offset_y = y0 + y * pixel_per_meter;
-    int r1_x = diameter/4 * cos(ang+M_PI) * pixel_per_meter;
-    int r1_y = diameter/4 * sin(ang+M_PI) * pixel_per_meter;
-    int r2_x = 3*diameter/4 * cos(ang+M_PI) * pixel_per_meter;
-    int r2_y = 3*diameter/4 * sin(ang+M_PI) * pixel_per_meter;
+    int r1_x = diameter/4 * cos(ang-M_PI/2) * pixel_per_meter;
+    int r1_y = diameter/4 * sin(ang-M_PI/2) * pixel_per_meter;
+    int dst = pixel_per_meter * diameter / 2;
     crc_robot.setPos(offset_x, offset_y);
-    crc_robot.setSize(pixel_per_meter * diameter/2);
-    ln_direction.setLineByPoints(offset_x + r1_x, offset_y + r1_y, offset_x + r2_x, offset_y + r2_y);
-    blbl_id.setPos(offset_x - pixel_per_meter * diameter / 2, offset_y - pixel_per_meter * diameter / 2);
-    blbl_id.setSize(pixel_per_meter * diameter, pixel_per_meter * diameter);
+    crc_robot.setSize(dst);
+    arr_heading.setArrowByLength(offset_x, offset_y, ang, dst);
+    blbl_id.setPos(offset_x + r1_x - dst, offset_y + r1_y - dst);
+    blbl_id.setSize(dst * 2, dst * 2);
 }
 
 void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double d){
@@ -58,6 +58,6 @@ void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double
 
 void rcll_draw::RobotMarker::draw(cv::Mat &mat){
     crc_robot.draw(mat);
-    ln_direction.draw(mat);
     blbl_id.draw(mat);
+    arr_heading.draw(mat);
 }

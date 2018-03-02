@@ -2,6 +2,7 @@
 #define RCLL_ROBOT_MARKER_H
 
 #include <util.h>
+#include <Arrow.h>
 #include <Circle.h>
 #include <Line.h>
 #include <BoxLabel.h>
@@ -30,6 +31,7 @@ namespace rcll_draw {
         Circle crc_robot;
         Line ln_direction;
         BoxLabel blbl_id;
+        Arrow arr_heading;
     };
 }
 
