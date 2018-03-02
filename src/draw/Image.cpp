@@ -64,6 +64,6 @@ void rcll_draw::Image::draw(cv::Mat &mat){
 
 void rcll_draw::Image::draw(cv::Mat &mat, cv::Scalar alpha_color){
     cv::Mat tmp2;
-    cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_LINEAR);
+    cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_NEAREST);
     rcll_draw::mergeImages(mat, tmp2, alpha_color, x, y);
 }

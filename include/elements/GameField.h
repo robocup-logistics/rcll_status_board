@@ -7,6 +7,7 @@
 #include <Line.h>
 
 #include <RobotMarker.h>
+#include <MachineMarker.h>
 
 namespace rcll_draw {
 
@@ -24,6 +25,8 @@ namespace rcll_draw {
 
         size_t addRobot(std::string name, int id, rcll_draw::Team team);
         void setRobotPos(double x, double y, double yaw, size_t index);
+        size_t addMachine(std::string name, rcll_draw::Team team);
+        void setMachinePos(double x, double y, double yaw, size_t index);
         void draw(cv::Mat &mat);
 
     private:
@@ -47,6 +50,7 @@ namespace rcll_draw {
         std::vector<BoxLabel> zone_names;
 
         std::vector<RobotMarker> robot_markers;
+        std::vector<MachineMarker> machine_markers;
 
     };
 }

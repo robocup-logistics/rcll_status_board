@@ -28,8 +28,8 @@ void rcll_draw::Arrow::setArrowByLength(int x1, int y1, double angle, double len
     polygon.push_back(p);
 
     // Bottom Right Point p2
-    p.x = x1 + length / 4 * cos(angle);
-    p.y = y1 + length / 4 * sin(angle);
+    p.x = x1 + length / 5 * cos(angle);
+    p.y = y1 + length / 5 * sin(angle);
     polygon.push_back(p);
 
     // Top Center Point p3
@@ -38,8 +38,8 @@ void rcll_draw::Arrow::setArrowByLength(int x1, int y1, double angle, double len
     polygon.push_back(p);
 
     // Bottom Left Point p4
-    p.x = x1 - length / 4 * cos(angle);
-    p.y = y1 - length / 4 * sin(angle);
+    p.x = x1 - length / 5 * cos(angle);
+    p.y = y1 - length / 5 * sin(angle);
     polygon.push_back(p);
 }
 

@@ -71,6 +71,14 @@ void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t in
     gamefield.setRobotPos(x, y, yaw, index);
 }
 
+size_t rcll_draw::FieldArea::addMachine(std::string name, rcll_draw::Team team){
+    return gamefield.addMachine(name, team);
+}
+
+void rcll_draw::FieldArea::setMachinePos(double x, double y, double yaw, size_t index){
+    gamefield.setMachinePos(x, y, yaw, index);
+}
+
 void rcll_draw::FieldArea::draw(cv::Mat &mat){
     game_info.draw(mat);
     team_cyan.draw(mat);

@@ -5,9 +5,9 @@ rcll_draw::RobotMarker::RobotMarker(Team team){
     blbl_id.setAlignment(rcll_draw::CenterCenter);
 
     if (team == rcll_draw::CYAN){
-        crc_robot.setBackgroundColor(rcll_draw::C_CYAN_DARK);
+        crc_robot.setBackgroundColor(rcll_draw::C_CYAN_LIGHT);
     } else if(team == rcll_draw::MAGENTA){
-        crc_robot.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
+        crc_robot.setBackgroundColor(rcll_draw::C_MAGENTA_LIGHT);
     } else {
         crc_robot.setBackgroundColor(rcll_draw::C_WHITE);
     }
@@ -22,7 +22,7 @@ rcll_draw::RobotMarker::RobotMarker(Team team){
     ln_direction.setBorderSize(2);
 
     blbl_id.setFontSize(0.6);
-    blbl_id.setFrontColor(rcll_draw::C_WHITE);
+    blbl_id.setFrontColor(rcll_draw::C_BLACK);
 }
 
 rcll_draw::RobotMarker::~RobotMarker(){

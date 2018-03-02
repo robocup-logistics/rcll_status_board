@@ -66,10 +66,40 @@ int main(int argc, char** argv){
     main_area_field.setTeam("GRIPS", rcll_draw::MAGENTA);
     main_area_field.setLayout(14.0, 8.0, 14, 8, insertion_zones);
     main_area_field.setWalls(walls);
-    main_area_field.addRobot("R1", 1, rcll_draw::CYAN);
+
+    main_area_field.addRobot("1", 1, rcll_draw::CYAN);
     main_area_field.setRobotPos(4.5, 2.5, 45 * M_PI / 180.0, 0);
-    main_area_field.addRobot("R1", 1, rcll_draw::MAGENTA);
-    main_area_field.setRobotPos(-4.5, 4.5, 321 * M_PI / 180.0, 1);
+    main_area_field.addRobot("1", 1, rcll_draw::MAGENTA);
+    main_area_field.setRobotPos(-5.5, 4.5, 321 * M_PI / 180.0, 1);
+
+    main_area_field.addMachine("BS", rcll_draw::CYAN);
+    main_area_field.setMachinePos(2.5, 2.5, 225 * M_PI / 180.0, 0);
+    main_area_field.addMachine("BS", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(-2.5, 2.5, 315 * M_PI / 180.0, 1);
+    main_area_field.addMachine("DS", rcll_draw::CYAN);
+    main_area_field.setMachinePos(6.5, 1.5, 135 * M_PI / 180.0, 2);
+    main_area_field.addMachine("DS", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(-6.5, 1.5, 45 * M_PI / 180.0, 3);
+    main_area_field.addMachine("SS", rcll_draw::CYAN);
+    main_area_field.setMachinePos(6.5, 5.5, 90 * M_PI / 180.0, 4);
+    main_area_field.addMachine("SS", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(-6.5, 5.5, 270 * M_PI / 180.0, 5);
+    main_area_field.addMachine("CS1", rcll_draw::CYAN);
+    main_area_field.setMachinePos(0.5, 3.5, 270 * M_PI / 180.0, 6);
+    main_area_field.addMachine("CS1", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(-0.5, 3.5, 270 * M_PI / 180.0, 7);
+    main_area_field.addMachine("CS2", rcll_draw::CYAN);
+    main_area_field.setMachinePos(-4.5, 4.5, 225 * M_PI / 180.0, 8);
+    main_area_field.addMachine("CS2", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(4.5, 4.5, 315 * M_PI / 180.0, 9);
+    main_area_field.addMachine("RS1", rcll_draw::CYAN);
+    main_area_field.setMachinePos(-1.5, 7.5, 180 * M_PI / 180.0, 10);
+    main_area_field.addMachine("RS1", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(1.5, 7.5, 180 * M_PI / 180.0, 11);
+    main_area_field.addMachine("RS2", rcll_draw::CYAN);
+    main_area_field.setMachinePos(3.5, 6.5, 0 * M_PI / 180.0, 12);
+    main_area_field.addMachine("RS2", rcll_draw::MAGENTA);
+    main_area_field.setMachinePos(-3.5, 6.5, 180 * M_PI / 180.0, 13);
 
     std::string phase = "SETUP";
     int gametime = 0;
@@ -80,10 +110,11 @@ int main(int argc, char** argv){
         main_area_field.draw(mat);
         cv::imshow(title, mat);
 
-        main_area_field.setRobotPos(4.5, 2.5, (45 + deg) * M_PI / 180.0, 0);
-        main_area_field.setRobotPos(-4.5, 4.5, (321 + deg) * M_PI / 180.0, 1);
+        /*main_area_field.setRobotPos(4.5, 2.5, (45 + deg) * M_PI / 180.0, 0);
+        main_area_field.setRobotPos(-5.5, 4.5, (321 + deg) * M_PI / 180.0, 1);*/
 
-        deg+=4;
+
+        deg+=1;
         cv::waitKey(3);
         loop_rate.sleep();
     }

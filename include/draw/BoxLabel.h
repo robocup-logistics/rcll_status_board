@@ -20,6 +20,7 @@ namespace rcll_draw {
         int w, h = 10;
         Color bordercolor = C_BLACK;
         Color backgroundcolor = C_WHITE;
+        double angle = 0;
         int bordersize = 1;
 
     };

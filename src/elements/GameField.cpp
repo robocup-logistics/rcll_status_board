@@ -8,35 +8,35 @@ rcll_draw::GameField::GameField(){
     background.setBorderColor(rcll_draw::C_BLACK);
 
     background2.setBackgroundColor(rcll_draw::C_GREY_LIGHT);
-    background2.setBorderColor(rcll_draw::C_BLACK);
-    background2.setBorderSize(2);
+    background2.setBorderColor(rcll_draw::C_GREY_LIGHT);
+    background2.setBorderSize(1);
 
     insertion_cyan1.setContent("Insertion");
     insertion_cyan1.setAlignment(rcll_draw::CenterCenter);
-    insertion_cyan1.setBorderColor(rcll_draw::C_BLACK);
-    insertion_cyan1.setBackgroundColor(rcll_draw::C_BLACK);
-    insertion_cyan1.setFrontColor(rcll_draw::C_WHITE);
+    insertion_cyan1.setBorderColor(rcll_draw::C_CYAN_DARK);
+    insertion_cyan1.setBackgroundColor(rcll_draw::C_CYAN_DARK);
+    insertion_cyan1.setFrontColor(rcll_draw::C_BLACK);
     insertion_cyan1.setFontSize(0.75);
 
     insertion_cyan2.setContent("Zone");
     insertion_cyan2.setAlignment(rcll_draw::CenterCenter);
-    insertion_cyan2.setBorderColor(rcll_draw::C_BLACK);
-    insertion_cyan2.setBackgroundColor(rcll_draw::C_BLACK);
-    insertion_cyan2.setFrontColor(rcll_draw::C_WHITE);
+    insertion_cyan2.setBorderColor(rcll_draw::C_CYAN_DARK);
+    insertion_cyan2.setBackgroundColor(rcll_draw::C_CYAN_DARK);
+    insertion_cyan2.setFrontColor(rcll_draw::C_BLACK);
     insertion_cyan2.setFontSize(0.75);
 
     insertion_magenta1.setContent("Insertion");
     insertion_magenta1.setAlignment(rcll_draw::CenterCenter);
-    insertion_magenta1.setBorderColor(rcll_draw::C_BLACK);
-    insertion_magenta1.setBackgroundColor(rcll_draw::C_BLACK);
-    insertion_magenta1.setFrontColor(rcll_draw::C_WHITE);
+    insertion_magenta1.setBorderColor(rcll_draw::C_MAGENTA_DARK);
+    insertion_magenta1.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
+    insertion_magenta1.setFrontColor(rcll_draw::C_BLACK);
     insertion_magenta1.setFontSize(0.75);
 
     insertion_magenta2.setContent("Zone");
     insertion_magenta2.setAlignment(rcll_draw::CenterCenter);
-    insertion_magenta2.setBorderColor(rcll_draw::C_BLACK);
-    insertion_magenta2.setBackgroundColor(rcll_draw::C_BLACK);
-    insertion_magenta2.setFrontColor(rcll_draw::C_WHITE);
+    insertion_magenta2.setBorderColor(rcll_draw::C_MAGENTA_DARK);
+    insertion_magenta2.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
+    insertion_magenta2.setFrontColor(rcll_draw::C_BLACK);
     insertion_magenta2.setFontSize(0.75);
 }
 
@@ -46,6 +46,9 @@ rcll_draw::GameField::~GameField(){
 
 void rcll_draw::GameField::setPhase(rcll_draw::GamePhase gamephase){
     this->gamephase = gamephase;
+    for (size_t i = 0; i < machine_markers.size(); i++){
+        machine_markers[i].setPhase(gamephase);
+    }
 }
 
 
@@ -115,11 +118,11 @@ void rcll_draw::GameField::setLayout(double field_w, double field_h, int zones_x
 
             if (zx < 0){
                 zone_label.setContent("C-Z" + std::to_string(unsigned_zone_number) + " ");
-                zone_label.setAlignment(rcll_draw::CenterRight);
+                zone_label.setAlignment(rcll_draw::CenterCenter);
                 zone_label.setPos(x0 + zx * zone_w, y0 + zy * zone_h - zone_h / 4);
             } else {
                 zone_label.setContent(" M-Z" + std::to_string(unsigned_zone_number));
-                zone_label.setAlignment(rcll_draw::CenterLeft);
+                zone_label.setAlignment(rcll_draw::CenterCenter);
                 zone_label.setPos(x0 + (zx - 1) * zone_w, y0 + zy * zone_h - zone_h / 4);
             }
             zone_label.setBorderColor(rcll_draw::C_TRANSPARENT);
@@ -156,14 +159,14 @@ void rcll_draw::GameField::addWall(double x1, double y1, double x2, double y2){
     Line line;
     line.setLineByPoints(x0 + x1 * pixel_per_meter, y0 + y1 * pixel_per_meter, x0 + x2 * pixel_per_meter, y0 + y2 * pixel_per_meter);
     line.setBorderSize(4);
-    line.setBorderColor(rcll_draw::C_BLUE);
+    line.setBorderColor(rcll_draw::C_BLACK);
     walls.push_back(line);
 }
 
 size_t rcll_draw::GameField::addRobot(std::string name, int id, rcll_draw::Team team){
     RobotMarker robot(team);
     robot.setOrigin(x0, y0, pixel_per_meter);
-    robot.setRobotParams(name, id, 0.6);
+    robot.setRobotParams(name, id, 0.5);
     robot_markers.push_back(robot);
     return robot_markers.size() - 1;
 }
@@ -174,8 +177,22 @@ void rcll_draw::GameField::setRobotPos(double x, double y, double yaw, size_t in
     }
 }
 
+size_t rcll_draw::GameField::addMachine(std::string name, rcll_draw::Team team){
+    MachineMarker machine(team);
+    machine.setOrigin(x0, y0, pixel_per_meter);
+    machine.setMachineParams(name, 0.7, 0.35);
+    machine_markers.push_back(machine);
+    return machine_markers.size() - 1;
+}
+
+void rcll_draw::GameField::setMachinePos(double x, double y, double yaw, size_t index){
+    if (index >= 0 && index < machine_markers.size()){
+        machine_markers[index].setPos(x, y, yaw);
+    }
+}
+
 void rcll_draw::GameField::draw(cv::Mat &mat){
-    background.draw(mat);
+    //background.draw(mat);
     background2.draw(mat);
 
     for (size_t i = 0; i < walls.size(); i++){
@@ -201,6 +218,12 @@ void rcll_draw::GameField::draw(cv::Mat &mat){
         robot_markers[i].draw(mat);
     }
 
-    cv::line(mat, cv::Point(x0, y0), cv::Point(x0 - 30, y0), rcll_draw::getColor(rcll_draw::C_RED), 2, 8, 0);
-    cv::line(mat, cv::Point(x0, y0), cv::Point(x0, y0 + 30), rcll_draw::getColor(rcll_draw::C_GREEN), 2, 8, 0);
+    for (size_t i = 0; i < machine_markers.size(); i++){
+        machine_markers[i].draw(mat);
+    }
+
+    if (gamephase == rcll_draw::SETUP){
+        cv::line(mat, cv::Point(x0, y0), cv::Point(x0 - 30, y0), rcll_draw::getColor(rcll_draw::C_RED), 2, 8, 0);
+        cv::line(mat, cv::Point(x0, y0), cv::Point(x0, y0 + 30), rcll_draw::getColor(rcll_draw::C_GREEN), 2, 8, 0);
+    }
 }
