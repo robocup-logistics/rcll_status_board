@@ -105,7 +105,7 @@ int main(int argc, char** argv){
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     header.draw(mat);
 
-    /*rcll_draw::TeamAreaProduction main_area_production(team);
+    rcll_draw::TeamAreaProduction main_area_production(team);
     main_area_production.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
     main_area_production.setGameInfo("RUNNING", "PRODUCTION", (int)(ros::Time::now() - start).toSec(), 50);
     main_area_production.setMachineName("Base Station (BS)", 0);
@@ -135,9 +135,9 @@ int main(int argc, char** argv){
     main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
     main_area_production.setProduct(2, p2, 0.3, 789, 0, 20, 1);
     main_area_production.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
-    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);*/
+    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);
 
-    rcll_draw::TeamAreaExploration main_area_exploration(team);
+    /*rcll_draw::TeamAreaExploration main_area_exploration(team);
     main_area_exploration.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
     main_area_exploration.setMachineName("Base Station (BS)", 0);
     main_area_exploration.setMachineName("Delivery Station (DS)", 1);
@@ -153,13 +153,13 @@ int main(int argc, char** argv){
     main_area_exploration.setMachineStatus(0, 1, 3);
     main_area_exploration.setMachineStatus(2, 2, 4);
     main_area_exploration.setMachineStatus(0, 0, 5);
-    main_area_exploration.setMachineStatus(1, 1, 6);
+    main_area_exploration.setMachineStatus(1, 1, 6);*/
 
     while(ros::ok()){
-        //main_area_production.setGameInfo("RUNNING", "PRODUCTION", (int)(ros::Time::now() - start).toSec(), 50);
-        main_area_exploration.setGameInfo("RUNNING", "EXPLORATION", (int)(ros::Time::now() - start).toSec(), 50, 40);
-        //main_area_production.draw(mat);
-        main_area_exploration.draw(mat);
+        main_area_production.setGameInfo("RUNNING", "PRODUCTION", (int)(ros::Time::now() - start).toSec(), 50);
+        //main_area_exploration.setGameInfo("RUNNING", "EXPLORATION", (int)(ros::Time::now() - start).toSec(), 50, 40);
+        main_area_production.draw(mat);
+        //main_area_exploration.draw(mat);
         cv::imshow(title, mat);
 
         cv::waitKey(3);

@@ -135,6 +135,7 @@ add_library(rcll_draw
     src/draw/Circle.cpp
     src/draw/Image.cpp
     src/draw/Line.cpp
+    src/draw/Arrow.cpp
 
     src/elements/HeaderPanel.cpp
     src/elements/TeamHeaderPanel.cpp
@@ -152,6 +153,8 @@ add_library(rcll_draw
     src/elements/RobotLabel.cpp
 
     src/elements/GameField.cpp
+    src/elements/MachineMarker.cpp
+    src/elements/RobotMarker.cpp
 
     src/elements/TeamAreaExploration.cpp
     src/elements/TeamAreaProduction.cpp

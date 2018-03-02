@@ -63,6 +63,14 @@ void rcll_draw::FieldArea::setTeam(std::string team_name, rcll_draw::Team team_c
     }
 }
 
+size_t rcll_draw::FieldArea::addRobot(std::string name, int id, rcll_draw::Team team){
+    return gamefield.addRobot(name, id, team);
+}
+
+void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t index){
+    gamefield.setRobotPos(x, y, yaw, index);
+}
+
 void rcll_draw::FieldArea::draw(cv::Mat &mat){
     game_info.draw(mat);
     team_cyan.draw(mat);

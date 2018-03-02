@@ -6,6 +6,8 @@
 #include <BoxLabel.h>
 #include <Line.h>
 
+#include <RobotMarker.h>
+
 namespace rcll_draw {
 
     // ##################################################
@@ -19,6 +21,9 @@ namespace rcll_draw {
         void setGeometry(int x, int y, int w, int h);
         void setLayout(double field_w, double field_h, int zones_x, int zones_y, std::vector<int> insertion_zones);
         void addWall(double x1, double y1, double x2, double y2);
+
+        size_t addRobot(std::string name, int id, rcll_draw::Team team);
+        void setRobotPos(double x, double y, double yaw, size_t index);
         void draw(cv::Mat &mat);
 
     private:
@@ -40,6 +45,8 @@ namespace rcll_draw {
         std::vector<Line> walls;
         std::vector<Line> zone_lines;
         std::vector<BoxLabel> zone_names;
+
+        std::vector<RobotMarker> robot_markers;
 
     };
 }

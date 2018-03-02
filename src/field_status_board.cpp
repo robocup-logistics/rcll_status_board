@@ -58,14 +58,20 @@ int main(int argc, char** argv){
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     header.draw(mat);
 
+    double deg = 0;
+
     rcll_draw::FieldArea main_area_field;
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
     main_area_field.setTeam("Carologistics", rcll_draw::CYAN);
     main_area_field.setTeam("GRIPS", rcll_draw::MAGENTA);
     main_area_field.setLayout(14.0, 8.0, 14, 8, insertion_zones);
     main_area_field.setWalls(walls);
+    main_area_field.addRobot("R1", 1, rcll_draw::CYAN);
+    main_area_field.setRobotPos(4.5, 2.5, 45 * M_PI / 180.0, 0);
+    main_area_field.addRobot("R1", 1, rcll_draw::MAGENTA);
+    main_area_field.setRobotPos(-4.5, 4.5, 321 * M_PI / 180.0, 1);
 
-    std::string phase = "PRE GAME";
+    std::string phase = "SETUP";
     int gametime = 0;
     while(ros::ok()){
         gametime = (int)(ros::Time::now() - start).toSec();
@@ -74,6 +80,10 @@ int main(int argc, char** argv){
         main_area_field.draw(mat);
         cv::imshow(title, mat);
 
+        main_area_field.setRobotPos(4.5, 2.5, (45 + deg) * M_PI / 180.0, 0);
+        main_area_field.setRobotPos(-4.5, 4.5, (321 + deg) * M_PI / 180.0, 1);
+
+        deg+=4;
         cv::waitKey(3);
         loop_rate.sleep();
     }

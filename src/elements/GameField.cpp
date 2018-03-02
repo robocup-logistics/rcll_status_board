@@ -160,6 +160,20 @@ void rcll_draw::GameField::addWall(double x1, double y1, double x2, double y2){
     walls.push_back(line);
 }
 
+size_t rcll_draw::GameField::addRobot(std::string name, int id, rcll_draw::Team team){
+    RobotMarker robot(team);
+    robot.setOrigin(x0, y0, pixel_per_meter);
+    robot.setRobotParams(name, id, 0.6);
+    robot_markers.push_back(robot);
+    return robot_markers.size() - 1;
+}
+
+void rcll_draw::GameField::setRobotPos(double x, double y, double yaw, size_t index){
+    if (index >= 0 && index < robot_markers.size()){
+        robot_markers[index].setPos(x, y, yaw);
+    }
+}
+
 void rcll_draw::GameField::draw(cv::Mat &mat){
     background.draw(mat);
     background2.draw(mat);
@@ -182,6 +196,10 @@ void rcll_draw::GameField::draw(cv::Mat &mat){
     insertion_cyan2.draw(mat);
     insertion_magenta1.draw(mat);
     insertion_magenta2.draw(mat);
+
+    for (size_t i = 0; i < robot_markers.size(); i++){
+        robot_markers[i].draw(mat);
+    }
 
     cv::line(mat, cv::Point(x0, y0), cv::Point(x0 - 30, y0), rcll_draw::getColor(rcll_draw::C_RED), 2, 8, 0);
     cv::line(mat, cv::Point(x0, y0), cv::Point(x0, y0 + 30), rcll_draw::getColor(rcll_draw::C_GREEN), 2, 8, 0);
