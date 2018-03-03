@@ -113,7 +113,6 @@ int main(int argc, char** argv){
         /*main_area_field.setRobotPos(4.5, 2.5, (45 + deg) * M_PI / 180.0, 0);
         main_area_field.setRobotPos(-5.5, 4.5, (321 + deg) * M_PI / 180.0, 1);*/
 
-
         deg+=1;
         cv::waitKey(3);
         loop_rate.sleep();
