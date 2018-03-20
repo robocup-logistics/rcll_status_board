@@ -30,8 +30,8 @@ rcll_draw::MachineMarker::MachineMarker(rcll_draw::Team team){
     blbl_out.setFontSize(0.5);
 
     blbl_machine.setFrontColor(rcll_draw::C_BLACK);
-    blbl_in.setFrontColor(rcll_draw::C_BLACK);
-    blbl_out.setFrontColor(rcll_draw::C_BLACK);
+    blbl_in.setFrontColor(rcll_draw::C_GREEN_DARK);
+    blbl_out.setFrontColor(rcll_draw::C_RED);
 
     ln_input.setBorderColor(rcll_draw::C_BLACK);
     crc_output.setBorderColor(rcll_draw::C_BLACK);
@@ -68,8 +68,8 @@ void rcll_draw::MachineMarker::setMachineParams(std::string name, double w, doub
     this->w = w;
     this->h = h;
     blbl_machine.setContent(name);
-    blbl_in.setContent("in");
-    blbl_out.setContent("out");
+    blbl_in.setContent("IN");
+    blbl_out.setContent("OUT");
     blbl_machine.setSize(w * pixel_per_meter, h * pixel_per_meter);
     blbl_in.setSize(w * pixel_per_meter, h * pixel_per_meter);
     blbl_out.setSize(w * pixel_per_meter, h * pixel_per_meter);
@@ -89,9 +89,9 @@ void rcll_draw::MachineMarker::recalculate(){
     blbl_machine.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter ) / 2);
     if (yaw > M_PI / 2 && yaw <= 3 * M_PI / 2){
         blbl_in.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 + h * pixel_per_meter * 0.75);
-        blbl_out.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.75);
+        blbl_out.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.8);
     } else {
-        blbl_in.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.75);
+        blbl_in.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.8);
         blbl_out.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 + h * pixel_per_meter * 0.75);
     }
     blbl_machine.draw(tmp);

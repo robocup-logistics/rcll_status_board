@@ -47,7 +47,7 @@ void rcll_draw::RobotLabel::setGeometry(int x, int y, int w, int h){
 void rcll_draw::RobotLabel::setRobotName(std::string name_str, bool active){
     blbl_name.setContent(" " + name_str);
     if (active){
-        blbl_name.setFrontColor(rcll_draw::C_GREEN);
+        blbl_name.setFrontColor(rcll_draw::C_GREEN_LIGHT);
     } else {
         blbl_name.setFrontColor(rcll_draw::C_RED);
     }

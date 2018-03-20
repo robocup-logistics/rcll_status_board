@@ -52,8 +52,8 @@ void rcll_draw::MachineInfoProduction::setMachineStatus(std::string status, int 
         std::string lamp1_str, lamp2_str, status_str = "";
         bool flashing = false;
         if (status == "Idle"){
-            lamp1 = rcll_draw::C_GREEN;
-            lamp2 = rcll_draw::C_GREEN;
+            lamp1 = rcll_draw::C_GREEN_LIGHT;
+            lamp2 = rcll_draw::C_GREEN_LIGHT;
             lamp1_str = "Free For";
             lamp2_str = "Production";
         } else if (status == "Broken"){
@@ -63,13 +63,13 @@ void rcll_draw::MachineInfoProduction::setMachineStatus(std::string status, int 
             lamp1_str = "Incorrect";
             lamp2_str = "Instruction";
         } else if (status == "Processing"){
-            lamp1 = rcll_draw::C_GREEN;
+            lamp1 = rcll_draw::C_GREEN_LIGHT;
             lamp2 = rcll_draw::C_YELLOW;
             lamp1_str = "Processing";
             lamp2_str = "Product";
         } else if (status == "Prepared"){
-            lamp1 = rcll_draw::C_GREEN;
-            lamp2 = rcll_draw::C_GREEN;
+            lamp1 = rcll_draw::C_GREEN_LIGHT;
+            lamp2 = rcll_draw::C_GREEN_LIGHT;
             lamp1_str = "Prepared";
             lamp2_str = "For Product";
             flashing = true;

@@ -30,11 +30,12 @@ namespace rcll_draw {
         C_CYAN_LIGHT = 5,
         C_MAGENTA_DARK = 6,
         C_MAGENTA_LIGHT = 7,
-        C_GREEN = 8,
+        C_GREEN_LIGHT = 8,
         C_RED = 9,
         C_YELLOW = 10,
         C_BLUE = 11,
-        C_TRANSPARENT = 12
+        C_GREEN_DARK = 12,
+        C_TRANSPARENT = 13
     };
 
     enum Alignment {

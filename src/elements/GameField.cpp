@@ -224,6 +224,6 @@ void rcll_draw::GameField::draw(cv::Mat &mat){
 
     if (gamephase == rcll_draw::SETUP){
         cv::line(mat, cv::Point(x0, y0), cv::Point(x0 - 30, y0), rcll_draw::getColor(rcll_draw::C_RED), 2, 8, 0);
-        cv::line(mat, cv::Point(x0, y0), cv::Point(x0, y0 + 30), rcll_draw::getColor(rcll_draw::C_GREEN), 2, 8, 0);
+        cv::line(mat, cv::Point(x0, y0), cv::Point(x0, y0 + 30), rcll_draw::getColor(rcll_draw::C_GREEN_LIGHT), 2, 8, 0);
     }
 }

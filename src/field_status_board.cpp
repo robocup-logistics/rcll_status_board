@@ -101,7 +101,7 @@ int main(int argc, char** argv){
     main_area_field.addMachine("RS2", rcll_draw::MAGENTA);
     main_area_field.setMachinePos(-3.5, 6.5, 180 * M_PI / 180.0, 13);
 
-    std::string phase = "SETUP";
+    std::string phase = "EXPLORATION";
     int gametime = 0;
     while(ros::ok()){
         gametime = (int)(ros::Time::now() - start).toSec();

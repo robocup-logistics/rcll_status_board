@@ -12,10 +12,11 @@ cv::Scalar rcll_draw::getColor(Color color){
         case C_CYAN_LIGHT: return cv::Scalar(255, 255, 0);
         case C_MAGENTA_DARK: return cv::Scalar(183, 0, 183);
         case C_MAGENTA_LIGHT: return cv::Scalar(255, 0, 255);
-        case C_GREEN: return cv::Scalar(0, 210, 0);
+        case C_GREEN_LIGHT: return cv::Scalar(0, 210, 0);
         case C_RED: return cv::Scalar(0, 0, 210);
         case C_YELLOW: return cv::Scalar(0, 210, 255);
         case C_BLUE: return cv::Scalar(255, 0, 0);
+        case C_GREEN_DARK: return cv::Scalar(0, 128, 0);
         default: return cv::Scalar(255, 255, 255);
     }
 }
