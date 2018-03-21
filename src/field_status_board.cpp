@@ -73,7 +73,6 @@ int main(int argc, char** argv){
     ros::ServiceServer srv_addmachine = nh.advertiseService("refbox/add_machine", cb_add_machine);
     ros::ServiceServer srv_addrobot = nh.advertiseService("refbox/add_robot", cb_add_robot);
 
-
     gamestates[0] = "INIT";
     gamestates[1] = "WAIT START";
     gamestates[2] = "RUNNING";
@@ -96,19 +95,17 @@ int main(int argc, char** argv){
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
-    cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
-
     rcll_draw::HeaderPanel header(title, team);
     header.setGeometry(bordergapsize, res_x, bordergapsize);
-    header.draw(mat);
-
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
 
     while(ros::ok()){
         loop_rate.sleep();
+        cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
+        header.draw(mat);
         main_area_field.draw(mat);
         cv::imshow(title, mat);
         cv::waitKey(3);
