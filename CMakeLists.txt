@@ -67,6 +67,7 @@ add_service_files(
   FILES
   AddMachines.srv
   SetGameField.srv
+  AddRobot.srv
 )
 
 ## Generate actions in the 'action' folder

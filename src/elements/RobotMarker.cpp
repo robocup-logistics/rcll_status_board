@@ -47,17 +47,20 @@ void rcll_draw::RobotMarker::setPos(double x, double y, double yaw){
     arr_heading.setArrowByLength(offset_x, offset_y, ang, dst);
     blbl_id.setPos(offset_x + r1_x - dst, offset_y + r1_y - dst);
     blbl_id.setSize(dst * 2, dst * 2);
+    pose_set = true;
 }
 
 void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double d){
     this->name = name_str;
     this->id = id;
     this->diameter = d;
-    blbl_id.setContent(name_str);
+    blbl_id.setContent(std::to_string(id));
 }
 
 void rcll_draw::RobotMarker::draw(cv::Mat &mat){
-    crc_robot.draw(mat);
-    blbl_id.draw(mat);
-    arr_heading.draw(mat);
+    if (pose_set){
+        crc_robot.draw(mat);
+        blbl_id.draw(mat);
+        arr_heading.draw(mat);
+    }
 }

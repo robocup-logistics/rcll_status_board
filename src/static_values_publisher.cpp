@@ -5,6 +5,7 @@
 #include <rcll_status_board/Robots.h>
 #include <rcll_status_board/Products.h>
 #include <rcll_status_board/AddMachines.h>
+#include <rcll_status_board/AddRobot.h>
 #include <rcll_status_board/SetGameField.h>
 
 
@@ -21,9 +22,11 @@ int main(int argc, char** argv){
 
 
     ros::Publisher pub_gameinfo = nh.advertise<rcll_status_board::GameInfo>("refbox/gameinfo", 10);
+    ros::Publisher pub_robots = nh.advertise<rcll_status_board::Robots>("refbox/robots", 10);
 
     ros::ServiceClient sc_setgamefield = nh.serviceClient<rcll_status_board::SetGameField>("refbox/set_gamefield");
     ros::ServiceClient sc_addmachines = nh.serviceClient<rcll_status_board::AddMachines>("refbox/add_machine");
+    ros::ServiceClient sc_addrobot = nh.serviceClient<rcll_status_board::AddRobot>("refbox/add_robot");
 
     std::vector<float> walls = {
         -7.0, 8.0, 7.0, 8.0,
@@ -52,7 +55,7 @@ int main(int argc, char** argv){
 
     ros::service::waitForService("refbox/set_gamefield");
     if (sc_setgamefield.call(srv_gamefield)){
-        ROS_INFO("Initialized gamefield");
+        ROS_DEBUG("Initialized gamefield");
     } else {
         ROS_WARN("Error when initializing gamefield");
     }
@@ -61,8 +64,8 @@ int main(int argc, char** argv){
     rcll_status_board::MachineInit machine;
     std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
     std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "Ring Station 2"};
-    std::vector<double> pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
-    std::vector<double> pos_y = {2.5, 1.5, 5.5, 3.5, 4.5, 7.5, 6.5};
+    std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
+    std::vector<double> machine_pos_y = {2.5, 1.5, 5.5, 3.5, 4.5, 7.5, 6.5};
     std::vector<int> rot_c = {225, 135, 90, 270, 225, 180, 0};
     std::vector<int> rot_m = {315, 45, 270, 270, 315, 180, 180};
 
@@ -71,8 +74,8 @@ int main(int argc, char** argv){
         machine.name_short = machines[i];
         machine.name_long = names[i];
         machine.team = 0;
-        machine.x = pos_x[i];
-        machine.y = pos_y[i];
+        machine.x = machine_pos_x[i];
+        machine.y = machine_pos_y[i];
         machine.yaw = rot_c[i] / 180.0 * M_PI;
         srv_machines.request.machines.push_back(machine);
 
@@ -80,17 +83,39 @@ int main(int argc, char** argv){
         machine.name_short = machines[i];
         machine.name_long = names[i];
         machine.team = 1;
-        machine.x = -pos_x[i];
-        machine.y = pos_y[i];
+        machine.x = -machine_pos_x[i];
+        machine.y = machine_pos_y[i];
         machine.yaw = rot_m[i] / 180.0 * M_PI;
         srv_machines.request.machines.push_back(machine);
     }
 
     ros::service::waitForService("refbox/add_machine");
     if (sc_addmachines.call(srv_machines)){
-        ROS_INFO("Initialized machines");
+        ROS_DEBUG("Initialized machines");
     } else {
         ROS_WARN("Error when initializing machines");
+    }
+
+    rcll_status_board::AddRobot srv_robots;
+    std::vector<std::string> robots = {"R1", "R2", "R3", "R1", "R2", "R3"};
+    std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
+    std::vector<int> team = {0, 0, 0, 1, 1, 1};
+    std::vector<double> robot_pos_x = {4.5, 5.5, 5.25, -5.5, -0.0, -6.25};
+    std::vector<double> robot_pos_y = {3.5, 4.5, 1.5, 0.5, 2.5, 6.5};
+    std::vector<int> robot_rot = {45, 125, 0, 305, 280, 180};
+    std::vector<int> robot_index;
+    for (size_t i = 0; i < robots.size(); i++){
+        srv_robots.request.robot_name = robots[i];
+        srv_robots.request.robot_id = robot_ids[i];
+        srv_robots.request.team = team[i];
+
+        ros::service::waitForService("refbox/add_robot");
+        if (sc_addrobot.call(srv_robots)){
+            ROS_DEBUG("Initialized robot %lu", i);
+            robot_index.push_back(srv_robots.response.index);
+        } else {
+            ROS_WARN("Error when initializing robots");
+        }
     }
 
     rcll_status_board::GameInfo gameinfo;
@@ -101,41 +126,20 @@ int main(int argc, char** argv){
     gameinfo.game_state = 0;
     gameinfo.game_phase = 0;
     gameinfo.phase_time = 0.0;
-    /*
-    main_area_field.addRobot("1", 1, rcll_draw::CYAN);
-    main_area_field.setRobotPos(4.5, 2.5, 45 * M_PI / 180.0, 0);
-    main_area_field.addRobot("1", 1, rcll_draw::MAGENTA);
-    main_area_field.setRobotPos(-5.5, 4.5, 321 * M_PI / 180.0, 1);
 
-    main_area_field.addMachine("BS", rcll_draw::CYAN);
-    main_area_field.setMachinePos(2.5, 2.5, 225 * M_PI / 180.0, 0);
-    main_area_field.addMachine("BS", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-2.5, 2.5, 315 * M_PI / 180.0, 1);
-    main_area_field.addMachine("DS", rcll_draw::CYAN);
-    main_area_field.setMachinePos(6.5, 1.5, 135 * M_PI / 180.0, 2);
-    main_area_field.addMachine("DS", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-6.5, 1.5, 45 * M_PI / 180.0, 3);
-    main_area_field.addMachine("SS", rcll_draw::CYAN);
-    main_area_field.setMachinePos(6.5, 5.5, 90 * M_PI / 180.0, 4);
-    main_area_field.addMachine("SS", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-6.5, 5.5, 270 * M_PI / 180.0, 5);
-    main_area_field.addMachine("CS1", rcll_draw::CYAN);
-    main_area_field.setMachinePos(0.5, 3.5, 270 * M_PI / 180.0, 6);
-    main_area_field.addMachine("CS1", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-0.5, 3.5, 270 * M_PI / 180.0, 7);
-    main_area_field.addMachine("CS2", rcll_draw::CYAN);
-    main_area_field.setMachinePos(-4.5, 4.5, 225 * M_PI / 180.0, 8);
-    main_area_field.addMachine("CS2", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(4.5, 4.5, 315 * M_PI / 180.0, 9);
-    main_area_field.addMachine("RS1", rcll_draw::CYAN);
-    main_area_field.setMachinePos(-1.5, 7.5, 180 * M_PI / 180.0, 10);
-    main_area_field.addMachine("RS1", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(1.5, 7.5, 180 * M_PI / 180.0, 11);
-    main_area_field.addMachine("RS2", rcll_draw::CYAN);
-    main_area_field.setMachinePos(3.5, 6.5, 0 * M_PI / 180.0, 12);
-    main_area_field.addMachine("RS2", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-3.5, 6.5, 180 * M_PI / 180.0, 13);*/
+    rcll_status_board::Robots robots_update;
+    rcll_status_board::Robot robot;
+    for(size_t i = 0; i < robot_index.size(); i++){
+        robot.index = robot_index[i];
+        robot.x = robot_pos_x[i];
+        robot.y = robot_pos_y[i];
+        robot.yaw = robot_rot[i] / 180.0 * M_PI;
+        robots_update.robots.push_back(robot);
+    }
+    pub_robots.publish(robots_update);
 
+    ROS_INFO("Entering loop");
+    int deg = 0;
     while(ros::ok()){
         // gameinfo
         gameinfo.game_state = 2;
@@ -158,6 +162,17 @@ int main(int argc, char** argv){
             gameinfo.game_phase+=10;
         }
         pub_gameinfo.publish(gameinfo);
+
+        // robots
+        deg+=2;
+        for(size_t i = 0; i < robot_index.size(); i++){
+            robot.index = robot_index[i];
+            robot.x = robot_pos_x[i];
+            robot.y = robot_pos_y[i];
+            robot.yaw = (robot_rot[i] + deg) / 180.0 * M_PI;
+            robots_update.robots.push_back(robot);
+        }
+        pub_robots.publish(robots_update);
 
         loop_rate.sleep();
         ros::spinOnce();

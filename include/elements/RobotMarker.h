@@ -27,6 +27,7 @@ namespace rcll_draw {
         std::string name;
         int id;
         double diameter;
+        bool pose_set = false;
 
         Circle crc_robot;
         Line ln_direction;

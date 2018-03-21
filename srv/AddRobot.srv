@@ -1,0 +1,11 @@
+# robot name
+string robot_name
+
+# team 0=CYAN 1=MAGENTA 2=NO_TEAM
+int8 team
+
+# robot id
+int8 robot_id
+---
+# index the robot was registered with
+int8 index
