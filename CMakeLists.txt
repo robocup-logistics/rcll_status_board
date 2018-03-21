@@ -58,13 +58,15 @@ find_package(OpenCV REQUIRED)
   Robot.msg
   Robots.msg
   MachineStatus.msg
-  Machines.msg
+  MachinesStatus.msg
+  MachineInit.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  addMachine.srv
+  AddMachines.srv
+  SetGameField.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -177,6 +179,7 @@ add_dependencies(rcll_draw ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(team_status_board_node   src/team_status_board.cpp)
 add_executable(field_status_board_node  src/field_status_board.cpp)
+add_executable(static_values_node  src/static_values_publisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -188,10 +191,12 @@ add_executable(field_status_board_node  src/field_status_board.cpp)
 ## same as for the library above
 add_dependencies(team_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(field_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(static_values_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
+target_link_libraries(static_values_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 
 #############
 ## Install ##

@@ -5,7 +5,7 @@ int8 game_state
 int8 game_phase
 
 # phase time
-int16 phase_time
+float32 phase_time
 
 # team names and points
 string team_name_cyan

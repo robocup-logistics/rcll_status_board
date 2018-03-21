@@ -4,6 +4,13 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 
+#include <rcll_status_board/GameInfo.h>
+#include <rcll_status_board/Machines.h>
+#include <rcll_status_board/Robots.h>
+#include <rcll_status_board/Products.h>
+#include <rcll_status_board/AddMachines.h>
+#include <rcll_status_board/SetGameField.h>
+
 #include <drawing.h>
 #include <elements.h>
 
@@ -13,27 +20,55 @@ nodename:           "team_status_board"
 This node draws the team status board for a given teamcolor
 ====================================================================================================== */
 
+namespace {
+    std::map<int, std::string> gamestates;
+    std::map<int, std::string> gamephases;
+
+    rcll_draw::FieldArea main_area_field;
+}
+
+void cb_gameinfo(const rcll_status_board::GameInfo::ConstPtr& msg){
+    main_area_field.setTeam(msg->team_name_cyan, rcll_draw::CYAN);
+    main_area_field.setTeam(msg->team_name_magenta, rcll_draw::MAGENTA);
+    main_area_field.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
+}
+
+bool cb_gamefield(rcll_status_board::SetGameField::Request &req, rcll_status_board::SetGameField::Response &res){
+    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", req.field_w, req.field_h, req.zones_x, req.zones_y);
+    main_area_field.setLayout(req.field_w, req.field_h, req.zones_x, req.zones_y, req.insertion_zones);
+    main_area_field.setWalls(req.walls);
+    return true;
+}
+
+bool cb_add_machine(rcll_status_board::AddMachines::Request &req, rcll_status_board::AddMachines::Response &res){
+    ROS_INFO("Initializing machines");
+    for (size_t i = 0; i < req.machines.size(); i++){
+        main_area_field.addMachine(req.machines[i].name_short, (rcll_draw::Team)req.machines[i].team);
+        main_area_field.setMachinePos(req.machines[i].x, req.machines[i].y, req.machines[i].yaw, i);
+    }
+    return true;
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "field_status_board");
     ros::NodeHandle nh;
     ros::Rate loop_rate(4.0);
 
-    std::vector<double> walls = {
-        -7.0, 8.0, 7.0, 8.0,
-        -7.0, 6.5, -7.0, 8.0,
-        7.0, 6.5, 7.0, 8.0,
-        -7.0, 1.0, -7.0, 2.0,
-        7.0, 1.0, 7.0, 2.0,
-        -7.0, 1.0, -5.0, 1.0,
-        5.0, 1.0, 7.0, 1.0,
-        -7.0, 0.0, -4.0, 0.0,
-        4.0, 0.0, 7.0, 0.0,
-        -4.0, 0.0, -4.0, 1.0,
-        4.0, 0.0, 4.0, 1.0,
-        -2.0, 0.0, 2.0, 0.0
-    };
+    ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
+    ros::ServiceServer srv_gamefield = nh.advertiseService("refbox/set_gamefield", cb_gamefield);
+    ros::ServiceServer srv_addmachine = nh.advertiseService("refbox/add_machine", cb_add_machine);
 
-    std::vector<int> insertion_zones = {51, 61, 71};
+
+    gamestates[0] = "INIT";
+    gamestates[1] = "WAIT START";
+    gamestates[2] = "RUNNING";
+    gamestates[3] = "PAUSED";
+
+    gamephases[0] = "PRE GAME";
+    gamephases[10] = "SETUP";
+    gamephases[20] = "EXPLORATION";
+    gamephases[30] = "PRODUCTION";
+    gamephases[40] = "POST GAME";
 
     ros::Time start = ros::Time::now();
     rcll_draw::Team team = rcll_draw::NO_TEAM;
@@ -60,19 +95,14 @@ int main(int argc, char** argv){
 
     double deg = 0;
 
-    rcll_draw::FieldArea main_area_field;
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-    main_area_field.setTeam("Carologistics", rcll_draw::CYAN);
-    main_area_field.setTeam("GRIPS", rcll_draw::MAGENTA);
-    main_area_field.setLayout(14.0, 8.0, 14, 8, insertion_zones);
-    main_area_field.setWalls(walls);
 
     main_area_field.addRobot("1", 1, rcll_draw::CYAN);
     main_area_field.setRobotPos(4.5, 2.5, 45 * M_PI / 180.0, 0);
     main_area_field.addRobot("1", 1, rcll_draw::MAGENTA);
     main_area_field.setRobotPos(-5.5, 4.5, 321 * M_PI / 180.0, 1);
 
-    main_area_field.addMachine("BS", rcll_draw::CYAN);
+    /*main_area_field.addMachine("BS", rcll_draw::CYAN);
     main_area_field.setMachinePos(2.5, 2.5, 225 * M_PI / 180.0, 0);
     main_area_field.addMachine("BS", rcll_draw::MAGENTA);
     main_area_field.setMachinePos(-2.5, 2.5, 315 * M_PI / 180.0, 1);
@@ -99,14 +129,12 @@ int main(int argc, char** argv){
     main_area_field.addMachine("RS2", rcll_draw::CYAN);
     main_area_field.setMachinePos(3.5, 6.5, 0 * M_PI / 180.0, 12);
     main_area_field.addMachine("RS2", rcll_draw::MAGENTA);
-    main_area_field.setMachinePos(-3.5, 6.5, 180 * M_PI / 180.0, 13);
+    main_area_field.setMachinePos(-3.5, 6.5, 180 * M_PI / 180.0, 13);*/
 
-    std::string phase = "EXPLORATION";
-    int gametime = 0;
     while(ros::ok()){
-        gametime = (int)(ros::Time::now() - start).toSec();
+        loop_rate.sleep();
 
-        main_area_field.setGameInfo("RUNNING", phase, gametime, 50, 40);
+        //main_area_field.setGameInfo("RUNNING", phase, gametime, 50, 40);
         main_area_field.draw(mat);
         cv::imshow(title, mat);
 
@@ -115,7 +143,7 @@ int main(int argc, char** argv){
 
         deg+=1;
         cv::waitKey(3);
-        loop_rate.sleep();
+        ros::spinOnce();
     }
     return 0;
 }

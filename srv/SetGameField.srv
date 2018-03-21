@@ -1,0 +1,10 @@
+# wall elements; each element is defined by four coodinates
+float32[] walls
+
+float32 field_w
+float32 field_h
+
+int32 zones_x
+int32 zones_y
+int32[] insertion_zones
+---

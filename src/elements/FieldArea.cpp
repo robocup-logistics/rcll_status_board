@@ -45,7 +45,7 @@ void rcll_draw::FieldArea::setLayout(double field_w, double field_h, int zones_x
     gamefield.setLayout(field_w, field_h, zones_x, zones_y, insertion_zones);
 }
 
-void rcll_draw::FieldArea::setWalls(std::vector<double> wall_coordinates){
+void rcll_draw::FieldArea::setWalls(std::vector<float> wall_coordinates){
     for (size_t i = 0; i < wall_coordinates.size(); i+=4){
         if (i + 3 < wall_coordinates.size()){
             gamefield.addWall(wall_coordinates[i], wall_coordinates[i + 1], wall_coordinates[i + 2], wall_coordinates[i + 3]);
