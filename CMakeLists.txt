@@ -11,9 +11,8 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -DHAVE_LIBCRYPTO")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  message_generation
-  message_runtime
   actionlib
+  rcll_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,25 +49,14 @@ find_package(OpenCV REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-  add_message_files(
-  FILES
-  GameInfo.msg
-  Product.msg
-  Products.msg
-  Robot.msg
-  Robots.msg
-  MachineStatus.msg
-  MachinesStatus.msg
-  MachineInit.msg
-)
+#  add_message_files(
+#  FILES
+#)
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  AddMachines.srv
-  SetGameField.srv
-  AddRobot.srv
-)
+#add_service_files(
+#  FILES
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -78,10 +66,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs # Or other packages containing msgs
-)
+# generate_messages(
+#  DEPENDENCIES
+#  std_msgs # Or other packages containing msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##

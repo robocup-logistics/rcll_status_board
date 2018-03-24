@@ -1,12 +1,12 @@
 #include <ros/ros.h>
 
-#include <rcll_status_board/GameInfo.h>
-#include <rcll_status_board/Machines.h>
-#include <rcll_status_board/Robots.h>
-#include <rcll_status_board/Products.h>
-#include <rcll_status_board/AddMachines.h>
-#include <rcll_status_board/AddRobot.h>
-#include <rcll_status_board/SetGameField.h>
+#include <rcll_msgs/GameInfo.h>
+#include <rcll_msgs/MachinesStatus.h>
+#include <rcll_msgs/Robots.h>
+#include <rcll_msgs/Products.h>
+#include <rcll_msgs/AddMachines.h>
+#include <rcll_msgs/AddRobot.h>
+#include <rcll_msgs/SetGameField.h>
 
 
 /* =====================================================================================================|
@@ -21,12 +21,12 @@ int main(int argc, char** argv){
     ros::Rate loop_rate(2.0);
 
 
-    ros::Publisher pub_gameinfo = nh.advertise<rcll_status_board::GameInfo>("refbox/gameinfo", 10);
-    ros::Publisher pub_robots = nh.advertise<rcll_status_board::Robots>("refbox/robots", 10);
+    ros::Publisher pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
+    ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/robots", 10);
 
-    ros::ServiceClient sc_setgamefield = nh.serviceClient<rcll_status_board::SetGameField>("refbox/set_gamefield");
-    ros::ServiceClient sc_addmachines = nh.serviceClient<rcll_status_board::AddMachines>("refbox/add_machine");
-    ros::ServiceClient sc_addrobot = nh.serviceClient<rcll_status_board::AddRobot>("refbox/add_robot");
+    ros::ServiceClient sc_setgamefield = nh.serviceClient<rcll_msgs::SetGameField>("refbox/set_gamefield");
+    ros::ServiceClient sc_addmachines = nh.serviceClient<rcll_msgs::AddMachines>("refbox/add_machine");
+    ros::ServiceClient sc_addrobot = nh.serviceClient<rcll_msgs::AddRobot>("refbox/add_robot");
 
     std::vector<float> walls = {
         -7.0, 8.0, 7.0, 8.0,
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
 
     std::vector<int> insertion_zones = {51, 61, 71};
 
-    rcll_status_board::SetGameField srv_gamefield;
+    rcll_msgs::SetGameField srv_gamefield;
     srv_gamefield.request.walls = walls;
     srv_gamefield.request.insertion_zones = insertion_zones;
     srv_gamefield.request.field_w = 14.0;
@@ -60,8 +60,8 @@ int main(int argc, char** argv){
         ROS_WARN("Error when initializing gamefield");
     }
 
-    rcll_status_board::AddMachines srv_machines;
-    rcll_status_board::MachineInit machine;
+    rcll_msgs::AddMachines srv_machines;
+    rcll_msgs::MachineInit machine;
     std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
     std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "Ring Station 2"};
     std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
@@ -96,7 +96,7 @@ int main(int argc, char** argv){
         ROS_WARN("Error when initializing machines");
     }
 
-    rcll_status_board::AddRobot srv_robots;
+    rcll_msgs::AddRobot srv_robots;
     std::vector<std::string> robots = {"R1", "R2", "R3", "R1", "R2", "R3"};
     std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
     std::vector<int> team = {0, 0, 0, 1, 1, 1};
@@ -118,7 +118,7 @@ int main(int argc, char** argv){
         }
     }
 
-    rcll_status_board::GameInfo gameinfo;
+    rcll_msgs::GameInfo gameinfo;
     gameinfo.team_name_cyan = "Carologistics";
     gameinfo.team_name_magenta = "GRIPS";
     gameinfo.team_points_cyan = 10;
@@ -127,8 +127,8 @@ int main(int argc, char** argv){
     gameinfo.game_phase = 0;
     gameinfo.phase_time = 0.0;
 
-    rcll_status_board::Robots robots_update;
-    rcll_status_board::Robot robot;
+    rcll_msgs::Robots robots_update;
+    rcll_msgs::Robot robot;
     for(size_t i = 0; i < robot_index.size(); i++){
         robot.index = robot_index[i];
         robot.x = robot_pos_x[i];

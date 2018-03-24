@@ -4,13 +4,13 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 
-#include <rcll_status_board/GameInfo.h>
-#include <rcll_status_board/Machines.h>
-#include <rcll_status_board/Robots.h>
-#include <rcll_status_board/Products.h>
-#include <rcll_status_board/AddMachines.h>
-#include <rcll_status_board/AddRobot.h>
-#include <rcll_status_board/SetGameField.h>
+#include <rcll_msgs/GameInfo.h>
+#include <rcll_msgs/MachinesStatus.h>
+#include <rcll_msgs/Robots.h>
+#include <rcll_msgs/Products.h>
+#include <rcll_msgs/AddMachines.h>
+#include <rcll_msgs/AddRobot.h>
+#include <rcll_msgs/SetGameField.h>
 
 #include <drawing.h>
 #include <elements.h>
@@ -28,26 +28,26 @@ namespace {
     rcll_draw::FieldArea main_area_field;
 }
 
-void cb_gameinfo(const rcll_status_board::GameInfo::ConstPtr& msg){
+void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
     main_area_field.setTeam(msg->team_name_cyan, rcll_draw::CYAN);
     main_area_field.setTeam(msg->team_name_magenta, rcll_draw::MAGENTA);
     main_area_field.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
 }
 
-void cb_robots(const rcll_status_board::Robots::ConstPtr& msg){
+void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
     for (size_t i = 0; i < msg->robots.size(); i++){
         main_area_field.setRobotPos(msg->robots[i].x, msg->robots[i].y, msg->robots[i].yaw, msg->robots[i].index);
     }
 }
 
-bool cb_gamefield(rcll_status_board::SetGameField::Request &req, rcll_status_board::SetGameField::Response &res){
+bool cb_gamefield(rcll_msgs::SetGameField::Request &req, rcll_msgs::SetGameField::Response &res){
     ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", req.field_w, req.field_h, req.zones_x, req.zones_y);
     main_area_field.setLayout(req.field_w, req.field_h, req.zones_x, req.zones_y, req.insertion_zones);
     main_area_field.setWalls(req.walls);
     return true;
 }
 
-bool cb_add_machine(rcll_status_board::AddMachines::Request &req, rcll_status_board::AddMachines::Response &res){
+bool cb_add_machine(rcll_msgs::AddMachines::Request &req, rcll_msgs::AddMachines::Response &res){
     ROS_INFO("Initializing machines");
     for (size_t i = 0; i < req.machines.size(); i++){
         main_area_field.addMachine(req.machines[i].name_short, (rcll_draw::Team)req.machines[i].team);
@@ -56,7 +56,7 @@ bool cb_add_machine(rcll_status_board::AddMachines::Request &req, rcll_status_bo
     return true;
 }
 
-bool cb_add_robot(rcll_status_board::AddRobot::Request &req, rcll_status_board::AddRobot::Response &res){
+bool cb_add_robot(rcll_msgs::AddRobot::Request &req, rcll_msgs::AddRobot::Response &res){
     ROS_INFO("Initializing robot name=%s number=%i team=%i", req.robot_name.c_str(), req.robot_id, req.team);
     res.index = main_area_field.addRobot(req.robot_name, req.robot_id, (rcll_draw::Team)req.team);
     return true;
