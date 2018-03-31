@@ -25,7 +25,6 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
 
 void rcll_draw::FieldArea::setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta){
     game_info.setContent(gamestate, gamephase, time, score_cyan, score_magenta);
-
     if (gamephase == "PRE GAME"){
         gamefield.setPhase(rcll_draw::PRE_GAME);
     } else if (gamephase == "SETUP"){
@@ -71,8 +70,8 @@ void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t in
     gamefield.setRobotPos(x, y, yaw, index);
 }
 
-size_t rcll_draw::FieldArea::addMachine(std::string name, rcll_draw::Team team){
-    return gamefield.addMachine(name, team);
+void rcll_draw::FieldArea::setMachine(std::string name, rcll_draw::Team team, size_t index){
+    return gamefield.setMachine(name, team, index);
 }
 
 void rcll_draw::FieldArea::setMachinePos(double x, double y, double yaw, size_t index){

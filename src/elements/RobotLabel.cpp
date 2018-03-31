@@ -26,6 +26,10 @@ rcll_draw::RobotLabel::RobotLabel(){
     mlblbl_activity.setFrontColor(rcll_draw::C_BLACK);
     blbl_activetime.setFrontColor(rcll_draw::C_BLACK);
     blbl_maintenance.setFrontColor(rcll_draw::C_BLACK);
+
+    mlblbl_activity.setContent("Activity: unknown");
+    blbl_activetime.setContent(" Active Time: 0%");
+    blbl_maintenance.setContent(" Maintenance: 0 / ?");
 }
 
 rcll_draw::RobotLabel::~RobotLabel(){

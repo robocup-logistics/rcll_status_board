@@ -1,19 +1,25 @@
 #include <MachineMarker.h>
 
 // MachineMarker ####################################################################
-rcll_draw::MachineMarker::MachineMarker(rcll_draw::Team team){
+rcll_draw::MachineMarker::MachineMarker(){
+    team = rcll_draw::NO_TEAM;
+}
+
+rcll_draw::MachineMarker::MachineMarker(rcll_draw::Team team_){
     img = cv::Mat(0, 0, CV_8UC4);
     blbl_machine.setAlignment(rcll_draw::CenterCenter);
     blbl_in.setAlignment(rcll_draw::CenterCenter);
     blbl_out.setAlignment(rcll_draw::CenterCenter);
 
-    if (team == rcll_draw::CYAN){
+    if (team_ == rcll_draw::CYAN){
         blbl_machine.setBackgroundColor(rcll_draw::C_CYAN_LIGHT);
-    } else if(team == rcll_draw::MAGENTA){
+    } else if(team_ == rcll_draw::MAGENTA){
         blbl_machine.setBackgroundColor(rcll_draw::C_MAGENTA_LIGHT);
     } else {
         blbl_machine.setBackgroundColor(rcll_draw::C_WHITE);
     }
+    team = team_;
+
     blbl_in.setBackgroundColor(rcll_draw::C_TRANSPARENT);
     blbl_out.setBackgroundColor(rcll_draw::C_TRANSPARENT);
 
@@ -73,6 +79,10 @@ void rcll_draw::MachineMarker::setMachineParams(std::string name, double w, doub
     blbl_machine.setSize(w * pixel_per_meter, h * pixel_per_meter);
     blbl_in.setSize(w * pixel_per_meter, h * pixel_per_meter);
     blbl_out.setSize(w * pixel_per_meter, h * pixel_per_meter);
+}
+
+rcll_draw::Team rcll_draw::MachineMarker::getTeam(){
+    return team;
 }
 
 void rcll_draw::MachineMarker::recalculate(){

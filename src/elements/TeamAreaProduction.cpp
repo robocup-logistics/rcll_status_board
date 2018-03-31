@@ -2,6 +2,13 @@
 
 // TeamAreaProduction ####################################################################
 
+rcll_draw::TeamAreaProduction::TeamAreaProduction(){
+    game_info = VStatusPanel(rcll_draw::NO_TEAM);
+    product_info = ProductInfo();
+    machine_info = MachineInfoProduction(rcll_draw::NO_TEAM);
+    robot_info = RobotInfo(rcll_draw::NO_TEAM);
+}
+
 rcll_draw::TeamAreaProduction::TeamAreaProduction(rcll_draw::Team team){
     game_info = VStatusPanel(team);
     product_info = ProductInfo();
@@ -29,8 +36,8 @@ void rcll_draw::TeamAreaProduction::setGameInfo(std::string gamestate, std::stri
     game_info.setContent(gamestate, gamephase, time, score);
 }
 
-void rcll_draw::TeamAreaProduction::setMachineName(std::string name, int index){
-    machine_info.setMachineName(name, index);
+void rcll_draw::TeamAreaProduction::setMachineName(std::string name_long, std::string name_short, int index){
+    return machine_info.setMachineName(name_long, name_short, index);
 }
 
 void rcll_draw::TeamAreaProduction::setMachineStatus(std::string status, int index){
@@ -38,7 +45,7 @@ void rcll_draw::TeamAreaProduction::setMachineStatus(std::string status, int ind
 }
 
 void rcll_draw::TeamAreaProduction::setRobotName(std::string name, bool active, int index){
-    robot_info.setRobotName(name, active, index);
+    return robot_info.setRobotName(name, active, index);
 }
 
 void rcll_draw::TeamAreaProduction::setRobotStatus(std::string activity, double active_time, int maintenance_count, int maintenance_max, int index){

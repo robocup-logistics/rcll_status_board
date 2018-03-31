@@ -2,4 +2,7 @@
 <launch>
 	<!-- Team Status Board -->
 	<node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen" />
+
+	<!-- Dummy Publisher Node -->
+	<node pkg="rcll_status_board" type="static_values_node" name="dummy" output="screen" />
 </launch>

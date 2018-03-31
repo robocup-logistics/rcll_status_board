@@ -14,7 +14,7 @@ namespace rcll_draw {
         ~MachineInfoProduction();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setMachineName(std::string name, int index);
+        void setMachineName(std::string name_long, std::string name_short, int index);
         void setMachineStatus(std::string status, int index);
         void draw(cv::Mat &mat);
 

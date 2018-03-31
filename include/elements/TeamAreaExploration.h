@@ -11,12 +11,13 @@ namespace rcll_draw {
 
     class TeamAreaExploration {
     public:
+        TeamAreaExploration();
         TeamAreaExploration(Team team);
         ~TeamAreaExploration();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta);
-        void setMachineName(std::string name, int index);
+        void setMachineName(std::string name_long, std::string name_short, int index);
         void setMachineStatus(int status1, int status2, int index);
         void draw(cv::Mat &mat);
 

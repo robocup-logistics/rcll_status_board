@@ -38,6 +38,8 @@ rcll_draw::GameField::GameField(){
     insertion_magenta2.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
     insertion_magenta2.setFrontColor(rcll_draw::C_BLACK);
     insertion_magenta2.setFontSize(0.75);
+
+    machine_markers.resize(14);
 }
 
 rcll_draw::GameField::~GameField(){
@@ -47,7 +49,9 @@ rcll_draw::GameField::~GameField(){
 void rcll_draw::GameField::setPhase(rcll_draw::GamePhase gamephase){
     this->gamephase = gamephase;
     for (size_t i = 0; i < machine_markers.size(); i++){
-        machine_markers[i].setPhase(gamephase);
+        if (machine_markers[i].getTeam() != rcll_draw::NO_TEAM){
+            machine_markers[i].setPhase(gamephase);
+        }
     }
 }
 
@@ -177,12 +181,12 @@ void rcll_draw::GameField::setRobotPos(double x, double y, double yaw, size_t in
     }
 }
 
-size_t rcll_draw::GameField::addMachine(std::string name, rcll_draw::Team team){
-    MachineMarker machine(team);
-    machine.setOrigin(x0, y0, pixel_per_meter);
-    machine.setMachineParams(name, 0.7, 0.35);
-    machine_markers.push_back(machine);
-    return machine_markers.size() - 1;
+void rcll_draw::GameField::setMachine(std::string name, rcll_draw::Team team, size_t index){
+    if (index >= 0 && index < machine_markers.size()){
+        machine_markers[index] = MachineMarker(team);
+        machine_markers[index].setOrigin(x0, y0, pixel_per_meter);
+        machine_markers[index].setMachineParams(name, 0.7, 0.35);
+    }
 }
 
 void rcll_draw::GameField::setMachinePos(double x, double y, double yaw, size_t index){
@@ -219,7 +223,9 @@ void rcll_draw::GameField::draw(cv::Mat &mat){
     }
 
     for (size_t i = 0; i < machine_markers.size(); i++){
-        machine_markers[i].draw(mat);
+        if (machine_markers[i].getTeam() != rcll_draw::NO_TEAM){
+            machine_markers[i].draw(mat);
+        }
     }
 
     if (gamephase == rcll_draw::SETUP){

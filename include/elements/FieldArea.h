@@ -22,7 +22,7 @@ namespace rcll_draw {
         void setTeam(std::string team_name, rcll_draw::Team team_color);
         size_t addRobot(std::string name, int id, rcll_draw::Team team);
         void setRobotPos(double x, double y, double yaw, size_t index);
-        size_t addMachine(std::string name, rcll_draw::Team team);
+        void setMachine(std::string name, rcll_draw::Team team, size_t index);
         void setMachinePos(double x, double y, double yaw, size_t index);
         void draw(cv::Mat &mat);
 

@@ -21,6 +21,11 @@ rcll_draw::MachineInfoProduction::MachineInfoProduction(Team team){
     }
 
     machines.resize(7);
+
+    for (size_t i = 0; i < machines.size(); i++){
+        machines[i].setFlashing(false);
+        machines[i].setMachineStatus("Offline", rcll_draw::C_GREY_LIGHT, rcll_draw::C_GREY_LIGHT, "", "");
+    }
 }
 
 rcll_draw::MachineInfoProduction::~MachineInfoProduction(){
@@ -40,9 +45,9 @@ void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, int w, int h, i
     machines[6].setGeometry(x+w1+gapsize, y + 4*h*0.2, w1, h*0.2);
 }
 
-void rcll_draw::MachineInfoProduction::setMachineName(std::string name, int index){
+void rcll_draw::MachineInfoProduction::setMachineName(std::string name_long, std::string name_short, int index){
     if (index >= 0 && index < 7){
-        machines[index].setMachineName(" " + name);
+        machines[index].setMachineName(" " + name_long + " (" + name_short + ")");
     }
 }
 
@@ -62,7 +67,7 @@ void rcll_draw::MachineInfoProduction::setMachineStatus(std::string status, int 
             flashing = true;
             lamp1_str = "Incorrect";
             lamp2_str = "Instruction";
-        } else if (status == "Processing"){
+        } else if (status == "Processing" || status == "Processed"){
             lamp1 = rcll_draw::C_GREEN_LIGHT;
             lamp2 = rcll_draw::C_YELLOW;
             lamp1_str = "Processing";

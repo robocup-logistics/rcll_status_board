@@ -23,8 +23,10 @@
 
 #include <GameField.h>
 
+#include <TeamAreaPreGameSetup.h>
 #include <TeamAreaExploration.h>
 #include <TeamAreaProduction.h>
+#include <TeamAreaPostGame.h>
 #include <FieldArea.h>
 
 #endif

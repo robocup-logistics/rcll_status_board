@@ -4,10 +4,9 @@
 #include <rcll_msgs/MachinesStatus.h>
 #include <rcll_msgs/Robots.h>
 #include <rcll_msgs/Products.h>
-#include <rcll_msgs/AddMachines.h>
-#include <rcll_msgs/AddRobot.h>
+#include <rcll_msgs/SetMachines.h>
+#include <rcll_msgs/SetRobot.h>
 #include <rcll_msgs/SetGameField.h>
-
 
 /* =====================================================================================================|
 nodename:           "static_values_publisher"
@@ -20,13 +19,17 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     ros::Rate loop_rate(2.0);
 
-
     ros::Publisher pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
-    ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/robots", 10);
+    ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
+    ros::Publisher pub_setgamefield = nh.advertise<rcll_msgs::SetGameField>("refbox/set_gamefield", 10);
+    ros::Publisher pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machine", 10);
+    ros::Publisher pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
+    ros::Publisher pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
 
-    ros::ServiceClient sc_setgamefield = nh.serviceClient<rcll_msgs::SetGameField>("refbox/set_gamefield");
-    ros::ServiceClient sc_addmachines = nh.serviceClient<rcll_msgs::AddMachines>("refbox/add_machine");
-    ros::ServiceClient sc_addrobot = nh.serviceClient<rcll_msgs::AddRobot>("refbox/add_robot");
+    ros::Duration(1.0).sleep();
+
+    std::vector<std::string> machine_statuses = {"Idle", "Broken", "Processing", "Processed", "Prepared", "Down", "Finished", "Waiting", "Offline"};
+
 
     std::vector<float> walls = {
         -7.0, 8.0, 7.0, 8.0,
@@ -45,23 +48,18 @@ int main(int argc, char** argv){
 
     std::vector<int> insertion_zones = {51, 61, 71};
 
-    rcll_msgs::SetGameField srv_gamefield;
-    srv_gamefield.request.walls = walls;
-    srv_gamefield.request.insertion_zones = insertion_zones;
-    srv_gamefield.request.field_w = 14.0;
-    srv_gamefield.request.field_h = 8.0;
-    srv_gamefield.request.zones_x = 14;
-    srv_gamefield.request.zones_y = 8;
+    rcll_msgs::SetGameField gamefield_msg;
+    gamefield_msg.walls = walls;
+    gamefield_msg.insertion_zones = insertion_zones;
+    gamefield_msg.field_w = 14.0;
+    gamefield_msg.field_h = 8.0;
+    gamefield_msg.zones_x = 14;
+    gamefield_msg.zones_y = 8;
 
-    ros::service::waitForService("refbox/set_gamefield");
-    if (sc_setgamefield.call(srv_gamefield)){
-        ROS_DEBUG("Initialized gamefield");
-    } else {
-        ROS_WARN("Error when initializing gamefield");
-    }
+    pub_setgamefield.publish(gamefield_msg);
 
-    rcll_msgs::AddMachines srv_machines;
-    rcll_msgs::MachineInit machine;
+    rcll_msgs::SetMachines machines_init_msg;
+    rcll_msgs::MachineInit machine_init;
     std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
     std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "Ring Station 2"};
     std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
@@ -71,51 +69,41 @@ int main(int argc, char** argv){
 
     for (size_t i = 0; i < machines.size(); i++){
         // cyan machine
-        machine.name_short = machines[i];
-        machine.name_long = names[i];
-        machine.team = 0;
-        machine.x = machine_pos_x[i];
-        machine.y = machine_pos_y[i];
-        machine.yaw = rot_c[i] / 180.0 * M_PI;
-        srv_machines.request.machines.push_back(machine);
+        machine_init.name_short = machines[i];
+        machine_init.name_long = names[i];
+        machine_init.team = 0;
+        machine_init.x = machine_pos_x[i];
+        machine_init.y = machine_pos_y[i];
+        machine_init.yaw = rot_c[i] / 180.0 * M_PI;
+        machine_init.index = 2 * i;
+        machines_init_msg.machines.push_back(machine_init);
 
         // magenta machine
-        machine.name_short = machines[i];
-        machine.name_long = names[i];
-        machine.team = 1;
-        machine.x = -machine_pos_x[i];
-        machine.y = machine_pos_y[i];
-        machine.yaw = rot_m[i] / 180.0 * M_PI;
-        srv_machines.request.machines.push_back(machine);
+        machine_init.name_short = machines[i];
+        machine_init.name_long = names[i];
+        machine_init.team = 1;
+        machine_init.x = -machine_pos_x[i];
+        machine_init.y = machine_pos_y[i];
+        machine_init.yaw = rot_m[i] / 180.0 * M_PI;
+        machine_init.index = 2 * i + 1;
+        machines_init_msg.machines.push_back(machine_init);
     }
+    pub_setmachines.publish(machines_init_msg);
 
-    ros::service::waitForService("refbox/add_machine");
-    if (sc_addmachines.call(srv_machines)){
-        ROS_DEBUG("Initialized machines");
-    } else {
-        ROS_WARN("Error when initializing machines");
-    }
-
-    rcll_msgs::AddRobot srv_robots;
-    std::vector<std::string> robots = {"R1", "R2", "R3", "R1", "R2", "R3"};
+    rcll_msgs::SetRobot robots_init_msg;
+    std::vector<std::string> robots = {"Hans", "Peter", "Tim", "Joerg", "Klaus", "Bernd"};
     std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
     std::vector<int> team = {0, 0, 0, 1, 1, 1};
     std::vector<double> robot_pos_x = {4.5, 5.5, 5.25, -5.5, -0.0, -6.25};
     std::vector<double> robot_pos_y = {3.5, 4.5, 1.5, 0.5, 2.5, 6.5};
     std::vector<int> robot_rot = {45, 125, 0, 305, 280, 180};
-    std::vector<int> robot_index;
     for (size_t i = 0; i < robots.size(); i++){
-        srv_robots.request.robot_name = robots[i];
-        srv_robots.request.robot_id = robot_ids[i];
-        srv_robots.request.team = team[i];
+        robots_init_msg.robot_name = robots[i];
+        robots_init_msg.robot_id = robot_ids[i];
+        robots_init_msg.team = team[i];
+        robots_init_msg.index = i;
 
-        ros::service::waitForService("refbox/add_robot");
-        if (sc_addrobot.call(srv_robots)){
-            ROS_DEBUG("Initialized robot %lu", i);
-            robot_index.push_back(srv_robots.response.index);
-        } else {
-            ROS_WARN("Error when initializing robots");
-        }
+        pub_setrobot.publish(robots_init_msg);
     }
 
     rcll_msgs::GameInfo gameinfo;
@@ -127,16 +115,11 @@ int main(int argc, char** argv){
     gameinfo.game_phase = 0;
     gameinfo.phase_time = 0.0;
 
-    rcll_msgs::Robots robots_update;
-    rcll_msgs::Robot robot;
-    for(size_t i = 0; i < robot_index.size(); i++){
-        robot.index = robot_index[i];
-        robot.x = robot_pos_x[i];
-        robot.y = robot_pos_y[i];
-        robot.yaw = robot_rot[i] / 180.0 * M_PI;
-        robots_update.robots.push_back(robot);
-    }
-    pub_robots.publish(robots_update);
+    rcll_msgs::Robots robots_update_msg;
+    rcll_msgs::Robot robot_update;
+
+    rcll_msgs::MachinesStatus machines_update_msg;
+    rcll_msgs::MachineStatus machine_update;
 
     ROS_INFO("Entering loop");
     int deg = 0;
@@ -144,19 +127,19 @@ int main(int argc, char** argv){
         // gameinfo
         gameinfo.game_state = 2;
         gameinfo.phase_time += loop_rate.expectedCycleTime().toSec();
-        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 30){ // set to SETUP
+        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 5){ // set to SETUP
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 300){ // set to EXPLORATION
+        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 10){ // set to EXPLORATION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 180){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 10){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 1200){ // set to POST_GAME
+        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 20){ // set to POST_GAME
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;
@@ -165,14 +148,43 @@ int main(int argc, char** argv){
 
         // robots
         deg+=2;
-        for(size_t i = 0; i < robot_index.size(); i++){
-            robot.index = robot_index[i];
-            robot.x = robot_pos_x[i];
-            robot.y = robot_pos_y[i];
-            robot.yaw = (robot_rot[i] + deg) / 180.0 * M_PI;
-            robots_update.robots.push_back(robot);
+        for(size_t i = 0; i < robots.size(); i++){
+            robot_update.index = i;
+            robot_update.x = robot_pos_x[i];
+            robot_update.y = robot_pos_y[i];
+            robot_update.yaw = (robot_rot[i] + deg) / 180.0 * M_PI;
+            robot_update.active = true;
+            robot_update.active_time = 0.0;
+            robot_update.maintenance_count = 0;
+            robot_update.status = "";
+
+            robots_update_msg.robots.push_back(robot_update);
         }
-        pub_robots.publish(robots_update);
+        pub_robots.publish(robots_update_msg);
+
+        //machines status
+        for(size_t i = 0; i < machines.size(); i++){
+            // cyan
+            int pstatus = i % machine_statuses.size();
+            int e1status = i % 3;
+            int e2status = (2*i) % 3;
+            machine_update.index = 2 * i;
+            machine_update.machine_status_production = machine_statuses[pstatus];
+            machine_update.machine_status_exploration1 = e1status;
+            machine_update.machine_status_exploration2 = e2status;
+            machines_update_msg.machines.push_back(machine_update);
+
+            // magenta
+            pstatus = i % machine_statuses.size();
+            e1status = i % 3;
+            e2status = (2*i) % 3;
+            machine_update.index = 2 * i + 1;
+            machine_update.machine_status_production = machine_statuses[pstatus];
+            machine_update.machine_status_exploration1 = e1status;
+            machine_update.machine_status_exploration2 = e2status;
+            machines_update_msg.machines.push_back(machine_update);
+        }
+        pub_machinesstatus.publish(machines_update_msg);
 
         loop_rate.sleep();
         ros::spinOnce();

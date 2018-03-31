@@ -8,8 +8,8 @@
 #include <rcll_msgs/MachinesStatus.h>
 #include <rcll_msgs/Robots.h>
 #include <rcll_msgs/Products.h>
-#include <rcll_msgs/AddMachines.h>
-#include <rcll_msgs/AddRobot.h>
+#include <rcll_msgs/SetMachines.h>
+#include <rcll_msgs/SetRobot.h>
 #include <rcll_msgs/SetGameField.h>
 
 #include <drawing.h>
@@ -29,9 +29,30 @@ namespace {
 }
 
 void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
+    //ROS_INFO("Updating gameinfo");
     main_area_field.setTeam(msg->team_name_cyan, rcll_draw::CYAN);
     main_area_field.setTeam(msg->team_name_magenta, rcll_draw::MAGENTA);
     main_area_field.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
+}
+
+void cb_gamefield(const rcll_msgs::SetGameField::ConstPtr& msg){
+    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", msg->field_w, msg->field_h, msg->zones_x, msg->zones_y);
+    main_area_field.setLayout(msg->field_w, msg->field_h, msg->zones_x, msg->zones_y, msg->insertion_zones);
+    main_area_field.setWalls(msg->walls);
+}
+
+void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
+    ROS_INFO("Initializing machines");
+    for (size_t i = 0; i < msg->machines.size(); i++){
+        ROS_INFO("  name=%s team=%i index=%i", msg->machines[i].name_short.c_str(), msg->machines[i].team, msg->machines[i].index);
+        main_area_field.setMachine(msg->machines[i].name_short, (rcll_draw::Team)msg->machines[i].team, msg->machines[i].index);
+        main_area_field.setMachinePos(msg->machines[i].x, msg->machines[i].y, msg->machines[i].yaw, msg->machines[i].index);
+    }
+}
+
+void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
+    ROS_INFO("Initializing robot name=%s number=%i team=%i, index=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index);
+    main_area_field.addRobot(msg->robot_name, msg->robot_id, (rcll_draw::Team)msg->team);
 }
 
 void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
@@ -40,38 +61,17 @@ void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
     }
 }
 
-bool cb_gamefield(rcll_msgs::SetGameField::Request &req, rcll_msgs::SetGameField::Response &res){
-    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", req.field_w, req.field_h, req.zones_x, req.zones_y);
-    main_area_field.setLayout(req.field_w, req.field_h, req.zones_x, req.zones_y, req.insertion_zones);
-    main_area_field.setWalls(req.walls);
-    return true;
-}
-
-bool cb_add_machine(rcll_msgs::AddMachines::Request &req, rcll_msgs::AddMachines::Response &res){
-    ROS_INFO("Initializing machines");
-    for (size_t i = 0; i < req.machines.size(); i++){
-        main_area_field.addMachine(req.machines[i].name_short, (rcll_draw::Team)req.machines[i].team);
-        main_area_field.setMachinePos(req.machines[i].x, req.machines[i].y, req.machines[i].yaw, i);
-    }
-    return true;
-}
-
-bool cb_add_robot(rcll_msgs::AddRobot::Request &req, rcll_msgs::AddRobot::Response &res){
-    ROS_INFO("Initializing robot name=%s number=%i team=%i", req.robot_name.c_str(), req.robot_id, req.team);
-    res.index = main_area_field.addRobot(req.robot_name, req.robot_id, (rcll_draw::Team)req.team);
-    return true;
-}
-
 int main(int argc, char** argv){
     ros::init(argc, argv, "field_status_board");
     ros::NodeHandle nh;
     ros::Rate loop_rate(4.0);
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
-    ros::Subscriber sub_robots = nh.subscribe("refbox/robots", 10, cb_robots);
-    ros::ServiceServer srv_gamefield = nh.advertiseService("refbox/set_gamefield", cb_gamefield);
-    ros::ServiceServer srv_addmachine = nh.advertiseService("refbox/add_machine", cb_add_machine);
-    ros::ServiceServer srv_addrobot = nh.advertiseService("refbox/add_robot", cb_add_robot);
+    ros::Subscriber sub_gamefield = nh.subscribe("refbox/set_gamefield", 10, cb_gamefield);
+    ros::Subscriber sub_addrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
+    ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
+    ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
+
 
     gamestates[0] = "INIT";
     gamestates[1] = "WAIT START";
@@ -95,7 +95,7 @@ int main(int argc, char** argv){
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
     rcll_draw::HeaderPanel header(title, team);

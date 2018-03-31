@@ -10,12 +10,13 @@
 namespace rcll_draw {
     class TeamAreaProduction {
     public:
+        TeamAreaProduction();
         TeamAreaProduction(Team team);
         ~TeamAreaProduction();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(std::string gamestate, std::string gamephase, int time, int score);
-        void setMachineName(std::string name, int index);
+        void setMachineName(std::string name_long, std::string name_short, int index);
         void setMachineStatus(std::string status, int index);
         void setRobotName(std::string name, bool active, int index);
         void setRobotStatus(std::string activity, double active_time, int maintenance_count, int maintenance_max, int index);

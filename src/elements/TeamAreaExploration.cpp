@@ -1,6 +1,10 @@
 #include <TeamAreaExploration.h>
 // TeamAreaExploration ####################################################################
 
+rcll_draw::TeamAreaExploration::TeamAreaExploration(){
+
+}
+
 rcll_draw::TeamAreaExploration::TeamAreaExploration(rcll_draw::Team team){
     game_info = HStatusPanel();
     machine_info = MachineInfoExploration(team);
@@ -23,8 +27,8 @@ void rcll_draw::TeamAreaExploration::setGameInfo(std::string gamestate, std::str
     game_info.setContent(gamestate, gamephase, time, score_cyan, score_magenta);
 }
 
-void rcll_draw::TeamAreaExploration::setMachineName(std::string name, int index){
-    machine_info.setMachineName(name, index);
+void rcll_draw::TeamAreaExploration::setMachineName(std::string name_long, std::string name_short, int index){
+    machine_info.setMachineName(name_long, name_short, index);
 }
 
 void rcll_draw::TeamAreaExploration::setMachineStatus(int status1, int status2, int index){

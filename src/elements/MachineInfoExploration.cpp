@@ -50,9 +50,9 @@ void rcll_draw::MachineInfoExploration::setGeometry(int x, int y, int w, int h, 
     machines[7].setGeometry(x, y + 10*h/11, w, h/11);
 }
 
-void rcll_draw::MachineInfoExploration::setMachineName(std::string name, int index){
+void rcll_draw::MachineInfoExploration::setMachineName(std::string name_long, std::string name_short, int index){
     if (index >= 0 && index < 7){
-        machines[index + 1].setMachineName(" " + name, index + 1);
+        machines[index + 1].setMachineName(" " + name_long + " (" + name_short + ")", index + 1);
     }
 }
 

@@ -153,8 +153,10 @@ add_library(rcll_draw
     src/elements/MachineMarker.cpp
     src/elements/RobotMarker.cpp
 
+    src/elements/TeamAreaPreGameSetup.cpp
     src/elements/TeamAreaExploration.cpp
     src/elements/TeamAreaProduction.cpp
+    src/elements/TeamAreaPostGame.cpp
     src/elements/FieldArea.cpp
 )
 
