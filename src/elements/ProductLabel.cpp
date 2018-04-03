@@ -68,7 +68,7 @@ void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, 
     if (progress >= 1.0){
         blbl_progress.setContent(" Progress: finished");
     } else {
-        blbl_progress.setContent(" Progress: " + std::to_string((int)(progress * 100)) + "%");
+        blbl_progress.setContent(" Progress: " + std::to_string((int)(round(progress * 100.0))) + "%");
     }
     blbl_deadline.setContent(" Deadline at " + time_str);
     blbl_points.setContent(" Points: " + std::to_string(points) + " / " + std::to_string(points_max));

@@ -27,8 +27,11 @@ namespace rcll_draw {
 
         TeamHeaderPanel thpan_team_cyan;
         TeamHeaderPanel thpan_team_magenta;
+        BoxLabel blbl_points_cyan;
+        BoxLabel blbl_points_magenta;
         BoxLabel blbl_versus;
-        BoxLabel tlbl_text;
+        BoxLabel blbl_points;
+        BoxLabel blbl_text;
         HStatusPanel game_info;
     };
 }

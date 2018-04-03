@@ -164,7 +164,7 @@ int main(int argc, char** argv){
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 10){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 20){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;

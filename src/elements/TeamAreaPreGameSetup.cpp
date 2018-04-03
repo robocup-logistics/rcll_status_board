@@ -3,17 +3,17 @@
 
 rcll_draw::TeamAreaPreGameSetup::TeamAreaPreGameSetup(){
     blbl_versus.setContent("versus");
-    tlbl_text.setContent("Last preparations are arranged by the teams. The game will start shortly.");
+    blbl_text.setContent("Last preparations are arranged by the teams. The game will start shortly.");
 
     blbl_versus.setAlignment(rcll_draw::Alignment::CenterCenter);
-    tlbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
+    blbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
     blbl_versus.setBackgroundColor(rcll_draw::C_WHITE);
-    tlbl_text.setBackgroundColor(rcll_draw::C_WHITE);
+    blbl_text.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_versus.setBorderColor(rcll_draw::C_WHITE);
-    tlbl_text.setBorderColor(rcll_draw::C_WHITE);
+    blbl_text.setBorderColor(rcll_draw::C_WHITE);
 
     blbl_versus.setFontSize(1.0);
-    tlbl_text.setFontSize(1.0);
+    blbl_text.setFontSize(1.0);
 }
 
 rcll_draw::TeamAreaPreGameSetup::~TeamAreaPreGameSetup(){
@@ -39,8 +39,8 @@ void rcll_draw::TeamAreaPreGameSetup::setGeometry(int x, int y, int w, int h, in
     thpan_team_magenta.setGeometry(x + w * 0.6, y + h * 0.3, w * 0.2, h * 0.1);
     blbl_versus.setSize(w * 0.1, h * 0.1 / 3);
     blbl_versus.setPos(x + w * 0.45, y + h * 0.3 + h * 0.1 * 2 / 3);
-    tlbl_text.setSize(w * 0.8, h * 0.1);
-    tlbl_text.setPos(x + w * 0.1, y + h * 0.6);
+    blbl_text.setSize(w * 0.8, h * 0.1);
+    blbl_text.setPos(x + w * 0.1, y + h * 0.6);
     game_info.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
 }
 
@@ -48,6 +48,6 @@ void rcll_draw::TeamAreaPreGameSetup::draw(cv::Mat &mat){
     thpan_team_cyan.draw(mat);
     thpan_team_magenta.draw(mat);
     blbl_versus.draw(mat);
-    tlbl_text.draw(mat);
+    blbl_text.draw(mat);
     game_info.draw(mat);
 }

@@ -162,64 +162,6 @@ int main(int argc, char** argv){
     gamephases[30] = "PRODUCTION";
     gamephases[40] = "POST GAME";
 
-    // 0=not started, 1=construction, 2=delivery, 3=completed
-    /*rcll_draw::Product p1;
-    rcll_draw::Product p2;
-    rcll_draw::Product p3;
-    rcll_draw::Product p4;
-
-    p1.complexity = 0;
-    p1.base = 2;
-    p1.ring1 = 0;
-    p1.ring2 = 0;
-    p1.ring3 = 0;
-    p1.cap = 2;
-    p1.status_base = 3;
-    p1.status_ring1 = 0;
-    p1.status_ring2 = 0;
-    p1.status_ring3 = 0;
-    p1.status_cap = 3;
-    p1.status_product = 3;
-
-    p2.complexity = 1;
-    p2.base = 2;
-    p2.ring1 = 1;
-    p2.ring2 = 0;
-    p2.ring3 = 0;
-    p2.cap = 2;
-    p2.status_base = 3;
-    p2.status_ring1 = 1;
-    p2.status_ring2 = 0;
-    p2.status_ring3 = 0;
-    p2.status_cap = 0;
-    p2.status_product = 1;
-
-    p3.complexity = 2;
-    p3.base = 1;
-    p3.ring1 = 2;
-    p3.ring2 = 3;
-    p3.ring3 = 0;
-    p3.cap = 1;
-    p3.status_base = 3;
-    p3.status_ring1 = 3;
-    p3.status_ring2 = 1;
-    p3.status_ring3 = 0;
-    p3.status_cap = 0;
-    p3.status_product = 1;
-
-    p4.complexity = 3;
-    p4.base = 1;
-    p4.ring1 = 4;
-    p4.ring2 = 4;
-    p4.ring3 = 3;
-    p4.cap = 1;
-    p4.status_base = 3;
-    p4.status_ring1 = 3;
-    p4.status_ring2 = 3;
-    p4.status_ring3 = 3;
-    p4.status_cap = 3;
-    p4.status_product = 2;*/
-
     int res_x = 1920;
     int res_y = 1080;
     int bordergapsize = 0.05 * res_y;
@@ -227,7 +169,7 @@ int main(int argc, char** argv){
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
     cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
@@ -247,11 +189,6 @@ int main(int argc, char** argv){
 
     main_area_postgame = rcll_draw::TeamAreaPostGame();
     main_area_postgame.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-
-    /*main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
-    main_area_production.setProduct(2, p2, 0.3, 789, 0, 20, 1);
-    main_area_production.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
-    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);*/
 
     while(ros::ok()){
         loop_rate.sleep();
