@@ -62,6 +62,8 @@ void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, 
     int sec = deadline % 60;
     std::string time_str = std::to_string(min) + "min " + std::to_string(sec) + "sec";
 
+
+    this->id = id;
     blbl_name.setContent(" Product P" + std::to_string(id));
     if (progress >= 1.0){
         blbl_progress.setContent(" Progress: finished");
@@ -151,13 +153,15 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::Product plan){
 }
 
 void rcll_draw::ProductLabel::draw(cv::Mat &mat){
-    blbl_name.draw(mat);
-    blbl_progress.draw(mat);
-    blbl_deadline.draw(mat);
-    blbl_points.draw(mat);
-    product.draw(mat);
-    for (size_t i = 0; i < img_step_progress.size(); i++){
-        img_step_progress[i].draw(mat);
+    if (id > 0){
+        blbl_name.draw(mat);
+        blbl_progress.draw(mat);
+        blbl_deadline.draw(mat);
+        blbl_points.draw(mat);
+        product.draw(mat);
+        for (size_t i = 0; i < img_step_progress.size(); i++){
+            img_step_progress[i].draw(mat);
+        }
+        img_product_progress.draw(mat);
     }
-    img_product_progress.draw(mat);
 }

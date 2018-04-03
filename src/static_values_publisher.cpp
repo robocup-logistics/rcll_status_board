@@ -25,6 +25,7 @@ int main(int argc, char** argv){
     ros::Publisher pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machine", 10);
     ros::Publisher pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
     ros::Publisher pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
+    ros::Publisher pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
 
     ros::Duration(1.0).sleep();
 
@@ -106,6 +107,34 @@ int main(int argc, char** argv){
         pub_setrobot.publish(robots_init_msg);
     }
 
+    rcll_msgs::Products products_msg;
+    std::vector<int> product_ids = {1, 5, 6, 7};
+    std::vector<int> complexities = {0, 1, 2, 3};
+    std::vector< std::vector<int> > structures = {{2, 0, 0, 0, 2}, {2, 1 , 0, 0, 2}, {1, 2, 3, 0, 1}, {1, 4, 4, 3, 1}};
+    std::vector< std::vector<int> > step_stati_cyan = {{3, 0, 0, 0, 3, 3}, {3, 1, 0, 0, 0, 1}, {3, 3, 1, 0, 0, 1}, {3, 3, 3, 3, 3, 2}};
+    std::vector< std::vector<int> > step_stati_magenta = {{3, 0, 0, 0, 1, 1}, {3, 3, 0, 0, 0, 3}, {3, 3, 3, 3, 0, 2}, {3, 3, 1, 0, 0, 1}};
+    std::vector<double> progresss_cyan = {1.0, 0.33, 0.4, 0.95};
+    std::vector<double> progresss_magenta = {0.33, 1.0, 0.95, 0.5};
+    std::vector<int> points_cyan = {20, 0, 5, 25};
+    std::vector<int> points_magenta = {0, 20, 50, 30};
+    std::vector<int> points_max = {20, 20, 70, 45};
+    std::vector<int> delivery_time = {567, 789, 123, 456};
+    for (size_t i = 0; i < product_ids.size(); i++){
+        rcll_msgs::Product product;
+        product.id = product_ids[i];
+        product.complexity = complexities[i];
+        product.structure = structures[i];
+        product.step_stati_cyan = step_stati_cyan[i];
+        product.step_stati_magenta = step_stati_magenta[i];
+        product.progress_cyan = progresss_cyan[i];
+        product.progress_magenta = progresss_magenta[i];
+        product.end_delivery_time = delivery_time[i];
+        product.points_cyan = points_cyan[i];
+        product.points_magenta = points_magenta[i];
+        product.points_max = points_max[i];
+        products_msg.orders.push_back(product);
+    }
+
     rcll_msgs::GameInfo gameinfo;
     gameinfo.team_name_cyan = "Carologistics";
     gameinfo.team_name_magenta = "GRIPS";
@@ -119,7 +148,7 @@ int main(int argc, char** argv){
     rcll_msgs::Robot robot_update;
 
     rcll_msgs::MachinesStatus machines_update_msg;
-    rcll_msgs::MachineStatus machine_update;
+    rcll_msgs::MachineStatus machine_update;    
 
     ROS_INFO("Entering loop");
     int deg = 0;
@@ -185,6 +214,8 @@ int main(int argc, char** argv){
             machines_update_msg.machines.push_back(machine_update);
         }
         pub_machinesstatus.publish(machines_update_msg);
+
+        pub_products.publish(products_msg);
 
         loop_rate.sleep();
         ros::spinOnce();

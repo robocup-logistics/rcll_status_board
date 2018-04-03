@@ -24,8 +24,7 @@ void rcll_draw::ProductInfo::setProduct(int id, Product plan, double progress, i
 }
 
 void rcll_draw::ProductInfo::draw(cv::Mat &mat){
-    products[0].draw(mat);
-    products[1].draw(mat);
-    products[2].draw(mat);
-    products[3].draw(mat);
+    for (size_t i = 0; i < products.size(); i++){
+        products[i].draw(mat);
+    }
 }

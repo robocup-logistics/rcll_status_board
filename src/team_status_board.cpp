@@ -98,6 +98,35 @@ void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
     }
 }
 
+void cb_products(const rcll_msgs::Products::ConstPtr& msg){
+    for (size_t i = 0; i < msg->orders.size(); i++){
+        rcll_draw::Product p;
+        p.complexity = msg->orders[i].complexity;
+        p.base = msg->orders[i].structure[0];
+        p.ring1 = msg->orders[i].structure[1];
+        p.ring2 = msg->orders[i].structure[2];
+        p.ring3 = msg->orders[i].structure[3];
+        p.cap = msg->orders[i].structure[4];
+        if (team == rcll_draw::CYAN){
+            p.status_base = msg->orders[i].step_stati_cyan[0];
+            p.status_ring1 = msg->orders[i].step_stati_cyan[1];
+            p.status_ring2 = msg->orders[i].step_stati_cyan[2];
+            p.status_ring3 = msg->orders[i].step_stati_cyan[3];
+            p.status_cap = msg->orders[i].step_stati_cyan[4];
+            p.status_product = msg->orders[i].step_stati_cyan[5];
+            main_area_production.setProduct(msg->orders[i].id, p, msg->orders[i].progress_cyan, msg->orders[i].end_delivery_time, msg->orders[i].points_cyan, msg->orders[i].points_max, i);
+        } else if (team == rcll_draw::MAGENTA){
+            p.status_base = msg->orders[i].step_stati_magenta[0];
+            p.status_ring1 = msg->orders[i].step_stati_magenta[1];
+            p.status_ring2 = msg->orders[i].step_stati_magenta[2];
+            p.status_ring3 = msg->orders[i].step_stati_magenta[3];
+            p.status_cap = msg->orders[i].step_stati_magenta[4];
+            p.status_product = msg->orders[i].step_stati_magenta[5];
+            main_area_production.setProduct(msg->orders[i].id, p, msg->orders[i].progress_magenta, msg->orders[i].end_delivery_time, msg->orders[i].points_magenta, msg->orders[i].points_max, i);
+        }
+    }
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "team_status_board");
     ros::NodeHandle nh;
@@ -108,6 +137,7 @@ int main(int argc, char** argv){
     ros::Subscriber sub_setmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
     ros::Subscriber sub_setrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
     ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
+    ros::Subscriber sub_products = nh.subscribe("refbox/update_products", 10, cb_products);
 
     team = rcll_draw::MAGENTA;
     std::string title;
@@ -133,7 +163,7 @@ int main(int argc, char** argv){
     gamephases[40] = "POST GAME";
 
     // 0=not started, 1=construction, 2=delivery, 3=completed
-    rcll_draw::Product p1;
+    /*rcll_draw::Product p1;
     rcll_draw::Product p2;
     rcll_draw::Product p3;
     rcll_draw::Product p4;
@@ -188,7 +218,7 @@ int main(int argc, char** argv){
     p4.status_ring2 = 3;
     p4.status_ring3 = 3;
     p4.status_cap = 3;
-    p4.status_product = 2;
+    p4.status_product = 2;*/
 
     int res_x = 1920;
     int res_y = 1080;
@@ -218,10 +248,10 @@ int main(int argc, char** argv){
     main_area_postgame = rcll_draw::TeamAreaPostGame();
     main_area_postgame.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
 
-    main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
+    /*main_area_production.setProduct(1, p1, 1.0, 567, 20, 20, 0);
     main_area_production.setProduct(2, p2, 0.3, 789, 0, 20, 1);
     main_area_production.setProduct(3, p3, 0.4, 1345, 5, 70, 2);
-    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);
+    main_area_production.setProduct(4, p4, 0.95, 140, 25, 45, 3);*/
 
     while(ros::ok()){
         loop_rate.sleep();

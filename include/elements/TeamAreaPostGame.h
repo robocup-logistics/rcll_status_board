@@ -28,6 +28,7 @@ namespace rcll_draw {
         TeamHeaderPanel thpan_team_cyan;
         TeamHeaderPanel thpan_team_magenta;
         BoxLabel blbl_versus;
+        BoxLabel tlbl_text;
         HStatusPanel game_info;
     };
 }

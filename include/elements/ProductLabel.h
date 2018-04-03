@@ -41,6 +41,8 @@ namespace rcll_draw {
         Image product;
         std::vector<Image> img_step_progress;
         Image img_product_progress;
+
+        int id;
     };
 }
 
