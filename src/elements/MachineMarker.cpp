@@ -81,6 +81,11 @@ void rcll_draw::MachineMarker::setMachineParams(std::string name, double w, doub
     blbl_out.setSize(w * pixel_per_meter, h * pixel_per_meter);
 }
 
+void rcll_draw::MachineMarker::setExplorationIcons(int left, int right){
+    this->exploration_icon_left = left;
+    this->exploration_icon_right = right;
+}
+
 rcll_draw::Team rcll_draw::MachineMarker::getTeam(){
     return team;
 }
@@ -93,7 +98,7 @@ void rcll_draw::MachineMarker::recalculate(){
         ang = yaw;
     }
 
-    // calcualte the unrotated machine image
+    // calculate the unrotated machine image
     cv::Mat tmp = cv::Mat(w * pixel_per_meter * 2.0, w * pixel_per_meter * 2.0, CV_8UC4);
     cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 8, 0);
     blbl_machine.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter ) / 2);
@@ -109,6 +114,14 @@ void rcll_draw::MachineMarker::recalculate(){
     if (gamephase == rcll_draw::SETUP){
         blbl_in.draw(tmp);
         blbl_out.draw(tmp);
+    } else if (gamephase == rcll_draw::EXPLORATION){
+        cv::Mat left = rcll_draw::readImage(rcll_draw::getFile(exploration_icon_left, 5));
+        cv::resize(left, left, cv::Size(), 0.15, 0.15, cv::INTER_NEAREST);
+        rcll_draw::mergeImages(tmp, left, rcll_draw::getColor(rcll_draw::C_WHITE), 0.25 * tmp.cols, 0.9 * tmp.rows - left.rows);
+
+        cv::Mat right = rcll_draw::readImage(rcll_draw::getFile(exploration_icon_right, 5));
+        cv::resize(right, right, cv::Size(), 0.15, 0.15, cv::INTER_NEAREST);
+        rcll_draw::mergeImages(tmp, right, rcll_draw::getColor(rcll_draw::C_WHITE), 0.5 * tmp.cols, 0.9 * tmp.rows - right.rows);
     }
 
     // calcualte the rotated machine image
@@ -118,7 +131,5 @@ void rcll_draw::MachineMarker::recalculate(){
 }
 
 void rcll_draw::MachineMarker::draw(cv::Mat &mat){
-    //blbl_machine.draw(mat);
     rcll_draw::mergeImages(mat, img, rcll_draw::getColor(rcll_draw::C_WHITE), xm - img.cols / 2, ym - img.rows / 2);
-    //ln_input.draw(mat);
 }

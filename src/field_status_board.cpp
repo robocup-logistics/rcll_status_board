@@ -50,6 +50,12 @@ void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
     }
 }
 
+void cb_machines(const rcll_msgs::MachinesStatus::ConstPtr& msg){
+    for (size_t i = 0; i < msg->machines.size(); i++){
+        main_area_field.setMachineReport(msg->machines[i].machine_status_exploration1, msg->machines[i].machine_status_exploration2, msg->machines[i].index);
+    }
+}
+
 void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
     ROS_INFO("Initializing robot name=%s number=%i team=%i, index=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index);
     main_area_field.addRobot(msg->robot_name, msg->robot_id, (rcll_draw::Team)msg->team);
@@ -71,6 +77,7 @@ int main(int argc, char** argv){
     ros::Subscriber sub_addrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
     ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
     ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
+    ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
 
 
     gamestates[0] = "INIT";

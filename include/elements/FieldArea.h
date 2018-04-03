@@ -24,16 +24,20 @@ namespace rcll_draw {
         void setRobotPos(double x, double y, double yaw, size_t index);
         void setMachine(std::string name, rcll_draw::Team team, size_t index);
         void setMachinePos(double x, double y, double yaw, size_t index);
+        void setMachineReport(int report1_status, int report2_status, size_t index);
         void draw(cv::Mat &mat);
 
     private:
         int x, y = 0;
         int w, h = 1;
 
+        rcll_draw::GamePhase gamephase;
+
         HStatusPanel game_info;
         TeamHeaderPanel team_cyan;
         TeamHeaderPanel team_magenta;
         GameField gamefield;
+        BoxLabel blbl_text;
 
     };
 }

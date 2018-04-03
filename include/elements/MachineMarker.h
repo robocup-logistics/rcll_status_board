@@ -17,6 +17,7 @@ namespace rcll_draw {
         void setOrigin(int x0, int y0, int pixel_per_meter);
         void setMachineParams(std::string name, double w, double h);
         void setPos(double x, double y, double yaw);
+        void setExplorationIcons(int left, int right);
         Team getTeam();
         void recalculate();
         void draw(cv::Mat &mat);
@@ -28,6 +29,8 @@ namespace rcll_draw {
         int x0, y0 = 0;
         double w, h = 10;
         double yaw;
+        int exploration_icon_left;
+        int exploration_icon_right;
 
         cv::Mat img;
 

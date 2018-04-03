@@ -169,7 +169,7 @@ int main(int argc, char** argv){
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
     cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);

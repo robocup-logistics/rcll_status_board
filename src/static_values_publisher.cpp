@@ -156,19 +156,19 @@ int main(int argc, char** argv){
         // gameinfo
         gameinfo.game_state = 2;
         gameinfo.phase_time += loop_rate.expectedCycleTime().toSec();
-        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 5){ // set to SETUP
+        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 2){ // set to SETUP
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 10){ // set to EXPLORATION
+        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 2){ // set to EXPLORATION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 20){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 120){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.game_phase+=10;
-        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 20){ // set to POST_GAME
+        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 60){ // set to POST_GAME
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;

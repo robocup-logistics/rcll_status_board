@@ -195,6 +195,12 @@ void rcll_draw::GameField::setMachinePos(double x, double y, double yaw, size_t 
     }
 }
 
+void rcll_draw::GameField::setMachineReport(int report1_status, int report2_status, size_t index){
+    if (index >= 0 && index < machine_markers.size()){
+        machine_markers[index].setExplorationIcons(report1_status, report2_status);
+    }
+}
+
 void rcll_draw::GameField::draw(cv::Mat &mat){
     //background.draw(mat);
     background2.draw(mat);

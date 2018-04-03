@@ -102,7 +102,7 @@ std::string rcll_draw::getFile(int number, int type){
         } else if (number == 2){ // grey cap
             return "cap_grey.ppm";
         }
-    } else if (type == 4){ // status image
+    } else if (type == 4){ // status image for products
         if (number == 0){ // 0=not started
             return "";
         } else if (number == 1){ // 1=construction
@@ -116,6 +116,14 @@ std::string rcll_draw::getFile(int number, int type){
         } else if (number == 5){ // 3=checkmark
             return "checkmark.ppm";
         } else if (number == 6){ // 3=red cross
+            return "red_cross.ppm";
+        }
+    } else if (type == 5){ // status image for machine exploration reports
+        if (number == 0){ // 0=questionmark
+            return "questionmark.ppm";
+        } else if (number == 1){ // 1=checkmark
+            return "checkmark.ppm";
+        } else if (number == 2){ // 2=red cross
             return "red_cross.ppm";
         }
     }

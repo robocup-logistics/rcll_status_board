@@ -47,14 +47,14 @@ void rcll_draw::ProductLabel::setGeometry(int x, int y, int w, int h){
     blbl_deadline.setSize(w, h * 0.1);
     blbl_points.setSize(w, h * 0.1);
     product.setScale(0.45);
-    img_product_progress.setScale(0.2);
+    img_product_progress.setScale(0.25);
 
     for (size_t i = 0; i < img_step_progress.size(); i++){
         img_step_progress[i].setScale(0.175);
         img_step_progress[i].setPos(x + w * 0.6, y + h * 0.37 - i * h * 0.08);
     }
 
-    img_product_progress.setPos(x + w * 0.2, y);
+    img_product_progress.setPos(x + w * 0.2, y - h * 0.01);
 }
 
 void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, int deadline, int points, int points_max){
