@@ -35,9 +35,9 @@ void rcll_draw::RobotInfo::setGeometry(int x, int y, int w, int h, int gapsize){
     robots[2].setGeometry(x + 2 * (gapsize + w1), y + h*0.2, w1, h*0.8);
 }
 
-void rcll_draw::RobotInfo::setRobotName(std::string name_str, bool active, int index){
+void rcll_draw::RobotInfo::setRobotName(int id, std::string name, bool active, int index){
     if (index >= 0 && index < 3){
-        robots[index].setRobotName(" " + name_str, active);
+        robots[index].setRobotName(id, name, active);
     }
 }
 

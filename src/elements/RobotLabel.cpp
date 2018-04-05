@@ -17,7 +17,7 @@ rcll_draw::RobotLabel::RobotLabel(){
     blbl_activetime.setBorderColor(rcll_draw::C_WHITE);
     blbl_maintenance.setBorderColor(rcll_draw::C_WHITE);
 
-    blbl_name.setFontSize(0.9);
+    blbl_name.setFontSize(1.0);
     mlblbl_activity.setFontSize(0.7);
     blbl_activetime.setFontSize(0.7);
     blbl_maintenance.setFontSize(0.7);
@@ -30,6 +30,8 @@ rcll_draw::RobotLabel::RobotLabel(){
     mlblbl_activity.setContent("Activity: unknown");
     blbl_activetime.setContent(" Active Time: 0%");
     blbl_maintenance.setContent(" Maintenance: 0 / ?");
+
+    mlblbl_activity.setLines(3);
 }
 
 rcll_draw::RobotLabel::~RobotLabel(){
@@ -48,18 +50,30 @@ void rcll_draw::RobotLabel::setGeometry(int x, int y, int w, int h){
     blbl_maintenance.setSize(w, h/5);
 }
 
-void rcll_draw::RobotLabel::setRobotName(std::string name_str, bool active){
-    blbl_name.setContent(" " + name_str);
+void rcll_draw::RobotLabel::setRobotName(int id, std::string name, bool active){
+
     if (active){
         blbl_name.setFrontColor(rcll_draw::C_GREEN_LIGHT);
+        blbl_name.setContent(" R" + std::to_string(id) + ": " + name);
     } else {
         blbl_name.setFrontColor(rcll_draw::C_RED);
+        blbl_name.setContent(" R" + std::to_string(id));
     }
+    this->active = active;
 }
 
 void rcll_draw::RobotLabel::setRobotStatus(std::string activity_str, double active_time, int maintenance_count, int maintenance_max){
-    mlblbl_activity.setContent("Activity: " + activity_str);
-    blbl_activetime.setContent(" Active Time: " + std::to_string((int)(active_time * 100)) + "%");
+    if (active){
+        if (activity_str != ""){
+            mlblbl_activity.setContent("Activity: " + activity_str);
+        } else {
+            mlblbl_activity.setContent("Activity: unknown");
+        }
+    } else {
+        mlblbl_activity.setContent("Activity: inactive");
+    }
+
+    blbl_activetime.setContent(" Active Time: " + std::to_string((int)(active_time * 100.0)) + "%");
     blbl_maintenance.setContent(" Maintenance: " + std::to_string(maintenance_count) + " / " + std::to_string(maintenance_max));
 }
 

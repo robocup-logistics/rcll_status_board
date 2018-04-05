@@ -42,10 +42,10 @@ rcll_draw::HStatusPanel::HStatusPanel(){
     blbl_score_value_mid.setBorderColor(rcll_draw::C_WHITE);
     blbl_score_value_magenta.setBorderColor(rcll_draw::C_TRANSPARENT);
 
-    blbl_state_header.setFontSize(0.9);
-    blbl_phase_header.setFontSize(0.9);
-    blbl_time_header.setFontSize(0.9);
-    blbl_score_header.setFontSize(0.9);
+    blbl_state_header.setFontSize(1.0);
+    blbl_phase_header.setFontSize(1.0);
+    blbl_time_header.setFontSize(1.0);
+    blbl_score_header.setFontSize(1.0);
     blbl_state_value.setFontSize(0.9);
     blbl_phase_value.setFontSize(0.9);
     blbl_time_value.setFontSize(0.9);

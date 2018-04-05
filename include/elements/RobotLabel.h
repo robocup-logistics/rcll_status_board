@@ -12,11 +12,13 @@ namespace rcll_draw {
         ~RobotLabel();
 
         void setGeometry(int x, int y, int w, int h);
-        void setRobotName(std::string name_str, bool active);
+        void setRobotName(int id, std::string name, bool active);
         void setRobotStatus(std::string mlblbl_activity, double active_time, int blbl_maintenance, int maintenance_max);
         void draw(cv::Mat &mat);
 
     private:
+        bool active;
+
         BoxLabel blbl_name;
         MultilineBoxLabel mlblbl_activity;
         BoxLabel blbl_activetime;

@@ -39,10 +39,10 @@ rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::Team team){
     blbl_time_value.setBorderColor(rcll_draw::C_WHITE);
     blbl_score_value.setBorderColor(rcll_draw::C_WHITE);
 
-    blbl_state_header.setFontSize(0.9);
-    blbl_phase_header.setFontSize(0.9);
-    blbl_time_header.setFontSize(0.9);
-    blbl_score_header.setFontSize(0.9);
+    blbl_state_header.setFontSize(1.0);
+    blbl_phase_header.setFontSize(1.0);
+    blbl_time_header.setFontSize(1.0);
+    blbl_score_header.setFontSize(1.0);
     blbl_state_value.setFontSize(0.9);
     blbl_phase_value.setFontSize(0.9);
     blbl_time_value.setFontSize(0.9);

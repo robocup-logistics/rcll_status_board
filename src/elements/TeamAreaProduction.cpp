@@ -44,8 +44,8 @@ void rcll_draw::TeamAreaProduction::setMachineStatus(std::string status, int ind
     machine_info.setMachineStatus(status, index);
 }
 
-void rcll_draw::TeamAreaProduction::setRobotName(std::string name, bool active, int index){
-    return robot_info.setRobotName(name, active, index);
+void rcll_draw::TeamAreaProduction::setRobotName(int id, std::string name, bool active, int index){
+    return robot_info.setRobotName(id, name, active, index);
 }
 
 void rcll_draw::TeamAreaProduction::setRobotStatus(std::string activity, double active_time, int maintenance_count, int maintenance_max, int index){

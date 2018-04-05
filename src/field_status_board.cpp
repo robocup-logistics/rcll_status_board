@@ -70,7 +70,11 @@ void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
 int main(int argc, char** argv){
     ros::init(argc, argv, "field_status_board");
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
     ros::Rate loop_rate(4.0);
+    int res_x = 1920;
+    int res_y = 1080;
+    bool fullscreen = false;
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_gamefield = nh.subscribe("refbox/set_gamefield", 10, cb_gamefield);
@@ -79,6 +83,9 @@ int main(int argc, char** argv){
     ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
     ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
 
+    private_nh.getParam("screen_x", res_x);
+    private_nh.getParam("screen_y", res_y);
+    private_nh.getParam("fullscreen", fullscreen);
 
     gamestates[0] = "INIT";
     gamestates[1] = "WAIT START";
@@ -95,14 +102,14 @@ int main(int argc, char** argv){
     std::string title = "FIELD STATUS BOARD";
     rcll_draw::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
 
-    int res_x = 1920;
-    int res_y = 1080;
     int bordergapsize = 0.05 * res_y;
     int gapsize = 0.02 * res_y;
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    if (fullscreen){
+        cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
     rcll_draw::HeaderPanel header(title, team);

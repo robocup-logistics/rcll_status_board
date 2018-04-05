@@ -10,7 +10,11 @@ namespace rcll_draw {
         MultilineBoxLabel();
         ~MultilineBoxLabel();
 
+        void setLines(int lines);
+
         void draw(cv::Mat &mat);
+
+        int lines = 1;
     };
 }
 

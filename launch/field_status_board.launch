@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <launch>
 	<!-- Field Status Board -->
-	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" />
+	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" >
+		<param name="screen_x" value="1920" />
+		<param name="screen_y" value="1080" />
+		<param name="fullscreen" value="false" />
+	</node>
 
 	<!-- Dummy Publisher Node -->
 	<node pkg="rcll_status_board" type="static_values_node" name="dummy" output="screen" />

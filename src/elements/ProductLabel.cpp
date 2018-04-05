@@ -18,10 +18,10 @@ rcll_draw::ProductLabel::ProductLabel(){
     blbl_deadline.setBorderColor(rcll_draw::C_WHITE);
     blbl_points.setBorderColor(rcll_draw::C_WHITE);
 
-    blbl_name.setFontSize(0.9);
-    blbl_progress.setFontSize(0.7);
-    blbl_deadline.setFontSize(0.7);
-    blbl_points.setFontSize(0.7);
+    blbl_name.setFontSize(1.0);
+    blbl_progress.setFontSize(0.8);
+    blbl_deadline.setFontSize(0.8);
+    blbl_points.setFontSize(0.8);
 
     blbl_name.setFrontColor(rcll_draw::C_WHITE);
     blbl_progress.setFrontColor(rcll_draw::C_BLACK);
@@ -54,7 +54,7 @@ void rcll_draw::ProductLabel::setGeometry(int x, int y, int w, int h){
         img_step_progress[i].setPos(x + w * 0.6, y + h * 0.37 - i * h * 0.08);
     }
 
-    img_product_progress.setPos(x + w * 0.2, y - h * 0.01);
+    img_product_progress.setPos(x + w * 0.2, y - h * 0.03);
 }
 
 void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, int deadline, int points, int points_max){
@@ -97,7 +97,7 @@ void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, 
         img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring1, 4)));
         img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring2, 4)));
         img_step_progress[3].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring3, 4)));
-        img_step_progress[4].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_base, 4)));
+        img_step_progress[4].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_cap, 4)));
     }
     img_product_progress.setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_product, 4)));
 }

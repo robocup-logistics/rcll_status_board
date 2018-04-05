@@ -84,7 +84,7 @@ void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
     if ((rcll_draw::Team)msg->team == team){
         robot_indices[msg->index] = robots++;
         ROS_INFO("Initializing robot name=%s number=%i team=%i, globalindex=%i, localindex=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index, robot_indices[msg->index]);
-        main_area_production.setRobotName(msg->robot_name, true, robot_indices[msg->index]);
+        main_area_production.setRobotName(msg->robot_id, msg->robot_name, msg->active, robot_indices[msg->index]);
     } else {
         robot_indices[msg->index] = robot_indices.size()-1;
     }
@@ -130,7 +130,12 @@ void cb_products(const rcll_msgs::Products::ConstPtr& msg){
 int main(int argc, char** argv){
     ros::init(argc, argv, "team_status_board");
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
     ros::Rate loop_rate(4.0);
+    int team_int = -1;
+    int res_x = 1920;
+    int res_y = 1080;
+    bool fullscreen = false;
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
@@ -139,14 +144,20 @@ int main(int argc, char** argv){
     ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
     ros::Subscriber sub_products = nh.subscribe("refbox/update_products", 10, cb_products);
 
-    team = rcll_draw::MAGENTA;
+    private_nh.getParam("side", team_int);
+    private_nh.getParam("screen_x", res_x);
+    private_nh.getParam("screen_y", res_y);
+    private_nh.getParam("fullscreen", fullscreen);
+
     std::string title;
     rcll_draw::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
 
-    if (team == rcll_draw::CYAN){
+    if (team_int == rcll_draw::CYAN){
         title = "STATUS BOARD - CYAN";
-    } else if (team == rcll_draw::MAGENTA){
+        team = rcll_draw::CYAN;
+    } else if (team_int == rcll_draw::MAGENTA){
         title = "STATUS BOARD - MAGENTA";
+        team = rcll_draw::MAGENTA;
     } else {
         title = "STATUS BOARD";
     }
@@ -162,14 +173,14 @@ int main(int argc, char** argv){
     gamephases[30] = "PRODUCTION";
     gamephases[40] = "POST GAME";
 
-    int res_x = 1920;
-    int res_y = 1080;
     int bordergapsize = 0.05 * res_y;
     int gapsize = 0.02 * res_y;
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
-    //cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    if (fullscreen){
+        cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
     cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
