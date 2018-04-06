@@ -56,7 +56,6 @@ int main(int argc, char** argv){
     gamefield_msg.field_h = 8.0;
     gamefield_msg.zones_x = 14;
     gamefield_msg.zones_y = 8;
-
     pub_setgamefield.publish(gamefield_msg);
 
     rcll_msgs::SetMachines machines_init_msg;

@@ -46,6 +46,14 @@
 #include <string>
 #include <mutex>
 
+#include <rcll_msgs/GameInfo.h>
+#include <rcll_msgs/MachinesStatus.h>
+#include <rcll_msgs/Robots.h>
+#include <rcll_msgs/Products.h>
+#include <rcll_msgs/SetMachines.h>
+#include <rcll_msgs/SetRobot.h>
+#include <rcll_msgs/SetGameField.h>
+
 #include <ros/ros.h>
 
 namespace protobuf_comm {
@@ -93,6 +101,12 @@ class LLSFRefBoxCommunicator{
 
           std::string  cfg_refbox_host_;
           unsigned int cfg_refbox_port_;
+
+          rcll_msgs::SetMachines machines_init_msg;
+          rcll_msgs::GameInfo gameinfo_msg;
+
+          ros::Publisher pub_setmachines;
+          ros::Publisher pub_gameinfo;
 };
 
 #endif

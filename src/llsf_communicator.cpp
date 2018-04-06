@@ -78,6 +78,11 @@ LLSFRefBoxCommunicator::LLSFRefBoxCommunicator()
     cfg_refbox_host_ = "localhost";
     cfg_refbox_port_ = 4444;
     client = new ProtobufStreamClient();
+
+    ros::NodeHandle nh;
+
+    pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machines", 10, true);
+    pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
 }
 
 
@@ -148,10 +153,14 @@ void LLSFRefBoxCommunicator::dispatch_client_msg(uint16_t comp_id, uint16_t msg_
 void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std::shared_ptr<google::protobuf::Message> msg) {
     std::shared_ptr<llsf_msgs::GameState> gstate;
     if ((gstate = std::dynamic_pointer_cast<llsf_msgs::GameState>(msg))) {
-        ROS_INFO("Received GameState time=%li phase=%i state=%i cyan=%s points_cyan=%i magenta=%s points_magenta=%i",
-                 gstate->game_time().sec(), (int)gstate->phase(), (int)gstate->state(),
-                 gstate->team_cyan().c_str(), gstate->points_cyan(),
-                 gstate->team_magenta().c_str(), gstate->points_magenta());
+        gameinfo_msg.team_name_cyan = gstate->team_cyan();
+        gameinfo_msg.team_name_magenta = gstate->team_magenta();
+        gameinfo_msg.team_points_cyan = gstate->points_cyan();
+        gameinfo_msg.team_points_magenta = gstate->points_magenta();
+        gameinfo_msg.game_state = (int)gstate->state();
+        gameinfo_msg.game_phase = (int)gstate->phase();
+        gameinfo_msg.phase_time = gstate->game_time().sec();
+        pub_gameinfo.publish(gameinfo_msg);
     }
 
     std::shared_ptr<llsf_msgs::RobotInfo> r;
@@ -161,7 +170,56 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
 
     std::shared_ptr<llsf_msgs::MachineInfo> minfo;
     if ((minfo = std::dynamic_pointer_cast<llsf_msgs::MachineInfo>(msg))) {
-        ROS_INFO("Received MachineInfo %i", minfo->machines_size());
+        if (machines_init_msg.machines.size() == 0){
+            machines_init_msg.machines.clear();
+            for (int i = 0; i < minfo->machines_size(); i++){
+                llsf_msgs::Machine m = minfo->machines(i);
+                rcll_msgs::MachineInit m_init;
+                m_init.index = i;
+
+                if (m.name().find("BS") != std::string::npos){
+                    m_init.name_short = "BS";
+                    m_init.name_long = "Base Station";
+                } else if (m.name().find("DS") != std::string::npos){
+                    m_init.name_short = "DS";
+                    m_init.name_long = "Delivery Station";
+                } else if (m.name().find("SS") != std::string::npos){
+                    m_init.name_short = "SS";
+                    m_init.name_long = "Storage Station";
+                } else if (m.name().find("RS") != std::string::npos){
+                    m_init.name_short = "RS";
+                    m_init.name_long = "Ring Station";
+                } else if (m.name().find("CS") != std::string::npos){
+                    m_init.name_short = "CS";
+                    m_init.name_long = "Cap Station";
+                } else {
+                    continue;
+                }
+
+                if (m.name().find("C-") != std::string::npos){
+                    m_init.team = llsf_msgs::CYAN;
+                } else if (m.name().find("M-") != std::string::npos){
+                    m_init.team = llsf_msgs::MAGENTA;
+                } else {
+                    continue;
+                }
+
+                if ((int)m.zone() > 1000){
+                    // magenta
+                    m_init.x = -((double)(((int)m.zone() - 1000) / 10)) + 0.5;
+                    m_init.y = (double)(((int)m.zone() - 1000) % 10) - 0.5;
+                } else {
+                    // cyan
+                    m_init.x = (double)((int)m.zone() / 10) - 0.5;
+                    m_init.y = (double)((int)m.zone() % 10) - 0.5;
+                }
+                m_init.yaw = (int)m.rotation() / 180.0 * M_PI;
+                machines_init_msg.machines.push_back(m_init);
+            }
+
+            pub_setmachines.publish(machines_init_msg);
+            ROS_INFO("machines");
+        }
     }
 
     std::shared_ptr<llsf_msgs::OrderInfo> ordins;

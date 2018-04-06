@@ -80,7 +80,7 @@ int main(int argc, char** argv){
     ros::Subscriber sub_gamefield = nh.subscribe("refbox/set_gamefield", 10, cb_gamefield);
     ros::Subscriber sub_addrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
     ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
-    ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
+    ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machines", 10, cb_set_machine);
     ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
 
     private_nh.getParam("screen_x", res_x);

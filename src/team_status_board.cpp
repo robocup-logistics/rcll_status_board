@@ -139,7 +139,7 @@ int main(int argc, char** argv){
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
-    ros::Subscriber sub_setmachine = nh.subscribe("refbox/set_machine", 10, cb_set_machine);
+    ros::Subscriber sub_setmachine = nh.subscribe("refbox/set_machines", 10, cb_set_machine);
     ros::Subscriber sub_setrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
     ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
     ros::Subscriber sub_products = nh.subscribe("refbox/update_products", 10, cb_products);

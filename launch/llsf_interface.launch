@@ -1,9 +1,16 @@
 <?xml version="1.0"?>
 <launch>
-	<!-- Field Status Board -->
+	<!-- LLSF Interface -->
 	<node pkg="rcll_status_board" type="llsf_interface_node" name="llsf_interface" output="screen" >
 		<param name="remote" value="false" />
 		<param name="refbox_host" value="localhost" />
 		<param name="refbox_port_public_recv" value="4444" />
+	</node>
+
+	<!-- Field Status Board -->
+	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" >
+		<param name="screen_x" value="1920" />
+		<param name="screen_y" value="1080" />
+		<param name="fullscreen" value="false" />
 	</node>
 </launch>
