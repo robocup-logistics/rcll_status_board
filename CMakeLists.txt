@@ -11,6 +11,8 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -DHAVE_LIBCRYPTO")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  protobuf_comm
+  llsf_msgs
   actionlib
   rcll_msgs
 )
@@ -103,7 +105,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
    INCLUDE_DIRS include include/draw include/elements
    LIBRARIES rcll_draw
-   CATKIN_DEPENDS opencv2 roscpp rospy actionlib
+   CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs actionlib
 #  DEPENDS system_lib
 )
 
@@ -171,6 +173,7 @@ add_dependencies(rcll_draw ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED
 add_executable(team_status_board_node   src/team_status_board.cpp)
 add_executable(field_status_board_node  src/field_status_board.cpp)
 add_executable(static_values_node  src/static_values_publisher.cpp)
+add_executable(llsf_interface_node  src/llsf_interface.cpp src/llsf_communicator.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -183,11 +186,13 @@ add_executable(static_values_node  src/static_values_publisher.cpp)
 add_dependencies(team_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(field_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(static_values_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(llsf_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
-target_link_libraries(static_values_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
+target_link_libraries(static_values_node ${catkin_LIBRARIES})
+target_link_libraries(llsf_interface_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
