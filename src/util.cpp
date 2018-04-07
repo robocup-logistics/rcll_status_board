@@ -25,6 +25,14 @@ bool rcll_draw::getBoolSignal(ros::Time time, ros::Rate rate){
     return (fmod(time.toSec(), 2 * rate.expectedCycleTime().toSec()) <= rate.expectedCycleTime().toSec());
 }
 
+bool rcll_draw::getBoolSignal(ros::Time time, int second){
+        return (((int)time.toSec() % second) == 0);
+    }
+
+bool rcll_draw::getSignalOnceEveryXSeconds(ros::Time time, int intervall, ros::Rate basic_rate){
+    return ((int)(time.toSec() - basic_rate.expectedCycleTime().toSec()) != (int)(time.toSec())) && rcll_draw::getBoolSignal(time, intervall);
+}
+
 std::vector<std::string> rcll_draw::splitString(std::string s){
     std::vector<std::string> list;
 

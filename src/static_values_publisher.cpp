@@ -132,7 +132,8 @@ int main(int argc, char** argv){
     std::vector<int> e2_status = {0, 0, 1, 2, 0, 2, 1};
     for (size_t i = 0; i < product_ids.size(); i++){
         rcll_msgs::Product product;
-        product.id = product_ids[i];
+        product.product_id = product_ids[i];
+        product.quantity_id = 1;
         product.complexity = complexities[i];
         product.structure = structures[i];
         product.step_stati_cyan = step_stati_cyan[i];

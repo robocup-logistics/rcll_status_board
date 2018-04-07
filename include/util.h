@@ -59,6 +59,8 @@ namespace rcll_draw {
 
     cv::Scalar getColor(Color color);
     bool getBoolSignal(ros::Time time, ros::Rate rate);
+    bool getBoolSignal(ros::Time time, int second);
+    bool getSignalOnceEveryXSeconds(ros::Time time, int intervall, ros::Rate basic_rate);
     std::vector<std::string> splitString(std::string s);
     cv::Mat readImage(std::string file);
     void mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst);

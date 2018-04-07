@@ -57,49 +57,48 @@ void rcll_draw::ProductLabel::setGeometry(int x, int y, int w, int h){
     img_product_progress.setPos(x + w * 0.2, y - h * 0.03);
 }
 
-void rcll_draw::ProductLabel::setProduct(int id, Product plan, double progress, int deadline, int points, int points_max){
-    int min = deadline / 60;
-    int sec = deadline % 60;
+void rcll_draw::ProductLabel::setProduct(ProductInformation pi){
+    int min = pi.deadline / 60;
+    int sec = pi.deadline % 60;
     std::string time_str = std::to_string(min) + "min " + std::to_string(sec) + "sec";
-
-
-    this->id = id;
-    blbl_name.setContent(" Product P" + std::to_string(id));
-    if (progress >= 1.0){
+    blbl_name.setContent(" Product P" + std::to_string(pi.product_id) + "." + std::to_string(pi.quantity_id));
+    if (pi.progress >= 1.0){
         blbl_progress.setContent(" Progress: finished");
     } else {
-        blbl_progress.setContent(" Progress: " + std::to_string((int)(round(progress * 100.0))) + "%");
+        blbl_progress.setContent(" Progress: " + std::to_string((int)(round(pi.progress * 100.0))) + "%");
     }
     blbl_deadline.setContent(" Deadline at " + time_str);
-    blbl_points.setContent(" Points: " + std::to_string(points) + " / " + std::to_string(points_max));
-    product.setImage(createProductImage(plan));
+    blbl_points.setContent(" Points: " + std::to_string(pi.points) + " / " + std::to_string(pi.points_max));
+    product.setImage(createProductImage(pi.plan));
 
-    if (plan.complexity == 0){
-        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_base, 4)));
-        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_cap, 4)));
+    if (pi.plan.complexity == 0){
+        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_base, 4)));
+        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_cap, 4)));
         img_step_progress[2].setImage(rcll_draw::readImage(""));
         img_step_progress[3].setImage(rcll_draw::readImage(""));
         img_step_progress[4].setImage(rcll_draw::readImage(""));
-    } else if (plan.complexity == 1){
-        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_base, 4)));
-        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring1, 4)));
-        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_cap, 4)));
+    } else if (pi.plan.complexity == 1){
+        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_base, 4)));
+        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring1, 4)));
+        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_cap, 4)));
         img_step_progress[3].setImage(rcll_draw::readImage(""));
         img_step_progress[4].setImage(rcll_draw::readImage(""));
-    } else if (plan.complexity == 2){
-        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_base, 4)));
-        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring1, 4)));
-        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring2, 4)));
-        img_step_progress[3].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_cap, 4)));
+    } else if (pi.plan.complexity == 2){
+        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_base, 4)));
+        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring1, 4)));
+        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring2, 4)));
+        img_step_progress[3].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_cap, 4)));
         img_step_progress[4].setImage(rcll_draw::readImage(""));
-    } else if (plan.complexity == 3){
-        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_base, 4)));
-        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring1, 4)));
-        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring2, 4)));
-        img_step_progress[3].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_ring3, 4)));
-        img_step_progress[4].setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_cap, 4)));
+    } else if (pi.plan.complexity == 3){
+        img_step_progress[0].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_base, 4)));
+        img_step_progress[1].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring1, 4)));
+        img_step_progress[2].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring2, 4)));
+        img_step_progress[3].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_ring3, 4)));
+        img_step_progress[4].setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_cap, 4)));
     }
-    img_product_progress.setImage(rcll_draw::readImage(rcll_draw::getFile(plan.status_product, 4)));
+    img_product_progress.setImage(rcll_draw::readImage(rcll_draw::getFile(pi.plan.status_product, 4)));
+
+    this->product_information = pi;
 }
 
 cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::Product plan){
@@ -153,7 +152,7 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::Product plan){
 }
 
 void rcll_draw::ProductLabel::draw(cv::Mat &mat){
-    if (id > 0){
+    if (product_information.product_id > 0){
         blbl_name.draw(mat);
         blbl_progress.draw(mat);
         blbl_deadline.draw(mat);

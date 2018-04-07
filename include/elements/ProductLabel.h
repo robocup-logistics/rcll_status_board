@@ -23,13 +23,23 @@ namespace rcll_draw {
         int status_cap;
     };
 
+    struct ProductInformation {
+        int product_id;
+        int quantity_id;
+        Product plan;
+        double progress;
+        int deadline;
+        int points;
+        int points_max;
+    };
+
     class ProductLabel {
     public:
         ProductLabel();
         ~ProductLabel();
 
         void setGeometry(int x, int y, int w, int h);
-        void setProduct(int id, Product plan, double blbl_progress, int blbl_deadline, int blbl_points, int points_max);
+        void setProduct(ProductInformation pi);
         cv::Mat createProductImage(Product plan);
         void draw(cv::Mat &mat);
 
@@ -42,7 +52,7 @@ namespace rcll_draw {
         std::vector<Image> img_step_progress;
         Image img_product_progress;
 
-        int id;
+        ProductInformation product_information;
     };
 }
 

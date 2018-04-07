@@ -52,8 +52,16 @@ void rcll_draw::TeamAreaProduction::setRobotStatus(std::string activity, double 
     robot_info.setRobotStatus(activity, active_time, maintenance_count, maintenance_max, index);
 }
 
-void rcll_draw::TeamAreaProduction::setProduct(int id, Product plan, double progress, int deadline, int points, int points_max, int index){
-    product_info.setProduct(id, plan, progress, deadline, points, points_max, index);
+void rcll_draw::TeamAreaProduction::setProduct(ProductInformation pi, int index){
+    product_info.setProduct(pi, index);
+}
+
+void rcll_draw::TeamAreaProduction::setProductsCount(size_t count){
+    product_info.setProductsCount(count);
+}
+
+void rcll_draw::TeamAreaProduction::paging(){
+    product_info.paging();
 }
 
 void rcll_draw::TeamAreaProduction::draw(cv::Mat &mat){

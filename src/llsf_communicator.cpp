@@ -297,29 +297,32 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         products_msg.orders.clear();
         for (int i = 0; i < ordins->orders_size(); i++){
             llsf_msgs::Order order = ordins->orders(i);
-            rcll_msgs::Product product;
-            product.id = (int)order.id();
-            product.complexity = (int)order.complexity();
-            product.structure.push_back((int)order.base_color());
-            for (int j = 0; j < 3; j++){
-                if (j < order.ring_colors_size()){
-                    product.structure.push_back(order.ring_colors(j));
-                } else {
-                    product.structure.push_back(0);
+            for (size_t j = 1; j <= order.quantity_requested(); j++){
+                rcll_msgs::Product product;
+                product.product_id = (int)order.id();
+                product.quantity_id = j;
+                product.complexity = (int)order.complexity();
+                product.structure.push_back((int)order.base_color());
+                for (int k = 0; k < 3; k++){
+                    if (k < order.ring_colors_size()){
+                        product.structure.push_back(order.ring_colors(k));
+                    } else {
+                        product.structure.push_back(0);
+                    }
                 }
+                product.structure.push_back((int)order.cap_color());
+                for (int j = 0; j < 5; j++){
+                    product.step_stati_cyan.push_back(0); //TODO
+                    product.step_stati_magenta.push_back(0); //TODO
+                }
+                product.progress_cyan = 0.0; //TODO
+                product.progress_magenta = 0.0; //TODO
+                product.end_delivery_time = (int)order.delivery_period_end();
+                product.points_cyan = 0; //TODO
+                product.points_magenta = 0; //TODO
+                product.points_max = 0; //TODO
+                products_msg.orders.push_back(product);
             }
-            product.structure.push_back((int)order.cap_color());
-            for (int j = 0; j < 5; j++){
-                product.step_stati_cyan.push_back(0); //TODO
-                product.step_stati_magenta.push_back(0); //TODO
-            }
-            product.progress_cyan = 0.0; //TODO
-            product.progress_magenta = 0.0; //TODO
-            product.end_delivery_time = (int)order.delivery_period_end();
-            product.points_cyan = 0; //TODO
-            product.points_magenta = 0; //TODO
-            product.points_max = 0; //TODO
-            products_msg.orders.push_back(product);
         }
         pub_products.publish(products_msg);
     }

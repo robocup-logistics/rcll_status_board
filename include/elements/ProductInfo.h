@@ -11,11 +11,18 @@ namespace rcll_draw {
         ~ProductInfo();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setProduct(int id, Product plan, double progress, int deadline, int points, int points_max, int index);
+        void setProduct(ProductInformation pi, int index);
+        void setProductsCount(size_t count);
+        void paging();
         void draw(cv::Mat &mat);
 
     private:
-        std::vector<ProductLabel> products;
+        std::vector<ProductInformation> products;
+        std::vector<ProductLabel> product_labels;
+
+        ProductInformation empty_product;
+
+        size_t page = 0;
     };
 }
 
