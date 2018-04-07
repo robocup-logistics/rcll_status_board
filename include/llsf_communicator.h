@@ -103,10 +103,14 @@ class LLSFRefBoxCommunicator{
           unsigned int cfg_refbox_port_;
 
           rcll_msgs::SetMachines machines_init_msg;
+          rcll_msgs::MachinesStatus machines_update_msg;
           rcll_msgs::GameInfo gameinfo_msg;
+          rcll_msgs::Products products_msg;
 
           ros::Publisher pub_setmachines;
+          ros::Publisher pub_machinesstatus;
           ros::Publisher pub_gameinfo;
+          ros::Publisher pub_products;
 };
 
 #endif

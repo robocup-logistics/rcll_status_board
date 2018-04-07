@@ -83,6 +83,8 @@ LLSFRefBoxCommunicator::LLSFRefBoxCommunicator()
 
     pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machines", 10, true);
     pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
+    pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
+    pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
 }
 
 
@@ -165,41 +167,61 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
 
     std::shared_ptr<llsf_msgs::RobotInfo> r;
     if ((r = std::dynamic_pointer_cast<llsf_msgs::RobotInfo>(msg))) {
-        ROS_INFO("Received RobotInfo: %i", r->robots_size());
+        //ROS_INFO("Received RobotInfo: %i", r->robots_size());
     }
 
     std::shared_ptr<llsf_msgs::MachineInfo> minfo;
     if ((minfo = std::dynamic_pointer_cast<llsf_msgs::MachineInfo>(msg))) {
         if (machines_init_msg.machines.size() == 0){
-            machines_init_msg.machines.clear();
+            machines_init_msg.machines.resize(minfo->machines_size());
             for (int i = 0; i < minfo->machines_size(); i++){
                 llsf_msgs::Machine m = minfo->machines(i);
                 rcll_msgs::MachineInit m_init;
-                m_init.index = i;
-
-                if (m.name().find("BS") != std::string::npos){
+                if (m.type() == "BS"){
                     m_init.name_short = "BS";
                     m_init.name_long = "Base Station";
-                } else if (m.name().find("DS") != std::string::npos){
+                    m_init.index = 0;
+                } else if (m.type() == "DS"){
                     m_init.name_short = "DS";
                     m_init.name_long = "Delivery Station";
-                } else if (m.name().find("SS") != std::string::npos){
+                    m_init.index = 1;
+                } else if (m.type() == "SS"){
                     m_init.name_short = "SS";
                     m_init.name_long = "Storage Station";
-                } else if (m.name().find("RS") != std::string::npos){
-                    m_init.name_short = "RS";
-                    m_init.name_long = "Ring Station";
-                } else if (m.name().find("CS") != std::string::npos){
-                    m_init.name_short = "CS";
-                    m_init.name_long = "Cap Station";
+                    m_init.index = 2;
+                } else if (m.type() == "RS"){
+                    if (m.name().find("1") != std::string::npos){
+                        m_init.name_short = "RS1";
+                        m_init.name_long = "Ring Station 1";
+                        m_init.index = 3;
+                    } else if (m.name().find("2") != std::string::npos){
+                        m_init.name_short = "RS2";
+                        m_init.name_long = "Ring Station 2";
+                        m_init.index = 4;
+                    } else {
+                        continue;
+                    }
+                } else if (m.type() == "CS"){
+                    if (m.name().find("1") != std::string::npos){
+                        m_init.name_short = "CS1";
+                        m_init.name_long = "Cap Station 1";
+                        m_init.index = 5;
+                    } else if (m.name().find("2") != std::string::npos){
+                        m_init.name_short = "CS2";
+                        m_init.name_long = "Cap Station 2";
+                        m_init.index = 6;
+                    } else {
+                        continue;
+                    }
                 } else {
                     continue;
                 }
 
-                if (m.name().find("C-") != std::string::npos){
+                if (m.team_color() == llsf_msgs::CYAN){
                     m_init.team = llsf_msgs::CYAN;
-                } else if (m.name().find("M-") != std::string::npos){
+                } else if (m.team_color() == llsf_msgs::MAGENTA){
                     m_init.team = llsf_msgs::MAGENTA;
+                    m_init.index += 7;
                 } else {
                     continue;
                 }
@@ -214,17 +236,92 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
                     m_init.y = (double)((int)m.zone() % 10) - 0.5;
                 }
                 m_init.yaw = (int)m.rotation() / 180.0 * M_PI;
-                machines_init_msg.machines.push_back(m_init);
+                machines_init_msg.machines[m_init.index] = m_init;
             }
 
             pub_setmachines.publish(machines_init_msg);
-            ROS_INFO("machines");
+        }
+
+        if (machines_init_msg.machines.size() == 14){
+            machines_update_msg.machines.clear();
+            for (int i = 0; i < minfo->machines_size(); i++){
+                llsf_msgs::Machine m = minfo->machines(i);
+                rcll_msgs::MachineStatus m_update;
+                if (m.type() == "BS"){
+                    m_update.index = 0;
+                } else if (m.type() == "DS"){
+                    m_update.index = 1;
+                } else if (m.type() == "SS"){
+                    m_update.index = 2;
+                } else if (m.type() == "RS"){
+                    if (m.name().find("1") != std::string::npos){
+                        m_update.index = 3;
+                    } else if (m.name().find("2") != std::string::npos){
+                        m_update.index = 4;
+                    } else {
+                        continue;
+                    }
+                } else if (m.type() == "CS"){
+                    if (m.name().find("1") != std::string::npos){
+                        m_update.index = 5;
+                    } else if (m.name().find("2") != std::string::npos){
+                        m_update.index = 6;
+                    } else {
+                        continue;
+                    }
+                } else {
+                    continue;
+                }
+
+                if (m.team_color() == llsf_msgs::CYAN){
+
+                } else if (m.team_color() == llsf_msgs::MAGENTA){
+
+                    m_update.index += 7;
+                } else {
+                    continue;
+                }
+
+                m_update.machine_status_exploration1 = (int)m.exploration_zone_state();
+                m_update.machine_status_exploration2 = (int)m.exploration_rotation_state();
+                m_update.machine_status_production = m.state();
+                machines_update_msg.machines.push_back(m_update);
+            }
+
+            pub_machinesstatus.publish(machines_update_msg);
         }
     }
 
     std::shared_ptr<llsf_msgs::OrderInfo> ordins;
     if ((ordins = std::dynamic_pointer_cast<llsf_msgs::OrderInfo>(msg))) {
-        ROS_INFO("Received OrderInfo %i", ordins->orders_size());
+        products_msg.orders.clear();
+        for (int i = 0; i < ordins->orders_size(); i++){
+            llsf_msgs::Order order = ordins->orders(i);
+            rcll_msgs::Product product;
+            product.id = (int)order.id();
+            product.complexity = (int)order.complexity();
+            product.structure.push_back((int)order.base_color());
+            for (int j = 0; j < 3; j++){
+                if (j < order.ring_colors_size()){
+                    product.structure.push_back(order.ring_colors(j));
+                } else {
+                    product.structure.push_back(0);
+                }
+            }
+            product.structure.push_back((int)order.cap_color());
+            for (int j = 0; j < 5; j++){
+                product.step_stati_cyan.push_back(0); //TODO
+                product.step_stati_magenta.push_back(0); //TODO
+            }
+            product.progress_cyan = 0.0; //TODO
+            product.progress_magenta = 0.0; //TODO
+            product.end_delivery_time = (int)order.delivery_period_end();
+            product.points_cyan = 0; //TODO
+            product.points_magenta = 0; //TODO
+            product.points_max = 0; //TODO
+            products_msg.orders.push_back(product);
+        }
+        pub_products.publish(products_msg);
     }
 
     std::shared_ptr<llsf_msgs::VersionInfo> vi;

@@ -56,52 +56,52 @@ void rcll_draw::MachineInfoProduction::setMachineStatus(std::string status, int 
         Color lamp1, lamp2;
         std::string lamp1_str, lamp2_str, status_str = "";
         bool flashing = false;
-        if (status == "Idle"){
+        if (status == "IDLE"){
             lamp1 = rcll_draw::C_GREEN_LIGHT;
             lamp2 = rcll_draw::C_GREEN_LIGHT;
             lamp1_str = "Free For";
             lamp2_str = "Production";
-        } else if (status == "Broken"){
+        } else if (status == "BROKEN"){
             lamp1 = rcll_draw::C_RED;
             lamp2 = rcll_draw::C_YELLOW;
             flashing = true;
             lamp1_str = "Incorrect";
             lamp2_str = "Instruction";
-        } else if (status == "Processing" || status == "Processed"){
+        } else if (status == "PROCESSING" || status == "PROCESSED"){
             lamp1 = rcll_draw::C_GREEN_LIGHT;
             lamp2 = rcll_draw::C_YELLOW;
             lamp1_str = "Processing";
             lamp2_str = "Product";
-        } else if (status == "Prepared"){
+        } else if (status == "PREPARED"){
             lamp1 = rcll_draw::C_GREEN_LIGHT;
             lamp2 = rcll_draw::C_GREEN_LIGHT;
             lamp1_str = "Prepared";
             lamp2_str = "For Product";
             flashing = true;
-        } else if (status == "Down"){
+        } else if (status == "DOWN"){
             lamp1 = rcll_draw::C_RED;
             lamp2 = rcll_draw::C_RED;
             lamp1_str = "Scheduled";
             lamp2_str = "Down";
-        } else if (status == "Finished"){
+        } else if (status == "READY-AT-OUTPUT"){
             lamp1 = rcll_draw::C_YELLOW;
             lamp2 = rcll_draw::C_YELLOW;
             lamp1_str = "Finished";
             lamp2_str = "Product";
-        } else if (status == "Waiting"){
+        } else if (status == "WAIT-IDLE"){
             lamp1 = rcll_draw::C_YELLOW;
             lamp2 = rcll_draw::C_YELLOW;
             flashing = true;
             lamp1_str = "Waiting For";
             lamp2_str = "Removed";
-        } else if (status == "Offline"){
+        } else if (status == "OFFLINE"){
             lamp1 = rcll_draw::C_GREY_LIGHT;
             lamp2 = rcll_draw::C_GREY_LIGHT;
             status_str = "Offline";
         } else {
             lamp1 = rcll_draw::C_GREY_LIGHT;
             lamp2 = rcll_draw::C_GREY_LIGHT;
-            status_str = "";
+            status_str = "Offline";
         }
         machines[index].setFlashing(flashing);
         machines[index].setMachineStatus(status_str, lamp1, lamp2, lamp1_str, lamp2_str);
