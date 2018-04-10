@@ -29,7 +29,7 @@ rcll_draw::RobotLabel::RobotLabel(){
 
     mlblbl_activity.setContent("Activity: unknown");
     blbl_activetime.setContent(" Active Time: 0%");
-    blbl_maintenance.setContent(" Maintenance: 0 / ?");
+    blbl_maintenance.setContent(" Maintenance: 0 / 1");
 
     mlblbl_activity.setLines(3);
 }
@@ -51,13 +51,12 @@ void rcll_draw::RobotLabel::setGeometry(int x, int y, int w, int h){
 }
 
 void rcll_draw::RobotLabel::setRobotName(int id, std::string name, bool active){
-
     if (active){
         blbl_name.setFrontColor(rcll_draw::C_GREEN_LIGHT);
         blbl_name.setContent(" R" + std::to_string(id) + ": " + name);
     } else {
         blbl_name.setFrontColor(rcll_draw::C_RED);
-        blbl_name.setContent(" R" + std::to_string(id));
+        blbl_name.setContent(" R" + std::to_string(id) + ": inactive");
     }
     this->active = active;
 }

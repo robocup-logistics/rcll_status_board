@@ -20,6 +20,9 @@ rcll_draw::RobotInfo::RobotInfo(Team team){
     }
 
     robots.resize(3);
+    robots[0].setRobotName(1, "Rob1", false);
+    robots[1].setRobotName(2, "Rob2", false);
+    robots[2].setRobotName(3, "Rob3", false);
 }
 
 rcll_draw::RobotInfo::~RobotInfo(){
@@ -49,7 +52,7 @@ void rcll_draw::RobotInfo::setRobotStatus(std::string activity, double active_ti
 
 void rcll_draw::RobotInfo::draw(cv::Mat &mat){
     blbl_header.draw(mat);
-    robots[0].draw(mat);
-    robots[1].draw(mat);
-    robots[2].draw(mat);
+    for (size_t i = 0; i < robots.size(); i++){
+        robots[i].draw(mat);
+    }
 }

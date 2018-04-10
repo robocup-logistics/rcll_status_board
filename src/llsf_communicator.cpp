@@ -85,6 +85,10 @@ LLSFRefBoxCommunicator::LLSFRefBoxCommunicator()
     pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
     pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
     pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
+    pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
+    pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
+
+    robot_init_msgs.resize(6);
 }
 
 
@@ -167,7 +171,30 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
 
     std::shared_ptr<llsf_msgs::RobotInfo> r;
     if ((r = std::dynamic_pointer_cast<llsf_msgs::RobotInfo>(msg))) {
-        //ROS_INFO("Received RobotInfo: %i", r->robots_size());
+        robots_msg.robots.clear();
+        for (int i = 0; i < r->robots_size(); i++){
+            llsf_msgs::Robot rob = r->robots(i);
+            if (robot_init_msgs[i].robot_name == ""){
+                robot_init_msgs[i].index = i;
+                robot_init_msgs[i].robot_name = rob.name();
+                robot_init_msgs[i].robot_id = rob.number();
+                robot_init_msgs[i].team = rob.team_color();
+                robot_init_msgs[i].active = true;
+                pub_setrobot.publish(robot_init_msgs[i]);
+            } else {
+                rcll_msgs::Robot robot_update;
+                robot_update.index = i;
+                robot_update.active = true;
+                robot_update.status = ""; //TODO
+                robot_update.active_time = 0.0; //TODO
+                robot_update.maintenance_count = rob.maintenance_cycles();
+                robot_update.x = rob.pose().x();
+                robot_update.y = rob.pose().y();
+                robot_update.yaw = rob.pose().ori();
+                robots_msg.robots.push_back(robot_update);
+            }
+        }
+        pub_robots.publish(robots_msg);
     }
 
     std::shared_ptr<llsf_msgs::MachineInfo> minfo;

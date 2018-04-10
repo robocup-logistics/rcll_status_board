@@ -102,15 +102,19 @@ class LLSFRefBoxCommunicator{
           std::string  cfg_refbox_host_;
           unsigned int cfg_refbox_port_;
 
+          std::vector<rcll_msgs::SetRobot> robot_init_msgs;
           rcll_msgs::SetMachines machines_init_msg;
           rcll_msgs::MachinesStatus machines_update_msg;
           rcll_msgs::GameInfo gameinfo_msg;
           rcll_msgs::Products products_msg;
+          rcll_msgs::Robots robots_msg;
 
           ros::Publisher pub_setmachines;
           ros::Publisher pub_machinesstatus;
           ros::Publisher pub_gameinfo;
           ros::Publisher pub_products;
+          ros::Publisher pub_robots;
+          ros::Publisher pub_setrobot;
 };
 
 #endif
