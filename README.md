@@ -2,6 +2,8 @@
 
 This package provides ROS nodes to visualize the RoboCup Logistics League (RCLL) gameplay.
 
+## Getting Started
+
 ### Prerequisites
 
 The following software is required to run this package:
@@ -20,33 +22,31 @@ llsf_msgs (see ...)
 ```
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspace.
 
-- Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspace.
-
-- Source your workspace for executing:
+Source your workspace for executing:
 
 ```
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-- Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
+Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
 ```
 ...
 set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
 ...
 ```
-- Restart your system. For some reasens the refbox header files are just found by ROS build process after a restart of the system.
+Restart your system. For some reasens the refbox header files are just found by ROS build process after a restart of the system.
 
-- build your catkin workspace
+Build your catkin workspace
 
 ```
 cd ~/catkin_ws
 catkin_make
 ```
 
-- start the status boards, the argument 'side' is required and expects '0' for side cyan and '1' for side magenta, while the arguments 'show_field' and 'show_team' are optional and expect 'true' or 'false'
+Start the status boards, the argument 'side' is required and expects '0' for side cyan and '1' for side magenta, while the arguments 'show_field' and 'show_team' are optional and expect 'true' or 'false'
 ```
 roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_team:=false
 ```
