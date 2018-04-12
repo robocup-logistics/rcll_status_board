@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   protobuf_comm
   llsf_msgs
-  actionlib
   rcll_msgs
 )
 
@@ -105,7 +104,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
    INCLUDE_DIRS include include/draw include/elements
    LIBRARIES rcll_draw
-   CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs actionlib
+   CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs
 #  DEPENDS system_lib
 )
 
