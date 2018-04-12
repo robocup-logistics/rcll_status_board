@@ -248,7 +248,14 @@ int main(int argc, char** argv){
         }
 
         cv::imshow(title, mat);
-        cv::waitKey(3);
+        char key = (char)cv::waitKey(1);
+        if (key == 27){
+            cv::setWindowProperty(title, 0, CV_WINDOW_NORMAL);
+        } else if (key == 70 || key == 102){
+            cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+        } else if (key == 81 || key == 113){
+            return 0;
+        }
         ros::spinOnce();
     }
     return 0;

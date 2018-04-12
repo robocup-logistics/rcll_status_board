@@ -9,7 +9,7 @@
 
 	<!-- LLSF Interface -->
 	<node pkg="rcll_status_board" type="llsf_interface_node" name="llsf_interface" output="screen" >
-		<param name="remote" value="false" />
+		<param name="refbox_remote" value="false" />
 		<param name="refbox_host" value="localhost" />
 		<param name="refbox_port_public_recv" value="4444" />
 	</node>
