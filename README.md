@@ -2,16 +2,12 @@
 
 This package provides ROS nodes to visualize the RoboCup Logistics League (RCLL) gameplay.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 The following software is required to run this package:
 
 ```
-ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full), see ... for installation process
+ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full), see [ROS Indigo Install Ubuntu](http://wiki.ros.org/indigo/Installation/Ubuntu) for installation process
 Installed RCLL refbox (see https://trac.fawkesrobotics.org/wiki/RCLLRefBox/Install)
 ```
 The following ROS packages are required to run this package:
@@ -26,17 +22,21 @@ llsf_msgs (see ...)
 
 A step by step series of examples that tell you have to get a development env running
 
-- Install the required software, create a catkin workspace (see ..) and download the required ROS packages into the workspace.
+- Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspace.
 
 - Source your workspace for executing:
 
 ```
-echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-- Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path. For example: set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
+- Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
+```
+...
+set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
+...
+```
 - Restart your system. For some reasens the refbox header files are just found by ROS build process after a restart of the system.
 
 - build your catkin workspace
@@ -53,11 +53,11 @@ roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_
 
 ## Versioning
 
-For the versions available, see the [github repository](https://github.com/your/project/tags).
+For the versions available, see the [github repository](...).
 
 ## Authors
 
-* **Florian Eith** - *Initial work* - [Florian Eith](https://github.com/PurpleBooth)
+* **Florian Eith** - *Initial work* - [Florian Eith](...)
 
 ## License
 
