@@ -11,7 +11,7 @@ These instructions will get you a copy of the project up and running on your loc
 The following software is required to run this package:
 
 ```
-ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full)
+ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full), see ... for installation process
 Installed RCLL refbox (see https://trac.fawkesrobotics.org/wiki/RCLLRefBox/Install)
 ```
 The following ROS packages are required to run this package:
@@ -26,33 +26,42 @@ llsf_msgs (see ...)
 
 A step by step series of examples that tell you have to get a development env running
 
-Say what the step will be
+- Install the required software, create a catkin workspace (see ..) and download the required ROS packages into the workspace.
+
+- Source your workspace for executing:
 
 ```
-Give the example
+echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
 ```
 
-And repeat
+- Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path. For example: set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
+- Restart your system. For some reasens the refbox header files are just found by ROS build process after a restart of the system.
+
+- build your catkin workspace
 
 ```
-until finished
+cd ~/catkin_ws
+catkin_make
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+- start the status boards, the argument 'side' is required and expects '0' for side cyan and '1' for side magenta, while the arguments 'show_field' and 'show_team' are optional and expect 'true' or 'false'
+```
+roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_team:=false
+```
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+For the versions available, see the [github repository](https://github.com/your/project/tags).
 
 ## Authors
 
-* **Florian Eith** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Florian Eith** - *Initial work* - [Florian Eith](https://github.com/PurpleBooth)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
