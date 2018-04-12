@@ -52,8 +52,8 @@ int main(int argc, char** argv){
     rcll_msgs::SetGameField gamefield_msg;
     gamefield_msg.walls = walls;
     gamefield_msg.insertion_zones = insertion_zones;
-    gamefield_msg.field_w = 14.0;
-    gamefield_msg.field_h = 8.0;
+    gamefield_msg.field_length = 14.0;
+    gamefield_msg.field_width = 8.0;
     gamefield_msg.zones_x = 14;
     gamefield_msg.zones_y = 8;
     pub_setgamefield.publish(gamefield_msg);

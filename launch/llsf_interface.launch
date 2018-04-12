@@ -2,6 +2,9 @@
 <launch>
 	<arg name="side"/>
 
+	<!-- load parameters -->
+	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
+
 	<!-- LLSF Interface -->
 	<node pkg="rcll_status_board" type="llsf_interface_node" name="llsf_interface" output="screen" >
 		<param name="remote" value="false" />
@@ -10,17 +13,17 @@
 	</node>
 
 	<!-- Field Status Board -->
-	<!--node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" >
-		<param name="screen_x" value="1920" />
-		<param name="screen_y" value="1080" />
-		<param name="fullscreen" value="false" />
-	</node-->
-
-	<!-- Team Status Board -->
-	<node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen">
-		<param name="side" value="$(arg side)" />
+	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" >
 		<param name="screen_x" value="1920" />
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />
 	</node>
+
+	<!-- Team Status Board -->
+	<!--node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen">
+		<param name="side" value="$(arg side)" />
+		<param name="screen_x" value="1920" />
+		<param name="screen_y" value="1080" />
+		<param name="fullscreen" value="false" />
+	</node-->
 </launch>

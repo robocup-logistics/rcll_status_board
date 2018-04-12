@@ -36,8 +36,8 @@ void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
 }
 
 void cb_gamefield(const rcll_msgs::SetGameField::ConstPtr& msg){
-    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", msg->field_w, msg->field_h, msg->zones_x, msg->zones_y);
-    main_area_field.setLayout(msg->field_w, msg->field_h, msg->zones_x, msg->zones_y, msg->insertion_zones);
+    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", msg->field_length, msg->field_width, msg->zones_x, msg->zones_y);
+    main_area_field.setLayout(msg->field_length, msg->field_width, msg->zones_x, msg->zones_y, msg->insertion_zones);
     main_area_field.setWalls(msg->walls);
 }
 

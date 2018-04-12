@@ -27,32 +27,29 @@ int main(int argc, char** argv){
     ros::Publisher pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
     ros::Publisher pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
 
+    double field_length = 1.0;
+    double field_width = 1.0;
+    int zones_x = 14;
+    int zones_y = 8;
+    std::vector<float> walls;
+    std::vector<int> insertion_zones;
+
+    nh.getParam("/rcll/gamefield/field_length", field_length);
+    nh.getParam("/rcll/gamefield/field_width", field_width);
+    nh.getParam("/rcll/gamefield/zones_x", zones_x);
+    nh.getParam("/rcll/gamefield/zones_y", zones_y);
+    nh.getParam("/rcll/gamefield/walls", walls);
+    nh.getParam("/rcll/gamefield/insertion_zones", insertion_zones);
+
     ros::Duration(1.0).sleep();
-
-    std::vector<float> walls = {
-        -7.0, 8.0, 7.0, 8.0,
-        -7.0, 6.5, -7.0, 8.0,
-        7.0, 6.5, 7.0, 8.0,
-        -7.0, 1.0, -7.0, 2.0,
-        7.0, 1.0, 7.0, 2.0,
-        -7.0, 1.0, -5.0, 1.0,
-        5.0, 1.0, 7.0, 1.0,
-        -7.0, 0.0, -4.0, 0.0,
-        4.0, 0.0, 7.0, 0.0,
-        -4.0, 0.0, -4.0, 1.0,
-        4.0, 0.0, 4.0, 1.0,
-        -2.0, 0.0, 2.0, 0.0
-    };
-
-    std::vector<int> insertion_zones = {51, 61, 71};
 
     rcll_msgs::SetGameField gamefield_msg;
     gamefield_msg.walls = walls;
     gamefield_msg.insertion_zones = insertion_zones;
-    gamefield_msg.field_w = 14.0;
-    gamefield_msg.field_h = 8.0;
-    gamefield_msg.zones_x = 14;
-    gamefield_msg.zones_y = 8;
+    gamefield_msg.field_length = field_length;
+    gamefield_msg.field_width = field_width;
+    gamefield_msg.zones_x = zones_x;
+    gamefield_msg.zones_y = zones_y;
     pub_setgamefield.publish(gamefield_msg);
 
     LLSFRefBoxCommunicator refcomm;
