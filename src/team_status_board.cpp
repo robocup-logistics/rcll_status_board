@@ -28,13 +28,13 @@ SOFTWARE.
 #include <ros/ros.h>
 #include <ros/package.h>
 
-#include <rcll_msgs/GameInfo.h>
-#include <rcll_msgs/MachinesStatus.h>
-#include <rcll_msgs/Robots.h>
-#include <rcll_msgs/Products.h>
-#include <rcll_msgs/SetMachines.h>
-#include <rcll_msgs/SetRobot.h>
-#include <rcll_msgs/SetGameField.h>
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Robots.h>
+#include <rcll_vis_msgs/Products.h>
+#include <rcll_vis_msgs/SetMachines.h>
+#include <rcll_vis_msgs/SetRobot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 #include <drawing.h>
 #include <elements.h>
@@ -63,7 +63,7 @@ namespace {
     rcll_draw::TeamAreaPostGame main_area_postgame;
 }
 
-void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
+void cb_gameinfo(const rcll_vis_msgs::GameInfo::ConstPtr& msg){
     main_area_pregamesetup.setTeams(msg->team_name_cyan, msg->team_name_magenta);
     main_area_pregamesetup.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
     main_area_exploration.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
@@ -80,7 +80,7 @@ void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
     gamephase = (rcll_draw::GamePhase)msg->game_phase;
 }
 
-void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
+void cb_set_machine(const rcll_vis_msgs::SetMachines::ConstPtr& msg){
     ROS_INFO("Initializing machines");
     int c = 0;
     for (size_t i = 0; i < msg->machines.size(); i++){
@@ -95,7 +95,7 @@ void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
     }
 }
 
-void cb_machines(const rcll_msgs::MachinesStatus::ConstPtr& msg){
+void cb_machines(const rcll_vis_msgs::MachinesStatus::ConstPtr& msg){
     for (size_t i = 0; i < msg->machines.size(); i++){
         if (machine_indices[msg->machines[i].index] >= 0){
             main_area_production.setMachineStatus(msg->machines[i].machine_status_production, machine_indices[msg->machines[i].index]);
@@ -104,7 +104,7 @@ void cb_machines(const rcll_msgs::MachinesStatus::ConstPtr& msg){
     }
 }
 
-void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
+void cb_set_robot(const rcll_vis_msgs::SetRobot::ConstPtr& msg){
     if ((rcll_draw::Team)msg->team == team){
         robot_indices[msg->index] = robots++;
         ROS_INFO("Initializing robot name=%s number=%i team=%i, globalindex=%i, localindex=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index, robot_indices[msg->index]);
@@ -114,7 +114,7 @@ void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
     }
 }
 
-void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
+void cb_robots(const rcll_vis_msgs::Robots::ConstPtr& msg){
     for (size_t i = 0; i < msg->robots.size(); i++){
         if (robot_indices[msg->robots[i].index] >= 0){
             main_area_production.setRobotStatus(msg->robots[i].status, msg->robots[i].active_time, msg->robots[i].maintenance_count, 1, robot_indices[msg->robots[i].index]);
@@ -122,7 +122,7 @@ void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
     }
 }
 
-void cb_products(const rcll_msgs::Products::ConstPtr& msg){
+void cb_products(const rcll_vis_msgs::Products::ConstPtr& msg){
     main_area_production.setProductsCount(msg->orders.size());
     for (size_t i = 0; i < msg->orders.size(); i++){
         rcll_draw::ProductInformation pi;

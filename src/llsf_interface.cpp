@@ -25,13 +25,13 @@ SOFTWARE.
 
 #include <llsf_communicator.h>
 
-#include <rcll_msgs/GameInfo.h>
-#include <rcll_msgs/MachinesStatus.h>
-#include <rcll_msgs/Robots.h>
-#include <rcll_msgs/Products.h>
-#include <rcll_msgs/SetMachines.h>
-#include <rcll_msgs/SetRobot.h>
-#include <rcll_msgs/SetGameField.h>
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Robots.h>
+#include <rcll_vis_msgs/Products.h>
+#include <rcll_vis_msgs/SetMachines.h>
+#include <rcll_vis_msgs/SetRobot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 /* =====================================================================================================|
 nodename:           "static_values_publisher"
@@ -45,11 +45,11 @@ int main(int argc, char** argv){
     ros::NodeHandle private_nh("~");
     ros::Rate loop_rate(2.0);
 
-    ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
-    ros::Publisher pub_setgamefield = nh.advertise<rcll_msgs::SetGameField>("refbox/set_gamefield", 10);
-    ros::Publisher pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
-    ros::Publisher pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
-    ros::Publisher pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
+    ros::Publisher pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
+    ros::Publisher pub_setgamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/set_gamefield", 10);
+    ros::Publisher pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10);
+    ros::Publisher pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
+    ros::Publisher pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
 
     double field_length = 1.0;
     double field_width = 1.0;
@@ -79,7 +79,7 @@ int main(int argc, char** argv){
 
     ros::Duration(1.0).sleep();
 
-    rcll_msgs::SetGameField gamefield_msg;
+    rcll_vis_msgs::SetGameField gamefield_msg;
     gamefield_msg.walls = walls;
     gamefield_msg.insertion_zones = insertion_zones;
     gamefield_msg.field_length = field_length;

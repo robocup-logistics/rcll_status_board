@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   protobuf_comm
   llsf_msgs
-  rcll_msgs
+  rcll_vis_msgs
 )
 
 ## System dependencies are found with CMake's conventions

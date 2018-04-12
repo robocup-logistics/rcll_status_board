@@ -9,19 +9,20 @@ This package provides ROS nodes to visualize the RoboCup Logistics League (RCLL)
 The following software is required to run this package:
 
 ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full), see [ROS Indigo Install Ubuntu](http://wiki.ros.org/indigo/Installation/Ubuntu) for installation process
+
 Installed RCLL refbox (see [RCLL refbox installation](https://trac.fawkesrobotics.org/wiki/RCLLRefBox/Install))
 
 The following ROS packages are required to run this package:
 
-- [rcll_msgs](...)
-- [llsf_protobuf_comm](...)
-- [llsf_msgs](...)
+- [rcll_vis_msgs](https://github.com/ethflo/rcll_vis_msgs)
+- [protobuf_comm](https://github.com/ethflo/protobuf_comm)
+- [llsf_msgs](https://github.com/ethflo/llsf_msgs)
 
 ### Installing
 
 Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspaces src folder.
 
-Adjust the llsf_msgs and llsf_protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
+Adjust the llsf_msgs and protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
 ```
 (in CMakeLists.txt)
 ...
@@ -44,11 +45,11 @@ roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_
 
 ## Versioning
 
-For the versions available, see the [github repository](https://github.com/FlorianEith/rcll_status_board).
+For the versions available, see the [github repository](https://github.com/ethflo/rcll_status_board).
 
 ## Authors
 
-* **Florian Eith** - *Initial work* - [Florian Eith](https://github.com/FlorianEith)
+* **Florian Eith** - *Initial work* - [Florian Eith](https://github.com/ethflo)
 
 ## License
 

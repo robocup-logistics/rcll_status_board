@@ -49,17 +49,10 @@ SOFTWARE.
 #include <unistd.h>
 #include <modbus/modbus.h>
 
-//#include <libs/llsf_sps/mps_band.h>
-
 // defined in miliseconds
-#define TIMER_INTERVAL 500
 #define RECONNECT_TIMER_INTERVAL 1000
-#define BLINK_TIMER_INTERVAL 250
-#define ATTMSG_TIMER_INTERVAL 1000
-#define MIN_NUM_ROBOTS 6
 
 using namespace protobuf_comm;
-
 
 LLSFRefBoxCommunicator::LLSFRefBoxCommunicator(std::string host, int recv_port)
   : quit_(false), reconnect_timer_(io_service_), try_reconnect_(true){
@@ -69,12 +62,12 @@ LLSFRefBoxCommunicator::LLSFRefBoxCommunicator(std::string host, int recv_port)
 
     ros::NodeHandle nh;
 
-    pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machines", 10, true);
-    pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
-    pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
-    pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
-    pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
-    pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
+    pub_setmachines = nh.advertise<rcll_vis_msgs::SetMachines>("refbox/set_machines", 10, true);
+    pub_gameinfo = nh.advertise<rcll_vis_msgs::GameInfo>("refbox/gameinfo", 10);
+    pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
+    pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
+    pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
+    pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10);
 
     robot_init_msgs.resize(6);
 }
@@ -165,7 +158,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
                 robot_init_msgs[i].active = true;
                 pub_setrobot.publish(robot_init_msgs[i]);
             } else {
-                rcll_msgs::Robot robot_update;
+                rcll_vis_msgs::Robot robot_update;
                 robot_update.index = i;
                 robot_update.active = true;
                 robot_update.status = ""; //TODO
@@ -186,7 +179,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
             machines_init_msg.machines.resize(minfo->machines_size());
             for (int i = 0; i < minfo->machines_size(); i++){
                 llsf_msgs::Machine m = minfo->machines(i);
-                rcll_msgs::MachineInit m_init;
+                rcll_vis_msgs::MachineInit m_init;
                 if (m.type() == "BS"){
                     m_init.name_short = "BS";
                     m_init.name_long = "Base Station";
@@ -256,7 +249,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
             machines_update_msg.machines.clear();
             for (int i = 0; i < minfo->machines_size(); i++){
                 llsf_msgs::Machine m = minfo->machines(i);
-                rcll_msgs::MachineStatus m_update;
+                rcll_vis_msgs::MachineStatus m_update;
                 if (m.type() == "BS"){
                     m_update.index = 0;
                 } else if (m.type() == "DS"){
@@ -308,7 +301,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         for (int i = 0; i < ordins->orders_size(); i++){
             llsf_msgs::Order order = ordins->orders(i);
             for (size_t j = 1; j <= order.quantity_requested(); j++){
-                rcll_msgs::Product product;
+                rcll_vis_msgs::Product product;
                 product.product_id = (int)order.id();
                 product.quantity_id = j;
                 product.complexity = (int)order.complexity();

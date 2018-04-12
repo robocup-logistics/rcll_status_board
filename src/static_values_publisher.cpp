@@ -23,13 +23,13 @@ SOFTWARE.
 */
 #include <ros/ros.h>
 
-#include <rcll_msgs/GameInfo.h>
-#include <rcll_msgs/MachinesStatus.h>
-#include <rcll_msgs/Robots.h>
-#include <rcll_msgs/Products.h>
-#include <rcll_msgs/SetMachines.h>
-#include <rcll_msgs/SetRobot.h>
-#include <rcll_msgs/SetGameField.h>
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Robots.h>
+#include <rcll_vis_msgs/Products.h>
+#include <rcll_vis_msgs/SetMachines.h>
+#include <rcll_vis_msgs/SetRobot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 /* =====================================================================================================|
 nodename:           "static_values_publisher"
@@ -42,13 +42,13 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     ros::Rate loop_rate(2.0);
 
-    ros::Publisher pub_gameinfo = nh.advertise<rcll_msgs::GameInfo>("refbox/gameinfo", 10);
-    ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
-    ros::Publisher pub_setgamefield = nh.advertise<rcll_msgs::SetGameField>("refbox/set_gamefield", 10);
-    ros::Publisher pub_setmachines = nh.advertise<rcll_msgs::SetMachines>("refbox/set_machine", 10);
-    ros::Publisher pub_setrobot = nh.advertise<rcll_msgs::SetRobot>("refbox/set_robot", 10);
-    ros::Publisher pub_machinesstatus = nh.advertise<rcll_msgs::MachinesStatus>("refbox/update_machines", 10);
-    ros::Publisher pub_products = nh.advertise<rcll_msgs::Products>("refbox/update_products", 10);
+    ros::Publisher pub_gameinfo = nh.advertise<rcll_vis_msgs::GameInfo>("refbox/gameinfo", 10);
+    ros::Publisher pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
+    ros::Publisher pub_setgamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/set_gamefield", 10);
+    ros::Publisher pub_setmachines = nh.advertise<rcll_vis_msgs::SetMachines>("refbox/set_machine", 10);
+    ros::Publisher pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10);
+    ros::Publisher pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
+    ros::Publisher pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
 
     ros::Duration(1.0).sleep();
 
@@ -72,7 +72,7 @@ int main(int argc, char** argv){
 
     std::vector<int> insertion_zones = {51, 61, 71};
 
-    rcll_msgs::SetGameField gamefield_msg;
+    rcll_vis_msgs::SetGameField gamefield_msg;
     gamefield_msg.walls = walls;
     gamefield_msg.insertion_zones = insertion_zones;
     gamefield_msg.field_length = 14.0;
@@ -81,8 +81,8 @@ int main(int argc, char** argv){
     gamefield_msg.zones_y = 8;
     pub_setgamefield.publish(gamefield_msg);
 
-    rcll_msgs::SetMachines machines_init_msg;
-    rcll_msgs::MachineInit machine_init;
+    rcll_vis_msgs::SetMachines machines_init_msg;
+    rcll_vis_msgs::MachineInit machine_init;
     std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
     std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "Ring Station 2"};
     std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
@@ -113,7 +113,7 @@ int main(int argc, char** argv){
     }
     pub_setmachines.publish(machines_init_msg);
 
-    rcll_msgs::SetRobot robots_init_msg;
+    rcll_vis_msgs::SetRobot robots_init_msg;
     std::vector<std::string> robots = {"Hans", "Peter", "Tim", "Joerg", "Klaus", "Bernd"};
     std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
     std::vector<int> team = {0, 0, 0, 1, 1, 1};
@@ -139,7 +139,7 @@ int main(int argc, char** argv){
         pub_setrobot.publish(robots_init_msg);
     }
 
-    rcll_msgs::Products products_msg;
+    rcll_vis_msgs::Products products_msg;
     std::vector<int> product_ids = {1, 5, 6, 7};
     std::vector<int> complexities = {0, 1, 2, 3};
     std::vector< std::vector<int> > structures = {{2, 0, 0, 0, 2}, {2, 1 , 0, 0, 2}, {1, 2, 3, 0, 1}, {1, 4, 4, 3, 1}};
@@ -154,7 +154,7 @@ int main(int argc, char** argv){
     std::vector<int> e1_status = {0, 1, 1, 1, 2, 2, 1};
     std::vector<int> e2_status = {0, 0, 1, 2, 0, 2, 1};
     for (size_t i = 0; i < product_ids.size(); i++){
-        rcll_msgs::Product product;
+        rcll_vis_msgs::Product product;
         product.product_id = product_ids[i];
         product.quantity_id = 1;
         product.complexity = complexities[i];
@@ -170,7 +170,7 @@ int main(int argc, char** argv){
         products_msg.orders.push_back(product);
     }
 
-    rcll_msgs::GameInfo gameinfo;
+    rcll_vis_msgs::GameInfo gameinfo;
     gameinfo.team_name_cyan = "Carologistics";
     gameinfo.team_name_magenta = "GRIPS";
     gameinfo.team_points_cyan = 0;
@@ -179,11 +179,11 @@ int main(int argc, char** argv){
     gameinfo.game_phase = 0;
     gameinfo.phase_time = 0.0;
 
-    rcll_msgs::Robots robots_update_msg;
-    rcll_msgs::Robot robot_update;
+    rcll_vis_msgs::Robots robots_update_msg;
+    rcll_vis_msgs::Robot robot_update;
 
-    rcll_msgs::MachinesStatus machines_update_msg;
-    rcll_msgs::MachineStatus machine_update;    
+    rcll_vis_msgs::MachinesStatus machines_update_msg;
+    rcll_vis_msgs::MachineStatus machine_update;
 
     ROS_INFO("Entering loop");
     while(ros::ok()){

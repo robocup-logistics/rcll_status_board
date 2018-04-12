@@ -28,13 +28,13 @@ SOFTWARE.
 #include <ros/ros.h>
 #include <ros/package.h>
 
-#include <rcll_msgs/GameInfo.h>
-#include <rcll_msgs/MachinesStatus.h>
-#include <rcll_msgs/Robots.h>
-#include <rcll_msgs/Products.h>
-#include <rcll_msgs/SetMachines.h>
-#include <rcll_msgs/SetRobot.h>
-#include <rcll_msgs/SetGameField.h>
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Robots.h>
+#include <rcll_vis_msgs/Products.h>
+#include <rcll_vis_msgs/SetMachines.h>
+#include <rcll_vis_msgs/SetRobot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 #include <drawing.h>
 #include <elements.h>
@@ -52,20 +52,20 @@ namespace {
     rcll_draw::FieldArea main_area_field;
 }
 
-void cb_gameinfo(const rcll_msgs::GameInfo::ConstPtr& msg){
+void cb_gameinfo(const rcll_vis_msgs::GameInfo::ConstPtr& msg){
     //ROS_INFO("Updating gameinfo");
     main_area_field.setTeam(msg->team_name_cyan, rcll_draw::CYAN);
     main_area_field.setTeam(msg->team_name_magenta, rcll_draw::MAGENTA);
     main_area_field.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
 }
 
-void cb_gamefield(const rcll_msgs::SetGameField::ConstPtr& msg){
+void cb_gamefield(const rcll_vis_msgs::SetGameField::ConstPtr& msg){
     ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", msg->field_length, msg->field_width, msg->zones_x, msg->zones_y);
     main_area_field.setLayout(msg->field_length, msg->field_width, msg->zones_x, msg->zones_y, msg->insertion_zones);
     main_area_field.setWalls(msg->walls);
 }
 
-void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
+void cb_set_machine(const rcll_vis_msgs::SetMachines::ConstPtr& msg){
     ROS_INFO("Initializing machines");
     for (size_t i = 0; i < msg->machines.size(); i++){
         ROS_INFO("  name=%s team=%i index=%i", msg->machines[i].name_short.c_str(), msg->machines[i].team, msg->machines[i].index);
@@ -74,18 +74,18 @@ void cb_set_machine(const rcll_msgs::SetMachines::ConstPtr& msg){
     }
 }
 
-void cb_machines(const rcll_msgs::MachinesStatus::ConstPtr& msg){
+void cb_machines(const rcll_vis_msgs::MachinesStatus::ConstPtr& msg){
     for (size_t i = 0; i < msg->machines.size(); i++){
         main_area_field.setMachineReport(msg->machines[i].machine_status_exploration1, msg->machines[i].machine_status_exploration2, msg->machines[i].index);
     }
 }
 
-void cb_set_robot(const rcll_msgs::SetRobot::ConstPtr& msg){
+void cb_set_robot(const rcll_vis_msgs::SetRobot::ConstPtr& msg){
     ROS_INFO("Initializing robot name=%s number=%i team=%i, index=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index);
     main_area_field.addRobot(msg->robot_name, msg->robot_id, (rcll_draw::Team)msg->team);
 }
 
-void cb_robots(const rcll_msgs::Robots::ConstPtr& msg){
+void cb_robots(const rcll_vis_msgs::Robots::ConstPtr& msg){
     for (size_t i = 0; i < msg->robots.size(); i++){
         main_area_field.setRobotPos(msg->robots[i].x, msg->robots[i].y, msg->robots[i].yaw, msg->robots[i].index);
     }

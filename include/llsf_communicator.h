@@ -34,13 +34,13 @@ SOFTWARE.
 #include <string>
 #include <mutex>
 
-#include <rcll_msgs/GameInfo.h>
-#include <rcll_msgs/MachinesStatus.h>
-#include <rcll_msgs/Robots.h>
-#include <rcll_msgs/Products.h>
-#include <rcll_msgs/SetMachines.h>
-#include <rcll_msgs/SetRobot.h>
-#include <rcll_msgs/SetGameField.h>
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Robots.h>
+#include <rcll_vis_msgs/Products.h>
+#include <rcll_vis_msgs/SetMachines.h>
+#include <rcll_vis_msgs/SetRobot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 #include <ros/ros.h>
 
@@ -87,12 +87,12 @@ class LLSFRefBoxCommunicator{
           std::string  cfg_refbox_host_;
           unsigned int cfg_refbox_port_;
 
-          std::vector<rcll_msgs::SetRobot> robot_init_msgs;
-          rcll_msgs::SetMachines machines_init_msg;
-          rcll_msgs::MachinesStatus machines_update_msg;
-          rcll_msgs::GameInfo gameinfo_msg;
-          rcll_msgs::Products products_msg;
-          rcll_msgs::Robots robots_msg;
+          std::vector<rcll_vis_msgs::SetRobot> robot_init_msgs;
+          rcll_vis_msgs::SetMachines machines_init_msg;
+          rcll_vis_msgs::MachinesStatus machines_update_msg;
+          rcll_vis_msgs::GameInfo gameinfo_msg;
+          rcll_vis_msgs::Products products_msg;
+          rcll_vis_msgs::Robots robots_msg;
 
           ros::Publisher pub_setmachines;
           ros::Publisher pub_machinesstatus;
