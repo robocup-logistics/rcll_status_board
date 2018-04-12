@@ -147,6 +147,8 @@ int main(int argc, char** argv){
     int res_x = 1920;
     int res_y = 1080;
     bool fullscreen = false;
+    double product_page_time = 10.0;
+    std::string image_path = "";
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
@@ -159,9 +161,16 @@ int main(int argc, char** argv){
     private_nh.getParam("screen_x", res_x);
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
+    private_nh.getParam("image_path", image_path);
+    private_nh.getParam("product_page_time", product_page_time);
+
+    if (image_path == ""){
+        ROS_ERROR("Image path must not be empty!");
+        return 0;
+    }
 
     std::string title;
-    rcll_draw::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
+    rcll_draw::setImagePath(image_path);
 
     if (team_int == rcll_draw::CYAN){
         title = "STATUS BOARD - CYAN";
@@ -227,9 +236,9 @@ int main(int argc, char** argv){
         } else if (gamephase == rcll_draw::PRODUCTION){
 
             paging_timer +=loop_rate.expectedCycleTime().toSec();
-            if (paging_timer > 5.0){
+
+            if (paging_timer > product_page_time){
                 main_area_production.paging();
-                ROS_INFO("paging");
                 paging_timer = 0.0;
             }
 

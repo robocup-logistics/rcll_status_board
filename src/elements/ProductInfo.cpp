@@ -47,13 +47,10 @@ void rcll_draw::ProductInfo::paging(){
         page = 0;
     }
 
-    ROS_INFO(" paging to page %zu of %zu; products: %zu", page + 1, pages, products.size());
-
     for (size_t i = 0; i < product_labels.size(); i++){
         size_t product_index = page * product_labels.size() + i;
         if (product_index < products.size()){
             product_labels[i].setProduct(products[product_index]);
-            ROS_INFO(" showing product %i.%i", products[product_index].product_id, products[product_index].quantity_id);
         } else {
             product_labels[i].setProduct(empty_product);
         }

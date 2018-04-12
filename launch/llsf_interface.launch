@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<arg name="side"/>
+	<arg name="show_field" default="false"/>
+	<arg name="show_team" default="true"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
@@ -13,17 +15,20 @@
 	</node>
 
 	<!-- Field Status Board -->
-	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" >
+	<node pkg="rcll_status_board" type="field_status_board_node" name="field" output="screen" if="$(arg show_field)" >
 		<param name="screen_x" value="1920" />
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />
+		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
 	</node>
 
 	<!-- Team Status Board -->
-	<!--node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen">
+	<node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen" if="$(arg show_team)">
 		<param name="side" value="$(arg side)" />
 		<param name="screen_x" value="1920" />
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />
-	</node-->
+		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
+		<param name="product_page_time" value="5" />
+	</node>
 </launch>

@@ -75,6 +75,7 @@ int main(int argc, char** argv){
     int res_x = 1920;
     int res_y = 1080;
     bool fullscreen = false;
+    std::string image_path = "";
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_gamefield = nh.subscribe("refbox/set_gamefield", 10, cb_gamefield);
@@ -86,6 +87,12 @@ int main(int argc, char** argv){
     private_nh.getParam("screen_x", res_x);
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
+    private_nh.getParam("image_path", image_path);
+
+    if (image_path == ""){
+        ROS_ERROR("Image path must not be empty!");
+        return 0;
+    }
 
     gamestates[0] = "INIT";
     gamestates[1] = "WAIT START";
@@ -100,7 +107,7 @@ int main(int argc, char** argv){
 
     rcll_draw::Team team = rcll_draw::NO_TEAM;
     std::string title = "FIELD STATUS BOARD";
-    rcll_draw::setImagePath("/home/faps/llerf2_ws/src/rcll_status_board/img/ppm/");
+    rcll_draw::setImagePath(image_path);
 
     int bordergapsize = 0.05 * res_y;
     int gapsize = 0.02 * res_y;
