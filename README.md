@@ -13,9 +13,9 @@ Installed RCLL refbox (see [RCLL refbox installation](https://trac.fawkesrobotic
 
 The following ROS packages are required to run this package:
 
-- rcll_msgs (see ...)
-- llsf_protobuf_comm (see ...)
-- llsf_msgs (see ...)
+- [rcll_msgs](...)
+- [llsf_protobuf_comm](...)
+- [llsf_msgs](...)
 
 ### Installing
 
@@ -44,11 +44,11 @@ roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_
 
 ## Versioning
 
-For the versions available, see the [github repository](...).
+For the versions available, see the [github repository](https://github.com/FlorianEith/rcll_status_board).
 
 ## Authors
 
-* **Florian Eith** - *Initial work* - [Florian Eith](...)
+* **Florian Eith** - *Initial work* - [Florian Eith](https://github.com/FlorianEith)
 
 ## License
 
