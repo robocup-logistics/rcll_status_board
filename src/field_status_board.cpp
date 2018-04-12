@@ -123,7 +123,7 @@ int main(int argc, char** argv){
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
 
-    while(ros::ok()){
+    while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
         header.draw(mat);
