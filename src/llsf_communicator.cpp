@@ -73,10 +73,10 @@
 using namespace protobuf_comm;
 
 
-LLSFRefBoxCommunicator::LLSFRefBoxCommunicator()
+LLSFRefBoxCommunicator::LLSFRefBoxCommunicator(std::string host, int recv_port)
   : quit_(false), error_(NULL), reconnect_timer_(io_service_), try_reconnect_(true){
-    cfg_refbox_host_ = "localhost";
-    cfg_refbox_port_ = 4444;
+    cfg_refbox_host_ = host;
+    cfg_refbox_port_ = recv_port;
     client = new ProtobufStreamClient();
 
     ros::NodeHandle nh;
@@ -361,9 +361,6 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
 }
 
 int LLSFRefBoxCommunicator::run() {
-    //cfg_refbox_host_ = config_->get_string("/llsfrb/shell/refbox-host");
-    //cfg_refbox_port_ = config_->get_uint("/llsfrb/shell/refbox-port");
-
     MessageRegister & message_register = client->message_register();
     message_register.add_message_type<llsf_msgs::GameState>();
     message_register.add_message_type<llsf_msgs::RobotInfo>();
@@ -378,7 +375,7 @@ int LLSFRefBoxCommunicator::run() {
     client->signal_received().connect(boost::bind(&LLSFRefBoxCommunicator::dispatch_client_msg, this, _1, _2, _3));
 
     client->async_connect(cfg_refbox_host_.c_str(), cfg_refbox_port_);
-    ROS_INFO("connected to %s %i", cfg_refbox_host_.c_str(), cfg_refbox_port_);
+    ROS_INFO("Connected comunicator to %s:%i", cfg_refbox_host_.c_str(), cfg_refbox_port_);
 
 #if BOOST_ASIO_VERSION >= 100601
   // Construct a signal set registered for process termination.

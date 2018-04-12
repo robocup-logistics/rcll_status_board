@@ -70,7 +70,7 @@ namespace llsf_msgs {
 
 class LLSFRefBoxCommunicator{
     public:
-        LLSFRefBoxCommunicator();
+        LLSFRefBoxCommunicator(std::string host, int recv_port);
         ~LLSFRefBoxCommunicator();
 
         const char * error() const;

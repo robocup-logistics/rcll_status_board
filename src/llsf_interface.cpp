@@ -19,6 +19,7 @@ This node publishes static values and calls services once for testing purposes
 int main(int argc, char** argv){
     ros::init(argc, argv, "llsf_interface");
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
     ros::Rate loop_rate(2.0);
 
     ros::Publisher pub_robots = nh.advertise<rcll_msgs::Robots>("refbox/update_robots", 10);
@@ -33,6 +34,18 @@ int main(int argc, char** argv){
     int zones_y = 8;
     std::vector<float> walls;
     std::vector<int> insertion_zones;
+    bool refbox_remote = false;
+    std::string refbox_host = "localhost";
+    int refbox_recv_port = 4444;
+
+    private_nh.getParam("refbox_remote", refbox_remote);
+    if (refbox_remote){
+        private_nh.getParam("refbox_host", refbox_host);
+        private_nh.getParam("refbox_port_public_recv", refbox_recv_port);
+        ROS_INFO("Refbox is remote at %s:%i", refbox_host.c_str(), refbox_recv_port);
+    } else {
+        ROS_INFO("Refbox is nearby at %s:%i", refbox_host.c_str(), refbox_recv_port);
+    }
 
     nh.getParam("/rcll/gamefield/field_length", field_length);
     nh.getParam("/rcll/gamefield/field_width", field_width);
@@ -52,7 +65,7 @@ int main(int argc, char** argv){
     gamefield_msg.zones_y = zones_y;
     pub_setgamefield.publish(gamefield_msg);
 
-    LLSFRefBoxCommunicator refcomm;
+    LLSFRefBoxCommunicator refcomm(refbox_host, refbox_recv_port);
     refcomm.run();
     return 0;
 }
