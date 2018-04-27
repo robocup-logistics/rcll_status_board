@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- load parameters -->
+	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
+
+	<!-- Team Status Board Magenta -->
+	<node pkg="rcll_status_board" type="team_status_board_node" name="board_magenta" output="screen">
+		<param name="side" value="1" />
+		<param name="screen_x" value="1920" />
+		<param name="screen_y" value="1080" />
+		<param name="fullscreen" value="false" />
+		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
+		<param name="product_page_time" value="5" />
+	</node>
+</launch>

@@ -40,7 +40,7 @@ namespace rcll_draw {
 
         void setOrigin(int x0, int y0, int pixel_per_meter);
         void setRobotParams(std::string name_str, int id, double d);
-        void setPos(double x, double y, double yaw);
+        void setPos(double x, double y, double yaw, ros::Time stamp);
         void draw(cv::Mat &mat);
 
     private:
@@ -52,6 +52,7 @@ namespace rcll_draw {
         int id;
         double diameter;
         bool pose_set = false;
+        ros::Time stamp;
 
         Circle crc_robot;
         Line ln_direction;

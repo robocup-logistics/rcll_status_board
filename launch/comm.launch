@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- load parameters -->
+	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
+
+	<!-- LLSF Interface -->
+	<node pkg="rcll_status_board" type="llsf_interface_node" name="llsf_interface" output="screen" >
+		<param name="refbox_remote" value="true" />
+		<param name="refbox_host" value="172.26.1.1" />
+		<param name="refbox_port_public_recv" value="4444" />
+	</node>
+</launch>

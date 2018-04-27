@@ -2,15 +2,16 @@
 <launch>
 	<arg name="side"/>
 	<arg name="show_field" default="false"/>
-	<arg name="show_team" default="true"/>
+	<arg name="show_cyan" default="true"/>
+	<arg name="show_magenta" default="true"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
 
 	<!-- LLSF Interface -->
 	<node pkg="rcll_status_board" type="llsf_interface_node" name="llsf_interface" output="screen" >
-		<param name="refbox_remote" value="false" />
-		<param name="refbox_host" value="localhost" />
+		<param name="refbox_remote" value="true" />
+		<param name="refbox_host" value="172.26.1.1" />
 		<param name="refbox_port_public_recv" value="4444" />
 	</node>
 
@@ -22,9 +23,19 @@
 		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
 	</node>
 
-	<!-- Team Status Board -->
-	<node pkg="rcll_status_board" type="team_status_board_node" name="board" output="screen" if="$(arg show_team)">
-		<param name="side" value="$(arg side)" />
+	<!-- Team Status Board Cyan -->
+	<node pkg="rcll_status_board" type="team_status_board_node" name="board_cyan" output="screen" if="$(arg show_cyan)">
+		<param name="side" value="0" />
+		<param name="screen_x" value="1920" />
+		<param name="screen_y" value="1080" />
+		<param name="fullscreen" value="false" />
+		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
+		<param name="product_page_time" value="5" />
+	</node>
+
+	<!-- Team Status Board Magenta -->
+	<node pkg="rcll_status_board" type="team_status_board_node" name="board_magenta" output="screen" if="$(arg show_magenta)">
+		<param name="side" value="1" />
 		<param name="screen_x" value="1920" />
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />

@@ -87,7 +87,7 @@ void cb_set_robot(const rcll_vis_msgs::SetRobot::ConstPtr& msg){
 
 void cb_robots(const rcll_vis_msgs::Robots::ConstPtr& msg){
     for (size_t i = 0; i < msg->robots.size(); i++){
-        main_area_field.setRobotPos(msg->robots[i].x, msg->robots[i].y, msg->robots[i].yaw, msg->robots[i].index);
+        main_area_field.setRobotPos(msg->robots[i].x, msg->robots[i].y, msg->robots[i].yaw, msg->robots[i].index, msg->robots[i].stamp.data);
     }
 }
 
@@ -146,6 +146,12 @@ int main(int argc, char** argv){
     rcll_draw::HeaderPanel header(title, team);
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+
+
+    ROS_INFO("presleep");
+    ros::Duration(2.0).sleep();
+    ROS_INFO("postsleep");
+    ros::spinOnce();
 
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();

@@ -46,8 +46,8 @@ int main(int argc, char** argv){
     ros::Rate loop_rate(2.0);
 
     ros::Publisher pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
-    ros::Publisher pub_setgamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/set_gamefield", 10);
-    ros::Publisher pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10);
+    ros::Publisher pub_setgamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/set_gamefield", 10, true);
+    ros::Publisher pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10, true);
     ros::Publisher pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
     ros::Publisher pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
 

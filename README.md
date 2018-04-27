@@ -29,7 +29,7 @@ Adjust the llsf_msgs and protobuf_comm packages to your system. Therefore set th
 set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
 ...
 ```
-Restart your system. For some reasens the refbox header files are just found by ROS build process after a restart of the system.
+Restart your system. For some reasons the refbox header files are just found by ROS build process after a restart of the system.
 
 Build your catkin workspace
 

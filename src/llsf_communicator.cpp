@@ -158,16 +158,19 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
                 robot_init_msgs[i].active = true;
                 pub_setrobot.publish(robot_init_msgs[i]);
             } else {
-                rcll_vis_msgs::Robot robot_update;
-                robot_update.index = i;
-                robot_update.active = true;
-                robot_update.status = ""; //TODO
-                robot_update.active_time = 0.0; //TODO
-                robot_update.maintenance_count = rob.maintenance_cycles();
-                robot_update.x = rob.pose().x();
-                robot_update.y = rob.pose().y();
-                robot_update.yaw = rob.pose().ori();
-                robots_msg.robots.push_back(robot_update);
+                if (rob.state() == llsf_msgs::ACTIVE){
+                    rcll_vis_msgs::Robot robot_update;
+                    robot_update.index = i;
+                    robot_update.active = true;
+                    robot_update.status = ""; //TODO
+                    robot_update.active_time = 0.0; //TODO
+                    robot_update.maintenance_count = rob.maintenance_cycles();
+                    robot_update.x = rob.pose().x();
+                    robot_update.y = rob.pose().y();
+                    robot_update.yaw = rob.pose().ori();
+                    robot_update.stamp.data = ros::Time::now();
+                    robots_msg.robots.push_back(robot_update);
+                }
             }
         }
         pub_robots.publish(robots_msg);

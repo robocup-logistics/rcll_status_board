@@ -104,8 +104,8 @@ size_t rcll_draw::FieldArea::addRobot(std::string name, int id, rcll_draw::Team 
     return gamefield.addRobot(name, id, team);
 }
 
-void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t index){
-    gamefield.setRobotPos(x, y, yaw, index);
+void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp){
+    gamefield.setRobotPos(x, y, yaw, index, stamp);
 }
 
 void rcll_draw::FieldArea::setMachine(std::string name, rcll_draw::Team team, size_t index){

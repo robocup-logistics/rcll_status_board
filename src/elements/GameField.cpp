@@ -199,9 +199,9 @@ size_t rcll_draw::GameField::addRobot(std::string name, int id, rcll_draw::Team 
     return robot_markers.size() - 1;
 }
 
-void rcll_draw::GameField::setRobotPos(double x, double y, double yaw, size_t index){
+void rcll_draw::GameField::setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp){
     if (index >= 0 && index < robot_markers.size()){
-        robot_markers[index].setPos(x, y, yaw);
+        robot_markers[index].setPos(x, y, yaw, stamp);
     }
 }
 

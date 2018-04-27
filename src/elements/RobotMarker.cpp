@@ -59,19 +59,23 @@ void rcll_draw::RobotMarker::setOrigin(int x0, int y0, int pixel_per_meter){
     this->pixel_per_meter = pixel_per_meter;
 }
 
-void rcll_draw::RobotMarker::setPos(double x, double y, double yaw){
+void rcll_draw::RobotMarker::setPos(double x, double y, double yaw, ros::Time stamp){
     double ang = -(yaw+M_PI);
+    this->stamp = stamp;
     int offset_x = x0 - x * pixel_per_meter;
     int offset_y = y0 + y * pixel_per_meter;
-    int r1_x = diameter/4 * cos(ang-M_PI/2) * pixel_per_meter;
-    int r1_y = diameter/4 * sin(ang-M_PI/2) * pixel_per_meter;
+    int r1_x = diameter/4 * cos(ang + M_PI) * pixel_per_meter;
+    int r1_y = diameter/4 * sin(ang + M_PI) * pixel_per_meter;
     int dst = pixel_per_meter * diameter / 2;
     crc_robot.setPos(offset_x, offset_y);
     crc_robot.setSize(dst);
-    arr_heading.setArrowByLength(offset_x, offset_y, ang, dst);
+    arr_heading.setArrowByLength(offset_x, offset_y, (ang-M_PI/2), dst);
     blbl_id.setPos(offset_x + r1_x - dst, offset_y + r1_y - dst);
     blbl_id.setSize(dst * 2, dst * 2);
-    pose_set = true;
+
+    if (abs(r1_x) > 0.001 && abs(r1_y) > 0.001){
+        pose_set = true;
+    }
 }
 
 void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double d){
@@ -82,9 +86,9 @@ void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double
 }
 
 void rcll_draw::RobotMarker::draw(cv::Mat &mat){
-    if (pose_set){
+    /*if (pose_set && ((ros::Time::now() - stamp).toSec() < 5.0)){
         crc_robot.draw(mat);
         blbl_id.draw(mat);
         arr_heading.draw(mat);
-    }
+    }*/
 }

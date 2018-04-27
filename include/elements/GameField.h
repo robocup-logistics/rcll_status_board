@@ -48,7 +48,7 @@ namespace rcll_draw {
         void addWall(double x1, double y1, double x2, double y2);
 
         size_t addRobot(std::string name, int id, rcll_draw::Team team);
-        void setRobotPos(double x, double y, double yaw, size_t index);
+        void setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp);
         void setMachine(std::string name, rcll_draw::Team team, size_t index);
         void setMachinePos(double x, double y, double yaw, size_t index);
         void setMachineReport(int report1_status, int report2_status, size_t index);
