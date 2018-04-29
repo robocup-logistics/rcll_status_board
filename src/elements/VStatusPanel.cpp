@@ -31,6 +31,7 @@ rcll_draw::VStatusPanel::VStatusPanel(){
 
 
 rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::Team team){
+    this->team = team;
     blbl_state_header.setContent("STATE");
     blbl_phase_header.setContent("PHASE");
     blbl_time_header.setContent("TIME");
@@ -112,14 +113,21 @@ void rcll_draw::VStatusPanel::setGeometry(int x, int y, int w, int h){
     blbl_score_value.setSize(w, 2 * h / 9);
 }
 
-void rcll_draw::VStatusPanel::setContent(std::string gamestate, std::string gamephase, int time, int score){
-    int min = time / 60;
-    int sec = time % 60;
+void rcll_draw::VStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){
+    int min = gameinfo.phase_time / 60;
+    int sec = std::fmod(gameinfo.phase_time, 60);
     std::string time_str = std::to_string(min) + "min " + std::to_string(sec) + "sec";
-    blbl_state_value.setContent(gamestate);
-    blbl_phase_value.setContent(gamephase);
+    blbl_state_value.setContent(rcll_draw::getGameStateStr(gameinfo.game_state));
+    blbl_phase_value.setContent(rcll_draw::getGamePhaseStr(gameinfo.game_phase));
     blbl_time_value.setContent(time_str);
-    blbl_score_value.setContent(std::to_string(score));
+
+    if (team == rcll_draw::CYAN){
+        blbl_score_value.setContent(std::to_string(gameinfo.team_points_cyan));
+    } else if (team == rcll_draw::MAGENTA){
+        blbl_score_value.setContent(std::to_string(gameinfo.team_points_magenta));
+    } else {
+        blbl_score_value.setContent(std::to_string(gameinfo.team_points_cyan) + " / " + std::to_string(gameinfo.team_points_magenta));
+    }
 }
 
 void rcll_draw::VStatusPanel::draw(cv::Mat &mat){

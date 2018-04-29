@@ -163,6 +163,26 @@ std::string rcll_draw::getFile(int number, int type){
     return "";
 }
 
+std::string rcll_draw::getGameStateStr(int gamestate){
+    switch (gamestate){
+        case 0: return "INIT";
+        case 1: return "WAIT START";
+        case 2: return "RUNNING";
+        case 3: return "PAUSED";
+        default: return "UNKNOWN";
+    }
+}
+
+std::string rcll_draw::getGamePhaseStr(int gamephase){
+    switch (gamephase){
+        case 0: return "PRE GAME";
+        case 10: return "SETUP";
+        case 20: return "EXPLORATION";
+        case 30: return "PRODUCTION";
+        case 40: return "POST GAME";
+        default: return "UNKNOWN";
+    }
+}
 
 void rcll_draw::setImagePath(std::string path){
     rcll_draw::image_path = path;

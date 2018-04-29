@@ -29,6 +29,8 @@ SOFTWARE.
 #include <BoxLabel.h>
 #include <RobotLabel.h>
 
+#include <rcll_vis_msgs/Robots.h>
+
 namespace rcll_draw {
     class RobotInfo {
     public:
@@ -37,14 +39,16 @@ namespace rcll_draw {
         ~RobotInfo();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setRobotName(int id, std::string name, bool active, int index);
-        void setRobotStatus(std::string activity, double active_time, int maintenance_count, int maintenance_max, int index);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void draw(cv::Mat &mat);
 
     private:
         Team team;
         BoxLabel blbl_header;
-        std::vector<RobotLabel> robots;
+
+        std::vector<std::string> keys = {"Rob1", "Rob2", "Rob3"};
+        std::map<std::string, size_t> robot_map;
+        std::vector<RobotLabel> rl_robots;
     };
 }
 

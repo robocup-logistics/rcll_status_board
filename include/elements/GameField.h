@@ -33,6 +33,10 @@ SOFTWARE.
 #include <RobotMarker.h>
 #include <MachineMarker.h>
 
+#include <rcll_vis_msgs/SetGameField.h>
+#include <rcll_vis_msgs/Machine.h>
+#include <rcll_vis_msgs/Robot.h>
+
 namespace rcll_draw {
 
     // ##################################################
@@ -44,14 +48,11 @@ namespace rcll_draw {
 
         void setPhase(rcll_draw::GamePhase gamephase);
         void setGeometry(int x, int y, int w, int h);
-        void setLayout(double field_w, double field_h, int zones_x, int zones_y, std::vector<int> insertion_zones);
-        void addWall(double x1, double y1, double x2, double y2);
+        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
+        void setRefBoxView(bool refbox_view);
 
-        size_t addRobot(std::string name, int id, rcll_draw::Team team);
-        void setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp);
-        void setMachine(std::string name, rcll_draw::Team team, size_t index);
-        void setMachinePos(double x, double y, double yaw, size_t index);
-        void setMachineReport(int report1_status, int report2_status, size_t index);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void draw(cv::Mat &mat);
 
     private:
@@ -59,23 +60,25 @@ namespace rcll_draw {
         int w, h = 1;
 
         int x0, y0 = 0;
+        int origin_x, origin_y = 0;
         int w0, h0 = 1;
 
+        bool refbox_view;
         int pixel_per_meter = 10;
 
         GamePhase gamephase;
-        Rectangle background;
-        Rectangle background2;
-        BoxLabel insertion_cyan1;
-        BoxLabel insertion_cyan2;
-        BoxLabel insertion_magenta1;
-        BoxLabel insertion_magenta2;
-        std::vector<Line> walls;
-        std::vector<Line> zone_lines;
-        std::vector<BoxLabel> zone_names;
+        Rectangle rct_background;
+        Rectangle rct_background2;
+        BoxLabel blbl_insertion_cyan1;
+        BoxLabel blbl_insertion_cyan2;
+        BoxLabel blbl_insertion_magenta1;
+        BoxLabel blbl_insertion_magenta2;
+        std::vector<Line> lnes_walls;
+        std::vector<Line> lnes_zone_lines;
+        std::vector<BoxLabel> blbls_zone_names;
 
-        std::vector<RobotMarker> robot_markers;
-        std::vector<MachineMarker> machine_markers;
+        std::vector<RobotMarker> rm_robot_markers;
+        std::vector<MachineMarker> mm_machine_markers;
 
     };
 }

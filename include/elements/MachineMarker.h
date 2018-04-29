@@ -30,6 +30,8 @@ SOFTWARE.
 #include <Line.h>
 #include <Circle.h>
 
+#include <rcll_vis_msgs/Machine.h>
+
 namespace rcll_draw {
     class MachineMarker {
     public:
@@ -38,25 +40,20 @@ namespace rcll_draw {
         ~MachineMarker();
 
         void setPhase(rcll_draw::GamePhase gamephase);
-        void setOrigin(int x0, int y0, int pixel_per_meter);
-        void setMachineParams(std::string name, double w, double h);
-        void setPos(double x, double y, double yaw);
-        void setExplorationIcons(int left, int right);
-        Team getTeam();
+        void setOrigin(int origin_x, int origin_y, int pixel_per_meter);
+        void setRefBoxView(bool refbox_view);
+        void setMachine(rcll_vis_msgs::Machine &machine);
         void recalculate();
         void draw(cv::Mat &mat);
 
 
     private:
-        int xm, ym = 0;
         int pixel_per_meter = 10;
-        int x0, y0 = 0;
-        double w, h = 10;
-        double yaw;
-        int exploration_icon_left;
-        int exploration_icon_right;
+        int origin_x, origin_y = 0;
+        bool refbox_view;
 
         cv::Mat img;
+        rcll_vis_msgs::Machine machine;
 
         GamePhase gamephase;
         Team team;

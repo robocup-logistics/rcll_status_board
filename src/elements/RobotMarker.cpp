@@ -53,42 +53,52 @@ rcll_draw::RobotMarker::~RobotMarker(){
 
 }
 
-void rcll_draw::RobotMarker::setOrigin(int x0, int y0, int pixel_per_meter){
-    this->x0 = x0;
-    this->y0 = y0;
+void rcll_draw::RobotMarker::setOrigin(int origin_x, int origin_y, int pixel_per_meter){
+    this->origin_x = origin_x;
+    this->origin_y = origin_y;
     this->pixel_per_meter = pixel_per_meter;
 }
 
-void rcll_draw::RobotMarker::setPos(double x, double y, double yaw, ros::Time stamp){
-    double ang = -(yaw+M_PI);
-    this->stamp = stamp;
-    int offset_x = x0 - x * pixel_per_meter;
-    int offset_y = y0 + y * pixel_per_meter;
-    int r1_x = diameter/4 * cos(ang + M_PI) * pixel_per_meter;
-    int r1_y = diameter/4 * sin(ang + M_PI) * pixel_per_meter;
-    int dst = pixel_per_meter * diameter / 2;
+void rcll_draw::RobotMarker::setRefBoxView(bool refbox_view){
+    this->refbox_view = refbox_view;
+}
+
+void rcll_draw::RobotMarker::setRobot(rcll_vis_msgs::Robot &robot){
+    double ang;
+    int offset_x, offset_y, r1_x, r1_y, dst;
+
+    this->robot = robot;
+    this->diameter = 0.5;
+
+    if (refbox_view){
+        ang = -(robot.yaw);
+        offset_x = origin_x + robot.x * pixel_per_meter;
+        offset_y = origin_y - robot.y * pixel_per_meter;
+    } else {
+        ang = -(robot.yaw+M_PI);
+        offset_x = origin_x - robot.x * pixel_per_meter;
+        offset_y = origin_y + robot.y * pixel_per_meter;
+    }
+
+    r1_x = diameter/4 * cos(ang - M_PI/2) * pixel_per_meter;
+    r1_y = diameter/4 * sin(ang - M_PI/2) * pixel_per_meter;
+    dst = pixel_per_meter * diameter / 2;
+
+    blbl_id.setContent(std::to_string(robot.robot_id));
+
     crc_robot.setPos(offset_x, offset_y);
     crc_robot.setSize(dst);
-    arr_heading.setArrowByLength(offset_x, offset_y, (ang-M_PI/2), dst);
+    arr_heading.setArrowByLength(offset_x, offset_y, (ang), dst);
     blbl_id.setPos(offset_x + r1_x - dst, offset_y + r1_y - dst);
     blbl_id.setSize(dst * 2, dst * 2);
 
-    if (abs(r1_x) > 0.001 && abs(r1_y) > 0.001){
-        pose_set = true;
-    }
-}
-
-void rcll_draw::RobotMarker::setRobotParams(std::string name_str, int id, double d){
-    this->name = name_str;
-    this->id = id;
-    this->diameter = d;
-    blbl_id.setContent(std::to_string(id));
+    pose_set = (sqrt(robot.x * robot.x + robot.y * robot.y) > 0.01);
 }
 
 void rcll_draw::RobotMarker::draw(cv::Mat &mat){
-    /*if (pose_set && ((ros::Time::now() - stamp).toSec() < 5.0)){
+    if (pose_set && ((ros::Time::now() - robot.stamp.data).toSec() < 5.0)){
         crc_robot.draw(mat);
         blbl_id.draw(mat);
         arr_heading.draw(mat);
-    }*/
+    }
 }

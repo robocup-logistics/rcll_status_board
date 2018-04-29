@@ -29,6 +29,9 @@ SOFTWARE.
 #include <HStatusPanel.h>
 #include <MachineInfoExploration.h>
 
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/Machine.h>
+
 namespace rcll_draw {
 
     // ##################################################
@@ -40,9 +43,8 @@ namespace rcll_draw {
         ~TeamAreaExploration();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta);
-        void setMachineName(std::string name_long, std::string name_short, int index);
-        void setMachineStatus(int status1, int status2, int index);
+        void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void draw(cv::Mat &mat);
 
     private:
@@ -50,10 +52,8 @@ namespace rcll_draw {
         int w, h = 1;
 
         Team team;
-        HStatusPanel game_info;
-        MachineInfoExploration machine_info;
-
-
+        HStatusPanel hsp_gameinfo;
+        MachineInfoExploration mie_machine_info;
     };
 }
 

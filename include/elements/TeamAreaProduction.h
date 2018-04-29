@@ -31,6 +31,11 @@ SOFTWARE.
 #include <MachineInfoProduction.h>
 #include <RobotInfo.h>
 
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/Machine.h>
+#include <rcll_vis_msgs/Robot.h>
+#include <rcll_vis_msgs/Product.h>
+
 namespace rcll_draw {
     class TeamAreaProduction {
     public:
@@ -39,11 +44,9 @@ namespace rcll_draw {
         ~TeamAreaProduction();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setGameInfo(std::string gamestate, std::string gamephase, int time, int score);
-        void setMachineName(std::string name_long, std::string name_short, int index);
-        void setMachineStatus(std::string status, int index);
-        void setRobotName(int id, std::string name, bool active, int index);
-        void setRobotStatus(std::string activity, double active_time, int maintenance_count, int maintenance_max, int index);
+        void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setProduct(ProductInformation pi, int index);
         void setProductsCount(size_t count);
         void paging();
@@ -54,10 +57,10 @@ namespace rcll_draw {
         int w, h = 1;
 
         Team team;
-        VStatusPanel game_info;
-        ProductInfo product_info;
-        MachineInfoProduction machine_info;
-        RobotInfo robot_info;
+        VStatusPanel vsp_gameinfo;
+        ProductInfo pi_productinfo;
+        MachineInfoProduction mip_machineinfo;
+        RobotInfo ri_robotinfo;
 
 
     };

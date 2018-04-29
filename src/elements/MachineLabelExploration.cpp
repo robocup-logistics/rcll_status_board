@@ -69,25 +69,23 @@ void rcll_draw::MachineLabelExploration::setGeometry(int x, int y, int w, int h)
     img_status2.setPos(x + w * 0.925, y + (h - img_status2.getH())/2);
 }
 
-void rcll_draw::MachineLabelExploration::setMachineName(std::string name, int index){
-    blbl_machinename.setContent(name);
-    if (index % 2 == 0){
+void rcll_draw::MachineLabelExploration::setMachine(rcll_vis_msgs::Machine &machine){
+    blbl_machinename.setContent(" " + machine.name_long + " (" + machine.name_short + ")");
+    //if (index % 2 == 0){
         blbl_status1.setBackgroundColor(rcll_draw::C_GREY_LIGHT);
         blbl_status2.setBackgroundColor(rcll_draw::C_GREY_LIGHT);
-    } else {
+    /*} else {
         blbl_status1.setBackgroundColor(rcll_draw::C_GREY_DARK);
         blbl_status2.setBackgroundColor(rcll_draw::C_GREY_DARK);
-    }
-}
+    }*/
 
-void rcll_draw::MachineLabelExploration::setMachineStatus(int status1, int status2){
-    if (status1 == 0){
+    if (machine.machine_status_exploration1 == 0){
         blbl_status1.setContent("unreported");
         img_status1.setImage(rcll_draw::readImage(rcll_draw::getFile(4,4)));
-    } else if (status1 == 1){
+    } else if (machine.machine_status_exploration1 == 1){
         blbl_status1.setContent("correct");
         img_status1.setImage(rcll_draw::readImage(rcll_draw::getFile(5,4)));
-    } else if (status1 == 2){
+    } else if (machine.machine_status_exploration1 == 2){
         blbl_status1.setContent("wrong");
         img_status1.setImage(rcll_draw::readImage(rcll_draw::getFile(6,4)));
     } else {
@@ -95,13 +93,13 @@ void rcll_draw::MachineLabelExploration::setMachineStatus(int status1, int statu
         img_status1.setImage(rcll_draw::readImage(""));
     }
 
-    if (status2 == 0){
+    if (machine.machine_status_exploration2 == 0){
         blbl_status2.setContent("unreported");
         img_status2.setImage(rcll_draw::readImage(rcll_draw::getFile(4,4)));
-    } else if (status2 == 1){
+    } else if (machine.machine_status_exploration2 == 1){
         blbl_status2.setContent("correct");
         img_status2.setImage(rcll_draw::readImage(rcll_draw::getFile(5,4)));
-    } else if (status2 == 2){
+    } else if (machine.machine_status_exploration2 == 2){
         blbl_status2.setContent("wrong");
         img_status2.setImage(rcll_draw::readImage(rcll_draw::getFile(6,4)));
     } else {

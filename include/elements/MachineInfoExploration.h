@@ -29,6 +29,8 @@ SOFTWARE.
 #include <BoxLabel.h>
 #include <MachineLabelExploration.h>
 
+#include <rcll_vis_msgs/Machine.h>
+
 namespace rcll_draw {
 
     class MachineInfoExploration {
@@ -38,15 +40,16 @@ namespace rcll_draw {
         ~MachineInfoExploration();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setMachineName(std::string name_long, std::string name_short, int index);
-        void setMachineStatus(int status1, int status2, int index);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void draw(cv::Mat &mat);
 
     private:
         Team team;
         BoxLabel blbl_header1;
         BoxLabel blbl_header2;
-        std::vector<MachineLabelExploration> machines;
+        std::vector<std::string> keys = {"H", "BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
+        std::map<std::string, size_t> machine_map;
+        std::vector<MachineLabelExploration> mle_machines;
     };
 }
 

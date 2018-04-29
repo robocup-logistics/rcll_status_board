@@ -29,66 +29,39 @@ SOFTWARE.
 #include <ros/package.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Machines.h>
 #include <rcll_vis_msgs/Robots.h>
 #include <rcll_vis_msgs/Products.h>
-#include <rcll_vis_msgs/SetMachines.h>
-#include <rcll_vis_msgs/SetRobot.h>
 #include <rcll_vis_msgs/SetGameField.h>
 
 #include <drawing.h>
 #include <elements.h>
 
 /* =====================================================================================================|
-nodename:           "team_status_board"
+nodename:           "field_status_board"
 
-This node draws the team status board for a given teamcolor
+This node draws the field status board for both teams
 ====================================================================================================== */
 
 namespace {
-    std::map<int, std::string> gamestates;
-    std::map<int, std::string> gamephases;
-
     rcll_draw::FieldArea main_area_field;
 }
 
-void cb_gameinfo(const rcll_vis_msgs::GameInfo::ConstPtr& msg){
-    //ROS_INFO("Updating gameinfo");
-    main_area_field.setTeam(msg->team_name_cyan, rcll_draw::CYAN);
-    main_area_field.setTeam(msg->team_name_magenta, rcll_draw::MAGENTA);
-    main_area_field.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
+void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
+    main_area_field.setGameInfo(msg);
 }
 
-void cb_gamefield(const rcll_vis_msgs::SetGameField::ConstPtr& msg){
-    ROS_INFO("Initializing gamefield with w=%f h=%f zx=%i zy=%i", msg->field_length, msg->field_width, msg->zones_x, msg->zones_y);
-    main_area_field.setLayout(msg->field_length, msg->field_width, msg->zones_x, msg->zones_y, msg->insertion_zones);
-    main_area_field.setWalls(msg->walls);
+void cb_gamefield(rcll_vis_msgs::SetGameField msg){
+    ROS_INFO("Initializing gamefield with w=%1.2f h=%1.2f zx=%i zy=%i", msg.field_length, msg.field_width, msg.zones_x, msg.zones_y);
+    main_area_field.setGameField(msg);
 }
 
-void cb_set_machine(const rcll_vis_msgs::SetMachines::ConstPtr& msg){
-    ROS_INFO("Initializing machines");
-    for (size_t i = 0; i < msg->machines.size(); i++){
-        ROS_INFO("  name=%s team=%i index=%i", msg->machines[i].name_short.c_str(), msg->machines[i].team, msg->machines[i].index);
-        main_area_field.setMachine(msg->machines[i].name_short, (rcll_draw::Team)msg->machines[i].team, msg->machines[i].index);
-        main_area_field.setMachinePos(msg->machines[i].x, msg->machines[i].y, msg->machines[i].yaw, msg->machines[i].index);
-    }
+void cb_machines(rcll_vis_msgs::Machines msg){
+    main_area_field.setMachines(msg.machines);
 }
 
-void cb_machines(const rcll_vis_msgs::MachinesStatus::ConstPtr& msg){
-    for (size_t i = 0; i < msg->machines.size(); i++){
-        main_area_field.setMachineReport(msg->machines[i].machine_status_exploration1, msg->machines[i].machine_status_exploration2, msg->machines[i].index);
-    }
-}
-
-void cb_set_robot(const rcll_vis_msgs::SetRobot::ConstPtr& msg){
-    ROS_INFO("Initializing robot name=%s number=%i team=%i, index=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index);
-    main_area_field.addRobot(msg->robot_name, msg->robot_id, (rcll_draw::Team)msg->team);
-}
-
-void cb_robots(const rcll_vis_msgs::Robots::ConstPtr& msg){
-    for (size_t i = 0; i < msg->robots.size(); i++){
-        main_area_field.setRobotPos(msg->robots[i].x, msg->robots[i].y, msg->robots[i].yaw, msg->robots[i].index, msg->robots[i].stamp.data);
-    }
+void cb_robots(rcll_vis_msgs::Robots msg){
+    main_area_field.setRobots(msg.robots);
 }
 
 int main(int argc, char** argv){
@@ -99,35 +72,24 @@ int main(int argc, char** argv){
     int res_x = 1920;
     int res_y = 1080;
     bool fullscreen = false;
+    bool refbox_view = false;
     std::string image_path = "";
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
-    ros::Subscriber sub_gamefield = nh.subscribe("refbox/set_gamefield", 10, cb_gamefield);
-    ros::Subscriber sub_addrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
-    ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
-    ros::Subscriber sub_addmachine = nh.subscribe("refbox/set_machines", 10, cb_set_machine);
-    ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
+    ros::Subscriber sub_gamefield = nh.subscribe("refbox/gamefield", 10, cb_gamefield);
+    ros::Subscriber sub_robots = nh.subscribe("refbox/robots", 10, cb_robots);
+    ros::Subscriber sub_machines = nh.subscribe("refbox/machines", 10, cb_machines);
 
     private_nh.getParam("screen_x", res_x);
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
+    private_nh.getParam("refbox_view", refbox_view);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
         return 0;
     }
-
-    gamestates[0] = "INIT";
-    gamestates[1] = "WAIT START";
-    gamestates[2] = "RUNNING";
-    gamestates[3] = "PAUSED";
-
-    gamephases[0] = "PRE GAME";
-    gamephases[10] = "SETUP";
-    gamephases[20] = "EXPLORATION";
-    gamephases[30] = "PRODUCTION";
-    gamephases[40] = "POST GAME";
 
     rcll_draw::Team team = rcll_draw::NO_TEAM;
     std::string title = "FIELD STATUS BOARD";
@@ -146,11 +108,7 @@ int main(int argc, char** argv){
     rcll_draw::HeaderPanel header(title, team);
     header.setGeometry(bordergapsize, res_x, bordergapsize);
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
-
-
-    ROS_INFO("presleep");
-    ros::Duration(2.0).sleep();
-    ROS_INFO("postsleep");
+    main_area_field.setRefBoxView(refbox_view);
     ros::spinOnce();
 
     while(ros::ok() && cvGetWindowHandle(title.c_str())){

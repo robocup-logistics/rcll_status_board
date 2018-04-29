@@ -44,12 +44,11 @@ rcll_draw::MachineInfoProduction::MachineInfoProduction(Team team){
         blbl_header.setFrontColor(rcll_draw::C_BLACK);
     }
 
-    machines.resize(7);
-
-    for (size_t i = 0; i < machines.size(); i++){
-        machines[i].setFlashing(false);
-        machines[i].setMachineStatus("Offline", rcll_draw::C_GREY_LIGHT, rcll_draw::C_GREY_LIGHT, "", "");
+    for (size_t i = 0; i < keys.size(); i++){
+        mlp_machines.push_back(MachineLabelProduction());
+        machine_map[keys[i]] = i;
     }
+    this->team = team;
 }
 
 rcll_draw::MachineInfoProduction::~MachineInfoProduction(){
@@ -60,85 +59,28 @@ void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, int w, int h, i
     int w1 = (w - gapsize) / 2;
     blbl_header.setPos(x, y);
     blbl_header.setSize(w, h*0.2);
-    machines[0].setGeometry(x, y + 1*h*0.2, w1, h*0.2);
-    machines[1].setGeometry(x, y + 2*h*0.2, w1, h*0.2);
-    machines[2].setGeometry(x, y + 3*h*0.2, w1, h*0.2);
-    machines[3].setGeometry(x+w1+gapsize, y + 1*h*0.2, w1, h*0.2);
-    machines[4].setGeometry(x+w1+gapsize, y + 2*h*0.2, w1, h*0.2);
-    machines[5].setGeometry(x+w1+gapsize, y + 3*h*0.2, w1, h*0.2);
-    machines[6].setGeometry(x+w1+gapsize, y + 4*h*0.2, w1, h*0.2);
-}
 
-void rcll_draw::MachineInfoProduction::setMachineName(std::string name_long, std::string name_short, int index){
-    if (index >= 0 && index < 7){
-        machines[index].setMachineName(" " + name_long + " (" + name_short + ")");
+    for (size_t i = 0; i < keys.size(); i++){
+        if (i < 4){
+            mlp_machines[machine_map[keys[i]]].setGeometry(x, y + (i+1) * h * 0.2, w1, h * 0.2);
+        } else {
+            mlp_machines[machine_map[keys[i]]].setGeometry(x + w1 + gapsize, y + (i-3) * h * 0.2, w1, h*0.2);
+        }
     }
 }
 
-void rcll_draw::MachineInfoProduction::setMachineStatus(std::string status, int index){
-    if (index >= 0 && index < 7){
-        Color lamp1, lamp2;
-        std::string lamp1_str, lamp2_str, status_str = "";
-        bool flashing = false;
-        if (status == "IDLE"){
-            lamp1 = rcll_draw::C_GREEN_LIGHT;
-            lamp2 = rcll_draw::C_GREEN_LIGHT;
-            lamp1_str = "Free For";
-            lamp2_str = "Production";
-        } else if (status == "BROKEN"){
-            lamp1 = rcll_draw::C_RED;
-            lamp2 = rcll_draw::C_YELLOW;
-            flashing = true;
-            lamp1_str = "Incorrect";
-            lamp2_str = "Instruction";
-        } else if (status == "PROCESSING" || status == "PROCESSED"){
-            lamp1 = rcll_draw::C_GREEN_LIGHT;
-            lamp2 = rcll_draw::C_YELLOW;
-            lamp1_str = "Processing";
-            lamp2_str = "Product";
-        } else if (status == "PREPARED"){
-            lamp1 = rcll_draw::C_GREEN_LIGHT;
-            lamp2 = rcll_draw::C_GREEN_LIGHT;
-            lamp1_str = "Prepared";
-            lamp2_str = "For Product";
-            flashing = true;
-        } else if (status == "DOWN"){
-            lamp1 = rcll_draw::C_RED;
-            lamp2 = rcll_draw::C_RED;
-            lamp1_str = "Scheduled";
-            lamp2_str = "Down";
-        } else if (status == "READY-AT-OUTPUT"){
-            lamp1 = rcll_draw::C_YELLOW;
-            lamp2 = rcll_draw::C_YELLOW;
-            lamp1_str = "Finished";
-            lamp2_str = "Product";
-        } else if (status == "WAIT-IDLE"){
-            lamp1 = rcll_draw::C_YELLOW;
-            lamp2 = rcll_draw::C_YELLOW;
-            flashing = true;
-            lamp1_str = "Waiting For";
-            lamp2_str = "Removed";
-        } else if (status == "OFFLINE"){
-            lamp1 = rcll_draw::C_GREY_LIGHT;
-            lamp2 = rcll_draw::C_GREY_LIGHT;
-            status_str = "Offline";
-        } else {
-            lamp1 = rcll_draw::C_GREY_LIGHT;
-            lamp2 = rcll_draw::C_GREY_LIGHT;
-            status_str = "Offline";
+void rcll_draw::MachineInfoProduction::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+    for (size_t i = 0; i < machines.size(); i++){
+        if (team == (rcll_draw::Team)machines[i].team){
+            mlp_machines[machine_map[machines[i].key]].setMachine(machines[i]);
+
         }
-        machines[index].setFlashing(flashing);
-        machines[index].setMachineStatus(status_str, lamp1, lamp2, lamp1_str, lamp2_str);
     }
 }
 
 void rcll_draw::MachineInfoProduction::draw(cv::Mat &mat){
     blbl_header.draw(mat);
-    machines[0].draw(mat);
-    machines[1].draw(mat);
-    machines[2].draw(mat);
-    machines[3].draw(mat);
-    machines[4].draw(mat);
-    machines[5].draw(mat);
-    machines[6].draw(mat);
+    for (size_t i = 0; i < keys.size(); i++){
+        mlp_machines[machine_map[keys[i]]].draw(mat);
+    }
 }

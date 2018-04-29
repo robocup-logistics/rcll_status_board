@@ -26,11 +26,9 @@ SOFTWARE.
 #include <llsf_communicator.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Machines.h>
 #include <rcll_vis_msgs/Robots.h>
 #include <rcll_vis_msgs/Products.h>
-#include <rcll_vis_msgs/SetMachines.h>
-#include <rcll_vis_msgs/SetRobot.h>
 #include <rcll_vis_msgs/SetGameField.h>
 
 /* =====================================================================================================|
@@ -45,11 +43,11 @@ int main(int argc, char** argv){
     ros::NodeHandle private_nh("~");
     ros::Rate loop_rate(2.0);
 
-    ros::Publisher pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
-    ros::Publisher pub_setgamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/set_gamefield", 10, true);
-    ros::Publisher pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10, true);
-    ros::Publisher pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
-    ros::Publisher pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
+    ros::Publisher pub_gameinfo = nh.advertise<rcll_vis_msgs::GameInfo>("refbox/gameinfo", 10, true);
+    ros::Publisher pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/robots", 10, true);
+    ros::Publisher pub_gamefield = nh.advertise<rcll_vis_msgs::SetGameField>("refbox/gamefield", 10, true);
+    ros::Publisher pub_machines = nh.advertise<rcll_vis_msgs::Machines>("refbox/machines", 10, true);
+    ros::Publisher pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/products", 10, true);
 
     double field_length = 1.0;
     double field_width = 1.0;
@@ -86,7 +84,7 @@ int main(int argc, char** argv){
     gamefield_msg.field_width = field_width;
     gamefield_msg.zones_x = zones_x;
     gamefield_msg.zones_y = zones_y;
-    pub_setgamefield.publish(gamefield_msg);
+    pub_gamefield.publish(gamefield_msg);
 
     LLSFRefBoxCommunicator refcomm(refbox_host, refbox_recv_port);
     refcomm.run();

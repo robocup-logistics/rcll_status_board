@@ -30,6 +30,8 @@ SOFTWARE.
 #include <HStatusPanel.h>
 #include <BoxLabel.h>
 
+#include <rcll_vis_msgs/GameInfo.h>
+
 namespace rcll_draw {
 
     // ##################################################
@@ -42,21 +44,21 @@ namespace rcll_draw {
 
         void setTeams(std::string team_name_cyan, std::string team_name_magenta);
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta);
+        void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void draw(cv::Mat &mat);
 
     private:
         int x, y = 0;
         int w, h = 1;
 
-        TeamHeaderPanel thpan_team_cyan;
-        TeamHeaderPanel thpan_team_magenta;
+        TeamHeaderPanel thp_team_cyan;
+        TeamHeaderPanel thp_team_magenta;
         BoxLabel blbl_points_cyan;
         BoxLabel blbl_points_magenta;
         BoxLabel blbl_versus;
         BoxLabel blbl_points;
         BoxLabel blbl_text;
-        HStatusPanel game_info;
+        HStatusPanel hsp_gameinfo;
     };
 }
 

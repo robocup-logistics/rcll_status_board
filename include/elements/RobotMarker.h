@@ -31,6 +31,8 @@ SOFTWARE.
 #include <Line.h>
 #include <BoxLabel.h>
 
+#include <rcll_vis_msgs/Robot.h>
+
 namespace rcll_draw {
     class RobotMarker {
     public:
@@ -38,21 +40,19 @@ namespace rcll_draw {
         RobotMarker(Team team);
         ~RobotMarker();
 
-        void setOrigin(int x0, int y0, int pixel_per_meter);
-        void setRobotParams(std::string name_str, int id, double d);
-        void setPos(double x, double y, double yaw, ros::Time stamp);
+        void setOrigin(int origin_x, int origin_y, int pixel_per_meter);
+        void setRefBoxView(bool refbox_view);
+        void setRobot(rcll_vis_msgs::Robot &robot);
         void draw(cv::Mat &mat);
 
     private:
         int pixel_per_meter = 10;
-        int x0, y0 = 0;
+        int origin_x, origin_y = 0;
 
-        Team team;
-        std::string name;
-        int id;
+        rcll_vis_msgs::Robot robot;
         double diameter;
         bool pose_set = false;
-        ros::Time stamp;
+        bool refbox_view;
 
         Circle crc_robot;
         Line ln_direction;

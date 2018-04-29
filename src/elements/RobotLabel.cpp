@@ -26,6 +26,8 @@ SOFTWARE.
 
 // RobotLabel ####################################################################
 rcll_draw::RobotLabel::RobotLabel(){
+    this->key = key;
+
     blbl_name.setAlignment(rcll_draw::CenterLeft);
     mlblbl_activity.setAlignment(rcll_draw::TopLeft);
     blbl_activetime.setAlignment(rcll_draw::CenterLeft);
@@ -74,30 +76,25 @@ void rcll_draw::RobotLabel::setGeometry(int x, int y, int w, int h){
     blbl_maintenance.setSize(w, h/5);
 }
 
-void rcll_draw::RobotLabel::setRobotName(int id, std::string name, bool active){
-    if (active){
+void rcll_draw::RobotLabel::setRobot(rcll_vis_msgs::Robot &robot){
+    if (robot.active){
+        this->key = key;
         blbl_name.setFrontColor(rcll_draw::C_GREEN_LIGHT);
-        blbl_name.setContent(" R" + std::to_string(id) + ": " + name);
-    } else {
-        blbl_name.setFrontColor(rcll_draw::C_RED);
-        blbl_name.setContent(" R" + std::to_string(id) + ": inactive");
-    }
-    this->active = active;
-}
+        blbl_name.setContent(" R" + std::to_string(robot.robot_id) + ": " + robot.robot_name);
 
-void rcll_draw::RobotLabel::setRobotStatus(std::string activity_str, double active_time, int maintenance_count, int maintenance_max){
-    if (active){
-        if (activity_str != ""){
-            mlblbl_activity.setContent("Activity: " + activity_str);
+        if (robot.status != ""){
+            mlblbl_activity.setContent("Activity: " + robot.status);
         } else {
             mlblbl_activity.setContent("Activity: unknown");
         }
     } else {
+        blbl_name.setFrontColor(rcll_draw::C_RED);
+        blbl_name.setContent(" " + robot.key + ": inactive");
         mlblbl_activity.setContent("Activity: inactive");
     }
 
-    blbl_activetime.setContent(" Active Time: " + std::to_string((int)(active_time * 100.0)) + "%");
-    blbl_maintenance.setContent(" Maintenance: " + std::to_string(maintenance_count) + " / " + std::to_string(maintenance_max));
+    blbl_activetime.setContent(" Active Time: " + std::to_string((int)(robot.active_time * 100.0)) + "%");
+    blbl_maintenance.setContent(" Maintenance: " + std::to_string(robot.maintenance_count) + " / 1");
 }
 
 void rcll_draw::RobotLabel::draw(cv::Mat &mat){

@@ -35,11 +35,9 @@ SOFTWARE.
 #include <mutex>
 
 #include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/MachinesStatus.h>
+#include <rcll_vis_msgs/Machines.h>
 #include <rcll_vis_msgs/Robots.h>
 #include <rcll_vis_msgs/Products.h>
-#include <rcll_vis_msgs/SetMachines.h>
-#include <rcll_vis_msgs/SetRobot.h>
 #include <rcll_vis_msgs/SetGameField.h>
 
 #include <ros/ros.h>
@@ -64,6 +62,8 @@ class LLSFRefBoxCommunicator{
         int run();
 
     private: // methods
+        bool initMachine(const std::string name, const std::string type, const int team_color, rcll_vis_msgs::Machine &machine);
+
         void handle_reconnect_timer(const boost::system::error_code& error);
         void handle_signal(const boost::system::error_code& error, int signum);
 
@@ -87,19 +87,15 @@ class LLSFRefBoxCommunicator{
           std::string  cfg_refbox_host_;
           unsigned int cfg_refbox_port_;
 
-          std::vector<rcll_vis_msgs::SetRobot> robot_init_msgs;
-          rcll_vis_msgs::SetMachines machines_init_msg;
-          rcll_vis_msgs::MachinesStatus machines_update_msg;
+          rcll_vis_msgs::Machines machines_msg;
           rcll_vis_msgs::GameInfo gameinfo_msg;
           rcll_vis_msgs::Products products_msg;
           rcll_vis_msgs::Robots robots_msg;
 
-          ros::Publisher pub_setmachines;
-          ros::Publisher pub_machinesstatus;
+          ros::Publisher pub_machines;
           ros::Publisher pub_gameinfo;
           ros::Publisher pub_products;
           ros::Publisher pub_robots;
-          ros::Publisher pub_setrobot;
 };
 
 #endif

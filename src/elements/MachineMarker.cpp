@@ -79,43 +79,37 @@ void rcll_draw::MachineMarker::setPhase(rcll_draw::GamePhase gamephase){
     recalculate();
 }
 
-void rcll_draw::MachineMarker::setOrigin(int x0, int y0, int pixel_per_meter){
-    this->x0 = x0;
-    this->y0 = y0;
+void rcll_draw::MachineMarker::setOrigin(int origin_x, int origin_y, int pixel_per_meter){
+    this->origin_x = origin_x;
+    this->origin_y = origin_y;
     this->pixel_per_meter = pixel_per_meter;
 }
 
-void rcll_draw::MachineMarker::setPos(double x, double y, double yaw){
-    this->yaw = std::fmod(yaw + M_PI / 2, 2 * M_PI);
-    xm = x0 - x * pixel_per_meter;
-    ym = y0 + y * pixel_per_meter;
-
-    recalculate();
+void rcll_draw::MachineMarker::setRefBoxView(bool refbox_view){
+    this->refbox_view = refbox_view;
 }
 
-
-void rcll_draw::MachineMarker::setMachineParams(std::string name, double w, double h){
-    this->w = w;
-    this->h = h;
-    blbl_machine.setContent(name);
+void rcll_draw::MachineMarker::setMachine(rcll_vis_msgs::Machine &machine){
+    this->machine = machine;
+    blbl_machine.setContent(machine.name_short);
     blbl_in.setContent("IN");
     blbl_out.setContent("OUT");
-    blbl_machine.setSize(w * pixel_per_meter, h * pixel_per_meter);
-    blbl_in.setSize(w * pixel_per_meter, h * pixel_per_meter);
-    blbl_out.setSize(w * pixel_per_meter, h * pixel_per_meter);
-}
-
-void rcll_draw::MachineMarker::setExplorationIcons(int left, int right){
-    this->exploration_icon_left = left;
-    this->exploration_icon_right = right;
-}
-
-rcll_draw::Team rcll_draw::MachineMarker::getTeam(){
-    return team;
+    blbl_machine.setSize(rcll_draw::machine_length * pixel_per_meter, rcll_draw::machine_width * pixel_per_meter);
+    blbl_in.setSize(rcll_draw::machine_length * pixel_per_meter, rcll_draw::machine_width * pixel_per_meter);
+    blbl_out.setSize(rcll_draw::machine_length * pixel_per_meter, rcll_draw::machine_width * pixel_per_meter);
+    recalculate();
 }
 
 void rcll_draw::MachineMarker::recalculate(){
     double ang;
+    double yaw = machine.yaw;
+
+    if (refbox_view){
+        yaw+=M_PI;
+    }
+
+    yaw = std::fmod(yaw + M_PI / 2, 2 * M_PI);
+
     if (yaw > M_PI / 2 && yaw <= 3 * M_PI / 2){
         ang = yaw + M_PI;
     } else {
@@ -123,15 +117,15 @@ void rcll_draw::MachineMarker::recalculate(){
     }
 
     // calculate the unrotated machine image
-    cv::Mat tmp = cv::Mat(w * pixel_per_meter * 2.0, w * pixel_per_meter * 2.0, CV_8UC4);
+    cv::Mat tmp = cv::Mat(rcll_draw::machine_length * pixel_per_meter * 2.0, rcll_draw::machine_length * pixel_per_meter * 2.0, CV_8UC4);
     cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 8, 0);
-    blbl_machine.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter ) / 2);
+    blbl_machine.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter ) / 2);
     if (yaw > M_PI / 2 && yaw <= 3 * M_PI / 2){
-        blbl_in.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 + h * pixel_per_meter * 0.75);
-        blbl_out.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.8);
+        blbl_in.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter) / 2 + rcll_draw::machine_width * pixel_per_meter * 0.75);
+        blbl_out.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter) / 2 - rcll_draw::machine_width * pixel_per_meter * 0.8);
     } else {
-        blbl_in.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 - h * pixel_per_meter * 0.8);
-        blbl_out.setPos((tmp.cols - w * pixel_per_meter) / 2, (tmp.rows - h * pixel_per_meter) / 2 + h * pixel_per_meter * 0.75);
+        blbl_in.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter) / 2 - rcll_draw::machine_width * pixel_per_meter * 0.8);
+        blbl_out.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter) / 2 + rcll_draw::machine_width * pixel_per_meter * 0.75);
     }
     blbl_machine.draw(tmp);
 
@@ -139,11 +133,11 @@ void rcll_draw::MachineMarker::recalculate(){
         blbl_in.draw(tmp);
         blbl_out.draw(tmp);
     } else if (gamephase == rcll_draw::EXPLORATION){
-        cv::Mat left = rcll_draw::readImage(rcll_draw::getFile(exploration_icon_left, 5));
+        cv::Mat left = rcll_draw::readImage(rcll_draw::getFile(machine.machine_status_exploration1, 5));
         cv::resize(left, left, cv::Size(), 0.15, 0.15, cv::INTER_NEAREST);
         rcll_draw::mergeImages(tmp, left, rcll_draw::getColor(rcll_draw::C_WHITE), 0.25 * tmp.cols, 0.9 * tmp.rows - left.rows);
 
-        cv::Mat right = rcll_draw::readImage(rcll_draw::getFile(exploration_icon_right, 5));
+        cv::Mat right = rcll_draw::readImage(rcll_draw::getFile(machine.machine_status_exploration2, 5));
         cv::resize(right, right, cv::Size(), 0.15, 0.15, cv::INTER_NEAREST);
         rcll_draw::mergeImages(tmp, right, rcll_draw::getColor(rcll_draw::C_WHITE), 0.5 * tmp.cols, 0.9 * tmp.rows - right.rows);
     }
@@ -155,5 +149,14 @@ void rcll_draw::MachineMarker::recalculate(){
 }
 
 void rcll_draw::MachineMarker::draw(cv::Mat &mat){
+    double xm, ym = 0;
+    if (refbox_view){
+        xm = origin_x + machine.x * pixel_per_meter;
+        ym = origin_y - machine.y * pixel_per_meter;
+    } else {
+        xm = origin_x - machine.x * pixel_per_meter;
+        ym = origin_y + machine.y * pixel_per_meter;
+    }
+
     rcll_draw::mergeImages(mat, img, rcll_draw::getColor(rcll_draw::C_WHITE), xm - img.cols / 2, ym - img.rows / 2);
 }

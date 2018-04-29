@@ -30,6 +30,11 @@ SOFTWARE.
 #include <TeamHeaderPanel.h>
 #include <GameField.h>
 
+#include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/Machine.h>
+#include <rcll_vis_msgs/Robot.h>
+#include <rcll_vis_msgs/SetGameField.h>
+
 namespace rcll_draw {
 
     // ##################################################
@@ -40,15 +45,11 @@ namespace rcll_draw {
         ~FieldArea();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
-        void setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta);
-        void setLayout(double field_w, double field_h, int zones_x, int zones_y, std::vector<int> insertion_zones);
-        void setWalls(std::vector<float> wall_coordinates);
-        void setTeam(std::string team_name, rcll_draw::Team team_color);
-        size_t addRobot(std::string name, int id, rcll_draw::Team team);
-        void setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp);
-        void setMachine(std::string name, rcll_draw::Team team, size_t index);
-        void setMachinePos(double x, double y, double yaw, size_t index);
-        void setMachineReport(int report1_status, int report2_status, size_t index);
+        void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
+        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
+        void setRefBoxView(bool refbox_view);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void draw(cv::Mat &mat);
 
     private:
@@ -57,10 +58,10 @@ namespace rcll_draw {
 
         rcll_draw::GamePhase gamephase;
 
-        HStatusPanel game_info;
-        TeamHeaderPanel team_cyan;
-        TeamHeaderPanel team_magenta;
-        GameField gamefield;
+        HStatusPanel hsp_gameinfo;
+        TeamHeaderPanel thp_team_cyan;
+        TeamHeaderPanel thp_team_magenta;
+        GameField gf_gamefield;
         BoxLabel blbl_text;
 
     };

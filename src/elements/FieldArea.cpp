@@ -26,10 +26,10 @@ SOFTWARE.
 // FieldArea ####################################################################
 
 rcll_draw::FieldArea::FieldArea(){
-    game_info = HStatusPanel();
-    team_cyan = TeamHeaderPanel();
-    team_magenta = TeamHeaderPanel();
-    gamefield = GameField();
+    hsp_gameinfo = HStatusPanel();
+    thp_team_cyan = TeamHeaderPanel();
+    thp_team_magenta = TeamHeaderPanel();
+    gf_gamefield = GameField();
 
     blbl_text.setContent("first icon: reported position    second icon: reported orientation");
     blbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
@@ -47,84 +47,43 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
     this->y = y;
     this->w = w;
     this->h = h;
-    game_info.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
-    team_cyan.setGeometry(x, y, w * 0.2, h * 0.1);
-    team_magenta.setGeometry(x + w * 0.8, y, w * 0.2, h * 0.1);
-    gamefield.setGeometry(x, y + h * 0.1 + gapsize, w, h * 0.9 - gapsize);
+    hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
+    thp_team_cyan.setGeometry(x, y, w * 0.2, h * 0.1);
+    thp_team_magenta.setGeometry(x + w * 0.8, y, w * 0.2, h * 0.1);
+    gf_gamefield.setGeometry(x, y + h * 0.1 + gapsize, w, h * 0.9 - gapsize);
     blbl_text.setSize(w, h * 0.1);
     blbl_text.setPos(x, y + h - gapsize);
 }
 
-void rcll_draw::FieldArea::setGameInfo(std::string gamestate, std::string gamephase, int time, int score_cyan, int score_magenta){
-    game_info.setContent(gamestate, gamephase, time, score_cyan, score_magenta);
-    if (gamephase == "PRE GAME"){
-        gamefield.setPhase(rcll_draw::PRE_GAME);
-        this->gamephase = rcll_draw::PRE_GAME;
-    } else if (gamephase == "SETUP"){
-        gamefield.setPhase(rcll_draw::SETUP);
-        this->gamephase = rcll_draw::SETUP;
-    } else if (gamephase == "EXPLORATION"){
-        gamefield.setPhase(rcll_draw::EXPLORATION);
-        this->gamephase = rcll_draw::EXPLORATION;
-    } else if (gamephase == "PRODUCTION"){
-        gamefield.setPhase(rcll_draw::PRODUCTION);
-        this->gamephase = rcll_draw::PRODUCTION;
-    } else if (gamephase == "POST GAME"){
-        gamefield.setPhase(rcll_draw::POST_GAME);
-        this->gamephase = rcll_draw::POST_GAME;
-    } else {
-        gamefield.setPhase(rcll_draw::PRE_GAME);
-        this->gamephase = rcll_draw::PRE_GAME;
-    }
+void rcll_draw::FieldArea::setRefBoxView(bool refbox_view){
+    gf_gamefield.setRefBoxView(refbox_view);
 }
 
-void rcll_draw::FieldArea::setLayout(double field_w, double field_h, int zones_x, int zones_y, std::vector<int> insertion_zones){
-    gamefield.setLayout(field_w, field_h, zones_x, zones_y, insertion_zones);
+void rcll_draw::FieldArea::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+    hsp_gameinfo.setContent(gameinfo);
+    thp_team_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
+    thp_team_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
+    this->gamephase = (rcll_draw::GamePhase)gameinfo.game_phase;
+    gf_gamefield.setPhase((rcll_draw::GamePhase)gameinfo.game_phase);
 }
 
-void rcll_draw::FieldArea::setWalls(std::vector<float> wall_coordinates){
-    for (size_t i = 0; i < wall_coordinates.size(); i+=4){
-        if (i + 3 < wall_coordinates.size()){
-            gamefield.addWall(wall_coordinates[i], wall_coordinates[i + 1], wall_coordinates[i + 2], wall_coordinates[i + 3]);
-        }
-    }
+void rcll_draw::FieldArea::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
+    gf_gamefield.setGameField(setgamefield);
 }
 
-void rcll_draw::FieldArea::setTeam(std::string team_name, rcll_draw::Team team_color){
-    if (team_color == rcll_draw::CYAN){
-        team_cyan.setTeam(team_name, team_color);
-    } else if (team_color == rcll_draw::MAGENTA){
-        team_magenta.setTeam(team_name, team_color);
-    } else {
-        ROS_WARN("Invalid team color");
-    }
+void rcll_draw::FieldArea::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
+    return gf_gamefield.setRobots(robots);
 }
 
-size_t rcll_draw::FieldArea::addRobot(std::string name, int id, rcll_draw::Team team){
-    return gamefield.addRobot(name, id, team);
-}
-
-void rcll_draw::FieldArea::setRobotPos(double x, double y, double yaw, size_t index, ros::Time stamp){
-    gamefield.setRobotPos(x, y, yaw, index, stamp);
-}
-
-void rcll_draw::FieldArea::setMachine(std::string name, rcll_draw::Team team, size_t index){
-    return gamefield.setMachine(name, team, index);
-}
-
-void rcll_draw::FieldArea::setMachinePos(double x, double y, double yaw, size_t index){
-    gamefield.setMachinePos(x, y, yaw, index);
-}
-
-void rcll_draw::FieldArea::setMachineReport(int report1_status, int report2_status, size_t index){
-    gamefield.setMachineReport(report1_status, report2_status, index);
+void rcll_draw::FieldArea::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+    return gf_gamefield.setMachines(machines);
 }
 
 void rcll_draw::FieldArea::draw(cv::Mat &mat){
-    game_info.draw(mat);
-    team_cyan.draw(mat);
-    team_magenta.draw(mat);
-    gamefield.draw(mat);
+    hsp_gameinfo.draw(mat);
+    thp_team_cyan.draw(mat);
+    thp_team_magenta.draw(mat);
+    gf_gamefield.draw(mat);
 
     if (gamephase == rcll_draw::EXPLORATION){
         blbl_text.draw(mat);

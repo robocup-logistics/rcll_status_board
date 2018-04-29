@@ -89,11 +89,15 @@ namespace rcll_draw {
     cv::Mat readImage(std::string file);
     void mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst);
     std::string getFile(int number, int type);
+    std::string getGamePhaseStr(int gamephase);
+    std::string getGameStateStr(int gamestate);
 
     void setImagePath(std::string path);
     std::string getImagePath();
 
     static std::string image_path;
+    static const double machine_length = 0.7;
+    static const double machine_width = 0.35;
 }
 
 #endif

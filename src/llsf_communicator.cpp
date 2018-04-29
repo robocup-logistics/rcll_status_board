@@ -62,14 +62,10 @@ LLSFRefBoxCommunicator::LLSFRefBoxCommunicator(std::string host, int recv_port)
 
     ros::NodeHandle nh;
 
-    pub_setmachines = nh.advertise<rcll_vis_msgs::SetMachines>("refbox/set_machines", 10, true);
     pub_gameinfo = nh.advertise<rcll_vis_msgs::GameInfo>("refbox/gameinfo", 10);
-    pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/update_products", 10);
-    pub_machinesstatus = nh.advertise<rcll_vis_msgs::MachinesStatus>("refbox/update_machines", 10);
-    pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/update_robots", 10);
-    pub_setrobot = nh.advertise<rcll_vis_msgs::SetRobot>("refbox/set_robot", 10);
-
-    robot_init_msgs.resize(6);
+    pub_products = nh.advertise<rcll_vis_msgs::Products>("refbox/products", 10);
+    pub_machines = nh.advertise<rcll_vis_msgs::Machines>("refbox/machines", 10);
+    pub_robots = nh.advertise<rcll_vis_msgs::Robots>("refbox/robots", 10);
 }
 
 
@@ -82,6 +78,52 @@ LLSFRefBoxCommunicator::~LLSFRefBoxCommunicator() {
 
     delete client;
     client = 0;
+}
+
+bool LLSFRefBoxCommunicator::initMachine(const std::string name, const std::string type, int const team_color, rcll_vis_msgs::Machine &machine){
+    if (type == "BS"){
+        machine.name_short = "BS";
+        machine.name_long = "Base Station";
+    } else if (type == "DS"){
+        machine.name_short = "DS";
+        machine.name_long = "Delivery Station";
+    } else if (type == "SS"){
+        machine.name_short = "SS";
+        machine.name_long = "Storage Station";
+    } else if (type == "RS"){
+        if (name.find("1") != std::string::npos){
+            machine.name_short = "RS1";
+            machine.name_long = "Ring Station 1";
+        } else if (name.find("2") != std::string::npos){
+            machine.name_short = "RS2";
+            machine.name_long = "Ring Station 2";
+        } else {
+            return false;
+        }
+    } else if (type == "CS"){
+        if (name.find("1") != std::string::npos){
+            machine.name_short = "CS1";
+            machine.name_long = "Cap Station 1";
+        } else if (name.find("2") != std::string::npos){
+            machine.name_short = "CS2";
+            machine.name_long = "Cap Station 2";
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    if (team_color == llsf_msgs::CYAN){
+        machine.team = llsf_msgs::CYAN;
+    } else if (team_color == llsf_msgs::MAGENTA){
+        machine.team = llsf_msgs::MAGENTA;
+    } else {
+        return false;
+    }
+
+    machine.key = machine.name_short;
+    return true;
 }
 
 
@@ -150,27 +192,21 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         robots_msg.robots.clear();
         for (int i = 0; i < r->robots_size(); i++){
             llsf_msgs::Robot rob = r->robots(i);
-            if (robot_init_msgs[i].robot_name == ""){
-                robot_init_msgs[i].index = i;
-                robot_init_msgs[i].robot_name = rob.name();
-                robot_init_msgs[i].robot_id = rob.number();
-                robot_init_msgs[i].team = rob.team_color();
-                robot_init_msgs[i].active = true;
-                pub_setrobot.publish(robot_init_msgs[i]);
-            } else {
-                if (rob.state() == llsf_msgs::ACTIVE){
-                    rcll_vis_msgs::Robot robot_update;
-                    robot_update.index = i;
-                    robot_update.active = true;
-                    robot_update.status = ""; //TODO
-                    robot_update.active_time = 0.0; //TODO
-                    robot_update.maintenance_count = rob.maintenance_cycles();
-                    robot_update.x = rob.pose().x();
-                    robot_update.y = rob.pose().y();
-                    robot_update.yaw = rob.pose().ori();
-                    robot_update.stamp.data = ros::Time::now();
-                    robots_msg.robots.push_back(robot_update);
-                }
+            if (rob.state() == llsf_msgs::ACTIVE){
+                rcll_vis_msgs::Robot robot;
+                robot.key = "Rob" + std::to_string(robot.robot_id);
+                robot.robot_name = rob.name();
+                robot.robot_id = rob.number();
+                robot.team = rob.team_color();
+                robot.active = true;
+                robot.status = ""; //TODO
+                robot.active_time = 0.0; //TODO
+                robot.maintenance_count = rob.maintenance_cycles();
+                robot.x = rob.pose().x();
+                robot.y = rob.pose().y();
+                robot.yaw = rob.pose().ori();
+                robot.stamp.data = ros::Time::now();
+                robots_msg.robots.push_back(robot);
             }
         }
         pub_robots.publish(robots_msg);
@@ -178,124 +214,31 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
 
     std::shared_ptr<llsf_msgs::MachineInfo> minfo;
     if ((minfo = std::dynamic_pointer_cast<llsf_msgs::MachineInfo>(msg))) {
-        if (machines_init_msg.machines.size() == 0){
-            machines_init_msg.machines.resize(minfo->machines_size());
-            for (int i = 0; i < minfo->machines_size(); i++){
-                llsf_msgs::Machine m = minfo->machines(i);
-                rcll_vis_msgs::MachineInit m_init;
-                if (m.type() == "BS"){
-                    m_init.name_short = "BS";
-                    m_init.name_long = "Base Station";
-                    m_init.index = 0;
-                } else if (m.type() == "DS"){
-                    m_init.name_short = "DS";
-                    m_init.name_long = "Delivery Station";
-                    m_init.index = 1;
-                } else if (m.type() == "SS"){
-                    m_init.name_short = "SS";
-                    m_init.name_long = "Storage Station";
-                    m_init.index = 2;
-                } else if (m.type() == "RS"){
-                    if (m.name().find("1") != std::string::npos){
-                        m_init.name_short = "RS1";
-                        m_init.name_long = "Ring Station 1";
-                        m_init.index = 3;
-                    } else if (m.name().find("2") != std::string::npos){
-                        m_init.name_short = "RS2";
-                        m_init.name_long = "Ring Station 2";
-                        m_init.index = 4;
-                    } else {
-                        continue;
-                    }
-                } else if (m.type() == "CS"){
-                    if (m.name().find("1") != std::string::npos){
-                        m_init.name_short = "CS1";
-                        m_init.name_long = "Cap Station 1";
-                        m_init.index = 5;
-                    } else if (m.name().find("2") != std::string::npos){
-                        m_init.name_short = "CS2";
-                        m_init.name_long = "Cap Station 2";
-                        m_init.index = 6;
-                    } else {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-
-                if (m.team_color() == llsf_msgs::CYAN){
-                    m_init.team = llsf_msgs::CYAN;
-                } else if (m.team_color() == llsf_msgs::MAGENTA){
-                    m_init.team = llsf_msgs::MAGENTA;
-                    m_init.index += 7;
-                } else {
-                    continue;
-                }
-
-                if ((int)m.zone() > 1000){
-                    // magenta
-                    m_init.x = -((double)(((int)m.zone() - 1000) / 10)) + 0.5;
-                    m_init.y = (double)(((int)m.zone() - 1000) % 10) - 0.5;
-                } else {
-                    // cyan
-                    m_init.x = (double)((int)m.zone() / 10) - 0.5;
-                    m_init.y = (double)((int)m.zone() % 10) - 0.5;
-                }
-                m_init.yaw = (int)m.rotation() / 180.0 * M_PI;
-                machines_init_msg.machines[m_init.index] = m_init;
+        machines_msg.machines.clear();
+        for (int i = 0; i < minfo->machines_size(); i++){
+            llsf_msgs::Machine m = minfo->machines(i);
+            rcll_vis_msgs::Machine machine;
+            if (!initMachine(m.name(), m.type(), m.team_color(), machine)){
+                continue;
             }
 
-            pub_setmachines.publish(machines_init_msg);
-        }
-
-        if (machines_init_msg.machines.size() == 14){
-            machines_update_msg.machines.clear();
-            for (int i = 0; i < minfo->machines_size(); i++){
-                llsf_msgs::Machine m = minfo->machines(i);
-                rcll_vis_msgs::MachineStatus m_update;
-                if (m.type() == "BS"){
-                    m_update.index = 0;
-                } else if (m.type() == "DS"){
-                    m_update.index = 1;
-                } else if (m.type() == "SS"){
-                    m_update.index = 2;
-                } else if (m.type() == "RS"){
-                    if (m.name().find("1") != std::string::npos){
-                        m_update.index = 3;
-                    } else if (m.name().find("2") != std::string::npos){
-                        m_update.index = 4;
-                    } else {
-                        continue;
-                    }
-                } else if (m.type() == "CS"){
-                    if (m.name().find("1") != std::string::npos){
-                        m_update.index = 5;
-                    } else if (m.name().find("2") != std::string::npos){
-                        m_update.index = 6;
-                    } else {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-
-                if (m.team_color() == llsf_msgs::CYAN){
-
-                } else if (m.team_color() == llsf_msgs::MAGENTA){
-
-                    m_update.index += 7;
-                } else {
-                    continue;
-                }
-
-                m_update.machine_status_exploration1 = (int)m.exploration_zone_state();
-                m_update.machine_status_exploration2 = (int)m.exploration_rotation_state();
-                m_update.machine_status_production = m.state();
-                machines_update_msg.machines.push_back(m_update);
+            if ((int)m.zone() > 1000){
+                // magenta
+                machine.x = -((double)(((int)m.zone() - 1000) / 10)) + 0.5;
+                machine.y = (double)(((int)m.zone() - 1000) % 10) - 0.5;
+            } else {
+                // cyan
+                machine.x = (double)((int)m.zone() / 10) - 0.5;
+                machine.y = (double)((int)m.zone() % 10) - 0.5;
             }
-
-            pub_machinesstatus.publish(machines_update_msg);
+            machine.yaw = (int)m.rotation() / 180.0 * M_PI;
+            machine.machine_status_exploration1 = (int)m.exploration_zone_state();
+            machine.machine_status_exploration2 = (int)m.exploration_rotation_state();
+            machine.machine_status_production = m.state();
+            machines_msg.machines.push_back(machine);
         }
+
+        pub_machines.publish(machines_msg);
     }
 
     std::shared_ptr<llsf_msgs::OrderInfo> ordins;

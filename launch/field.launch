@@ -10,5 +10,6 @@
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />
 		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
+		<param name="refbox_view" value="true" />
 	</node>
 </launch>

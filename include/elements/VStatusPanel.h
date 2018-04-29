@@ -28,6 +28,8 @@ SOFTWARE.
 #include <util.h>
 #include <BoxLabel.h>
 
+#include <rcll_vis_msgs/GameInfo.h>
+
 namespace rcll_draw {
     class VStatusPanel {
     public:
@@ -36,7 +38,7 @@ namespace rcll_draw {
         ~VStatusPanel();
 
         void setGeometry(int x, int y, int w, int h);
-        void setContent(std::string gamestate, std::string gamephase, int time, int score);
+        void setContent(rcll_vis_msgs::GameInfo &gameinfo);
         void draw(cv::Mat &mat);
     private:
         Team team;

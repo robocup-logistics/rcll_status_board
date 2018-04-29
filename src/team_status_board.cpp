@@ -29,12 +29,9 @@ SOFTWARE.
 #include <ros/package.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/MachinesStatus.h>
 #include <rcll_vis_msgs/Robots.h>
 #include <rcll_vis_msgs/Products.h>
-#include <rcll_vis_msgs/SetMachines.h>
-#include <rcll_vis_msgs/SetRobot.h>
-#include <rcll_vis_msgs/SetGameField.h>
+#include <rcll_vis_msgs/Machines.h>
 
 #include <drawing.h>
 #include <elements.h>
@@ -46,14 +43,7 @@ This node draws the team status board for a given teamcolor
 ====================================================================================================== */
 
 namespace {
-    std::map<int, std::string> gamestates;
-    std::map<int, std::string> gamephases;
-
     rcll_draw::GamePhase gamephase;
-
-    int robots = 0;
-    std::map<int, int> machine_indices; // maps from global index (both teams) to local index (team for this view)
-    std::map<int, int> robot_indices; // maps from global index (both teams) to local index (team for this view)
 
     rcll_draw::Team team = rcll_draw::NO_TEAM;
 
@@ -63,63 +53,21 @@ namespace {
     rcll_draw::TeamAreaPostGame main_area_postgame;
 }
 
-void cb_gameinfo(const rcll_vis_msgs::GameInfo::ConstPtr& msg){
-    main_area_pregamesetup.setTeams(msg->team_name_cyan, msg->team_name_magenta);
-    main_area_pregamesetup.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
-    main_area_exploration.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
-    if (team == rcll_draw::CYAN){
-        main_area_production.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan);
-    } else if (team == rcll_draw::MAGENTA){
-        main_area_production.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_magenta);
-    } else {
-        main_area_production.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, 0);
-    }
-    main_area_postgame.setTeams(msg->team_name_cyan, msg->team_name_magenta);
-    main_area_postgame.setGameInfo(gamestates[msg->game_state], gamephases[msg->game_phase], (int)msg->phase_time, msg->team_points_cyan, msg->team_points_magenta);
-
-    gamephase = (rcll_draw::GamePhase)msg->game_phase;
+void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
+    gamephase = (rcll_draw::GamePhase)msg.game_phase;
+    main_area_pregamesetup.setGameInfo(msg);
+    main_area_exploration.setGameInfo(msg);
+    main_area_production.setGameInfo(msg);
+    main_area_postgame.setGameInfo(msg);
 }
 
-void cb_set_machine(const rcll_vis_msgs::SetMachines::ConstPtr& msg){
-    ROS_INFO("Initializing machines");
-    int c = 0;
-    for (size_t i = 0; i < msg->machines.size(); i++){
-        if ((rcll_draw::Team)msg->machines[i].team == team){
-            ROS_INFO("  name=%s team=%i global_index=%i local_index=%i", msg->machines[i].name_short.c_str(), msg->machines[i].team, msg->machines[i].index, c);
-            main_area_production.setMachineName(msg->machines[i].name_long, msg->machines[i].name_short, c);
-            main_area_exploration.setMachineName(msg->machines[i].name_long, msg->machines[i].name_short, c);
-            machine_indices[msg->machines[i].index] = c++;
-        } else {
-            machine_indices[msg->machines[i].index] = -1;
-        }
-    }
+void cb_machines(rcll_vis_msgs::Machines msg){
+    main_area_exploration.setMachines(msg.machines);
+    main_area_production.setMachines(msg.machines);
 }
 
-void cb_machines(const rcll_vis_msgs::MachinesStatus::ConstPtr& msg){
-    for (size_t i = 0; i < msg->machines.size(); i++){
-        if (machine_indices[msg->machines[i].index] >= 0){
-            main_area_production.setMachineStatus(msg->machines[i].machine_status_production, machine_indices[msg->machines[i].index]);
-            main_area_exploration.setMachineStatus(msg->machines[i].machine_status_exploration1, msg->machines[i].machine_status_exploration2, machine_indices[msg->machines[i].index]);
-        }
-    }
-}
-
-void cb_set_robot(const rcll_vis_msgs::SetRobot::ConstPtr& msg){
-    if ((rcll_draw::Team)msg->team == team){
-        robot_indices[msg->index] = robots++;
-        ROS_INFO("Initializing robot name=%s number=%i team=%i, globalindex=%i, localindex=%i", msg->robot_name.c_str(), msg->robot_id, msg->team, msg->index, robot_indices[msg->index]);
-        main_area_production.setRobotName(msg->robot_id, msg->robot_name, msg->active, robot_indices[msg->index]);
-    } else {
-        robot_indices[msg->index] = robot_indices.size()-1;
-    }
-}
-
-void cb_robots(const rcll_vis_msgs::Robots::ConstPtr& msg){
-    for (size_t i = 0; i < msg->robots.size(); i++){
-        if (robot_indices[msg->robots[i].index] >= 0){
-            main_area_production.setRobotStatus(msg->robots[i].status, msg->robots[i].active_time, msg->robots[i].maintenance_count, 1, robot_indices[msg->robots[i].index]);
-        }
-    }
+void cb_robots(rcll_vis_msgs::Robots msg){
+    main_area_production.setRobots(msg.robots);
 }
 
 void cb_products(const rcll_vis_msgs::Products::ConstPtr& msg){
@@ -175,11 +123,9 @@ int main(int argc, char** argv){
     std::string image_path = "";
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
-    ros::Subscriber sub_robots = nh.subscribe("refbox/update_robots", 10, cb_robots);
-    ros::Subscriber sub_setmachine = nh.subscribe("refbox/set_machines", 10, cb_set_machine);
-    ros::Subscriber sub_setrobot = nh.subscribe("refbox/set_robot", 10, cb_set_robot);
-    ros::Subscriber sub_machines = nh.subscribe("refbox/update_machines", 10, cb_machines);
-    ros::Subscriber sub_products = nh.subscribe("refbox/update_products", 10, cb_products);
+    ros::Subscriber sub_robots = nh.subscribe("refbox/robots", 10, cb_robots);
+    ros::Subscriber sub_machines = nh.subscribe("refbox/machines", 10, cb_machines);
+    ros::Subscriber sub_products = nh.subscribe("refbox/products", 10, cb_products);
 
     private_nh.getParam("side", team_int);
     private_nh.getParam("screen_x", res_x);
@@ -205,17 +151,6 @@ int main(int argc, char** argv){
     } else {
         title = "STATUS BOARD";
     }
-
-    gamestates[0] = "INIT";
-    gamestates[1] = "WAIT START";
-    gamestates[2] = "RUNNING";
-    gamestates[3] = "PAUSED";
-
-    gamephases[0] = "PRE GAME";
-    gamephases[10] = "SETUP";
-    gamephases[20] = "EXPLORATION";
-    gamephases[30] = "PRODUCTION";
-    gamephases[40] = "POST GAME";
 
     int bordergapsize = 0.05 * res_y;
     int gapsize = 0.02 * res_y;

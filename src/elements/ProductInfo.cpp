@@ -37,15 +37,10 @@ rcll_draw::ProductInfo::~ProductInfo(){
 
 void rcll_draw::ProductInfo::setGeometry(int x, int y, int w, int h, int gapsize){
     int w1 = (w - 3 * gapsize) / 4;
-    product_labels[0].setGeometry(x, y, w1, h);
-    product_labels[1].setGeometry(x + gapsize + w1, y, w1, h);
-    product_labels[2].setGeometry(x + 2 * (gapsize + w1), y, w1, h);
-    product_labels[3].setGeometry(x + 3 * (gapsize + w1), y, w1, h);
-
-    product_labels[0].setProduct(empty_product);
-    product_labels[1].setProduct(empty_product);
-    product_labels[2].setProduct(empty_product);
-    product_labels[3].setProduct(empty_product);
+    for(size_t i = 0; i < product_labels.size(); i++){
+        product_labels[i].setGeometry(x + i * (gapsize + w1), y, w1, h);
+        product_labels[i].setProduct(empty_product);
+    }
 }
 
 void rcll_draw::ProductInfo::setProduct(ProductInformation pi, int index){

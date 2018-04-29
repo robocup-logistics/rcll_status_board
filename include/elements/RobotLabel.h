@@ -29,6 +29,8 @@ SOFTWARE.
 #include <BoxLabel.h>
 #include <MultilineBoxLabel.h>
 
+#include <rcll_vis_msgs/Robot.h>
+
 namespace rcll_draw {
     class RobotLabel {
     public:
@@ -36,12 +38,11 @@ namespace rcll_draw {
         ~RobotLabel();
 
         void setGeometry(int x, int y, int w, int h);
-        void setRobotName(int id, std::string name, bool active);
-        void setRobotStatus(std::string mlblbl_activity, double active_time, int blbl_maintenance, int maintenance_max);
+        void setRobot(rcll_vis_msgs::Robot &robot);
         void draw(cv::Mat &mat);
 
     private:
-        bool active;
+        std::string key;
 
         BoxLabel blbl_name;
         MultilineBoxLabel mlblbl_activity;
