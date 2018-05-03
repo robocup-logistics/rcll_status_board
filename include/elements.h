@@ -28,6 +28,6 @@
 #include <TeamAreaProduction.h>
 #include <TeamAreaPostGame.h>
 #include <FieldArea.h>
-#include <CompleteAreaExploration.h>
+//#include <CompleteAreaExploration.h>
 
 #endif
