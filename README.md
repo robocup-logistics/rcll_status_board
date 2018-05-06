@@ -22,15 +22,13 @@ The following ROS packages are required to run this package:
 
 Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspaces src folder.
 
-Adjust the llsf_msgs and protobuf_comm packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
+Adjust the llsf_msgs packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path.
 ```
 (in CMakeLists.txt)
 ...
 set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
 ...
 ```
-Restart your system. For some reasons the refbox header files are just found by ROS build process after a restart of the system.
-
 Build your catkin workspace
 
 ```
@@ -38,11 +36,24 @@ cd ~/catkin_ws
 catkin_make
 ```
 
-Start the status boards, the argument 'side' is required and expects '0' for side cyan and '1' for side magenta, while the arguments 'show_field' and 'show_team' are optional and expect 'true' or 'false'
-```
-roslaunch rcll_status_board llsf_interface.launch side:=1 show_field:=true show_team:=false
-```
+Start the status boards. You need to start one launchfile which starts a node providing the data and at least one launchfile which starts a displaying node. The following launchiles exist:
 
+Launchfiles providing the data:
+- comm.launch establishes the communication to the refbox and provides the data from there. You might adjust the refboxes ip in the launchfile.
+- dummy.launch provides static data for testing purposes.
+
+Launchfiles displaying the data:
+- cyan.launch starts the team status board for the cyan side.
+- magenta.launch starts the team status board for the magenta side.
+- field.launch starts the field status board.
+
+You will need a new terminal window for each launchile you start.
+
+Example:
+```
+Terminal1: roslaunch rcll_status_board comm.launch
+Terminal2: roslaunch rcll_status_board field.launch
+```
 ## Versioning
 
 For the versions available, see the [github repository](https://github.com/ethflo/rcll_status_board).
