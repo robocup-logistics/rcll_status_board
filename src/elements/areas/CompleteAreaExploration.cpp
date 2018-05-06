@@ -49,7 +49,7 @@ void rcll_draw::CompleteAreaExploration::setGeometry(int x, int y, int w, int h,
     this->w = w;
     this->h = h;
     hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1 - gapsize);
-    gf_gamefield.setGeometry(x + w * 0.15, y + h * 0.1 + gapsize, w * 0.7, h * 0.78 - gapsize);
+    gf_gamefield.setGeometry(x + w * 0.15, y + h * 0.1 + gapsize, 0.7);
     thp_team_header_cyan.setGeometry(x, y, w * 0.15, h * 0.2);
     thp_team_header_magenta.setGeometry(x + w * 0.85, y + h * 0.1 + gapsize, w * 0.15, h * 0.2);
     mie_machine_info_cyan.setGeometry(x, y, w * 0.15, h * 0.78 - gapsize, gapsize);

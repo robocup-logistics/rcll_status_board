@@ -47,9 +47,12 @@ namespace rcll_draw {
         ~GameField();
 
         void setPhase(rcll_draw::GamePhase gamephase);
-        void setGeometry(int x, int y, int w, int h);
+        void setGeometry(int x, int y, double scale);
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setRefBoxView(bool refbox_view);
+
+        int getW();
+        int getH();
 
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
@@ -57,11 +60,11 @@ namespace rcll_draw {
 
     private:
         int x, y = 0;
-        int w, h = 1;
+        int w = 1290, h = 750;
+        double scale = 1.0;
+        cv::Mat origin;
 
-        int x0, y0 = 0;
         int origin_x, origin_y = 0;
-        int w0, h0 = 1;
 
         bool refbox_view;
         int pixel_per_meter = 10;

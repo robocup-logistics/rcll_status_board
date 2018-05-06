@@ -65,6 +65,8 @@ void rcll_draw::RobotInfo::setGeometry(int x, int y, int w, int h, int gapsize){
     for (size_t i = 0; i < rl_robots.size(); i++){
         rl_robots[i].setGeometry(x + i * (gapsize + w1), y + h*0.2, w1, h*0.8);
     }
+
+    ROS_INFO("RobotInfo w=%i h=%i", w, h);
 }
 
 void rcll_draw::RobotInfo::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){

@@ -63,6 +63,8 @@ void rcll_draw::TeamHeaderPanel::setGeometry(int x, int y, int w, int h){
 
     blbl_header_color.setFontSize(2.0);
     blbl_header_name.setFontSize(1.0);
+
+    ROS_INFO("TeamheaderPanel w=%i h=%i", w, h);
 }
 
 void rcll_draw::TeamHeaderPanel::draw(cv::Mat &mat){

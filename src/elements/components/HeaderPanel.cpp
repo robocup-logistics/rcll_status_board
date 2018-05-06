@@ -47,6 +47,8 @@ void rcll_draw::HeaderPanel::setGeometry(int y, int w, int h){
     blbl_header.setPos(0, y);
     blbl_header.setSize(w, h);
     blbl_header.setFontSize(2.0);
+
+    ROS_INFO("HeaderPanel w=%i h=%i", w, h);
 }
 
 void rcll_draw::HeaderPanel::draw(cv::Mat &mat){

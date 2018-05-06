@@ -26,6 +26,7 @@ SOFTWARE.
 // GameField ####################################################################
 
 rcll_draw::GameField::GameField(){
+    origin = cv::Mat(h, w, CV_8UC4);
     gamephase = rcll_draw::PRE_GAME;
 
     rct_background.setBackgroundColor(rcll_draw::C_GREY_DARK);
@@ -75,16 +76,18 @@ void rcll_draw::GameField::setPhase(rcll_draw::GamePhase gamephase){
 }
 
 
-void rcll_draw::GameField::setGeometry(int x, int y, int w, int h){
+void rcll_draw::GameField::setGeometry(int x, int y, double scale){
     this->x = x;
     this->y = y;
-    this->w = w;
-    this->h = h;
+    this->scale = scale;
+}
 
-    w0 = w;
-    h0 = h;
-    x0 = x + w / 2;
-    y0 = y;
+int rcll_draw::GameField::getW(){
+    return w;
+}
+
+int rcll_draw::GameField::getH(){
+    return h;
 }
 
 void rcll_draw::GameField::setRefBoxView(bool refbox_view){
@@ -92,28 +95,27 @@ void rcll_draw::GameField::setRefBoxView(bool refbox_view){
 }
 
 void rcll_draw::GameField::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
-    double refbox_factor = 1.0;
+    int refbox_factor = 1.0;
     int zone_offset_px, zone_offset_nx, zone_offset_y = 0;
 
     // get the optimal field size
-    int gapsize = h0 * 0.02;
-    pixel_per_meter = (h0 - 2 * gapsize) / setgamefield.field_width;
-    h0 = (int)setgamefield.field_width * pixel_per_meter;
-    w0 = (int)setgamefield.field_length * pixel_per_meter;
+    int gapsize = h * 0.02;
+    pixel_per_meter = (h - 2 * gapsize) / setgamefield.field_width;
+    int h0 = (int)setgamefield.field_width * pixel_per_meter;
+    int w0 = (int)setgamefield.field_length * pixel_per_meter;
 
-    y0 = y0 + gapsize;
 
     if (refbox_view){
-        refbox_factor = -1.0;
-        origin_x = x0;
-        origin_y = y0 + h0;
+        refbox_factor = -1;
+        origin_x = gapsize + w0 / 2;
+        origin_y = gapsize + h0;
         zone_offset_px = 0;
         zone_offset_nx = 1;
         zone_offset_y = -1;
     } else {
-        refbox_factor = 1.0;
-        origin_x = x0;
-        origin_y = y0;
+        refbox_factor = 1;
+        origin_x = gapsize + w0 / 2;
+        origin_y = gapsize;
         zone_offset_px = -1;
         zone_offset_nx = 0;
         zone_offset_y = 0;
@@ -132,8 +134,8 @@ void rcll_draw::GameField::setGameField(rcll_vis_msgs::SetGameField &setgamefiel
     int zone_w = w0 / (setgamefield.zones_x);
     for (int i = 0; i < setgamefield.zones_x + 1; i++){
         Line line;
-        int x_line = x0 - (setgamefield.zones_x / 2) * zone_w + i * zone_w;
-        line.setLineByPoints(x_line, y0 + h0, x_line, y0);
+        int x_line = gapsize + i * zone_w;
+        line.setLineByPoints(x_line, origin_y, x_line, origin_y + refbox_factor * h0);
         line.setBorderSize(1);
         line.setBorderColor(rcll_draw::C_BLACK);
         lnes_zone_lines.push_back(line);
@@ -143,8 +145,8 @@ void rcll_draw::GameField::setGameField(rcll_vis_msgs::SetGameField &setgamefiel
     int zone_h = h0 / (setgamefield.zones_y);
     for (int i = 0; i < setgamefield.zones_y + 1; i++){
         Line line;
-        int y_line = y0 + h0 - i * zone_h;
-        line.setLineByPoints(x0 - w0 / 2, y_line, x0 + w0 / 2, y_line);
+        int y_line = gapsize + i * zone_h;
+        line.setLineByPoints(origin_x + w0 / 2, y_line, origin_x - w0 / 2, y_line);
         line.setBorderSize(1);
         line.setBorderColor(rcll_draw::C_BLACK);
         lnes_zone_lines.push_back(line);
@@ -191,10 +193,10 @@ void rcll_draw::GameField::setGameField(rcll_vis_msgs::SetGameField &setgamefiel
         }
     }
 
-    rct_background.setPos(x0 - w0 / 2 - gapsize, y0 - gapsize);
+    rct_background.setPos(0, 0);
     rct_background.setSize(w0 + 2 * gapsize, h0 + 2 * gapsize);
-    rct_background2.setPos(x0 - w0 /2, y0);
-    rct_background2.setSize(w0, h0);
+    rct_background2.setPos(0, 0);
+    rct_background2.setSize(w0 + 2 * gapsize, h0 + 2 * gapsize);
 
     int h1 = (zone_h - 2 * gapsize) / 2;
     blbl_insertion_cyan1.setSize(3 * zone_w - 2 * gapsize, h1);
@@ -232,42 +234,44 @@ void rcll_draw::GameField::setMachines(std::vector<rcll_vis_msgs::Machine> &mach
 }
 
 void rcll_draw::GameField::draw(cv::Mat &mat){
-    rct_background2.draw(mat);
+    rct_background2.draw(origin);
 
     for (size_t i = 0; i < lnes_walls.size(); i++){
-        lnes_walls[i].draw(mat);
+        lnes_walls[i].draw(origin);
     }
 
     if (gamephase == rcll_draw::SETUP){
         for (size_t i = 0; i < lnes_zone_lines.size(); i++){
-            lnes_zone_lines[i].draw(mat);
+            lnes_zone_lines[i].draw(origin);
         }
 
         for (size_t i = 0; i < blbls_zone_names.size(); i++){
-            blbls_zone_names[i].draw(mat);
+            blbls_zone_names[i].draw(origin);
         }
     }
 
-    blbl_insertion_cyan1.draw(mat);
-    blbl_insertion_cyan2.draw(mat);
-    blbl_insertion_magenta1.draw(mat);
-    blbl_insertion_magenta2.draw(mat);
+    blbl_insertion_cyan1.draw(origin);
+    blbl_insertion_cyan2.draw(origin);
+    blbl_insertion_magenta1.draw(origin);
+    blbl_insertion_magenta2.draw(origin);
 
     for (size_t i = 0; i < rm_robot_markers.size(); i++){
-        rm_robot_markers[i].draw(mat);
+        rm_robot_markers[i].draw(origin);
     }
 
     for (size_t i = 0; i < mm_machine_markers.size(); i++){
-        mm_machine_markers[i].draw(mat);
+        mm_machine_markers[i].draw(origin);
     }
 
     if (gamephase == rcll_draw::SETUP){
         if (refbox_view){
-            cv::line(mat, cv::Point(origin_x, origin_y), cv::Point(origin_x + 30, origin_y), rcll_draw::getColor(rcll_draw::C_RED), 3, 8, 0);
-            cv::line(mat, cv::Point(origin_x, origin_y), cv::Point(origin_x, origin_y - 30), rcll_draw::getColor(rcll_draw::C_GREEN_LIGHT), 3, 8, 0);
+            cv::line(origin, cv::Point(origin_x, origin_y), cv::Point(origin_x + 30, origin_y), rcll_draw::getColor(rcll_draw::C_RED), 3, 8, 0);
+            cv::line(origin, cv::Point(origin_x, origin_y), cv::Point(origin_x, origin_y - 30), rcll_draw::getColor(rcll_draw::C_GREEN_LIGHT), 3, 8, 0);
         } else {
-            cv::line(mat, cv::Point(origin_x, origin_y), cv::Point(origin_x - 30, origin_y), rcll_draw::getColor(rcll_draw::C_RED), 3, 8, 0);
-            cv::line(mat, cv::Point(origin_x, origin_y), cv::Point(origin_x, origin_y + 30), rcll_draw::getColor(rcll_draw::C_GREEN_LIGHT), 3, 8, 0);
+            cv::line(origin, cv::Point(origin_x, origin_y), cv::Point(origin_x - 30, origin_y), rcll_draw::getColor(rcll_draw::C_RED), 3, 8, 0);
+            cv::line(origin, cv::Point(origin_x, origin_y), cv::Point(origin_x, origin_y + 30), rcll_draw::getColor(rcll_draw::C_GREEN_LIGHT), 3, 8, 0);
         }
     }
+
+    rcll_draw::mergeImages(mat, origin, x, y);
 }

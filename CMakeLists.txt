@@ -102,7 +102,7 @@ find_package(OpenCV REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include include/draw include/elements
+   INCLUDE_DIRS include include/elements include/elements/basic include/elements/subcomponents include/elements/components include/elements/areas
    LIBRARIES rcll_draw
    CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs
 #  DEPENDS system_lib
@@ -116,8 +116,11 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  include/draw
   include/elements
+  include/elements/basic
+  include/elements/subcomponents
+  include/elements/components
+  include/elements/areas
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
@@ -126,40 +129,38 @@ include_directories(
 add_library(rcll_draw
     src/util.cpp
 
-    src/draw/Label.cpp
-    src/draw/BoxLabel.cpp
-    src/draw/MultilineBoxLabel.cpp
-    src/draw/Rectangle.cpp
-    src/draw/Circle.cpp
-    src/draw/Image.cpp
-    src/draw/Line.cpp
-    src/draw/Arrow.cpp
+    src/elements/basic/Label.cpp
+    src/elements/basic/BoxLabel.cpp
+    src/elements/basic/MultilineBoxLabel.cpp
+    src/elements/basic/Rectangle.cpp
+    src/elements/basic/Circle.cpp
+    src/elements/basic/Image.cpp
+    src/elements/basic/Line.cpp
+    src/elements/basic/Arrow.cpp
 
-    src/elements/HeaderPanel.cpp
-    src/elements/TeamHeaderPanel.cpp
+    src/elements/subcomponents/MachineLabelExploration.cpp
+    src/elements/subcomponents/MachineLabelProduction.cpp
+    src/elements/subcomponents/ProductLabel.cpp
+    src/elements/subcomponents/RobotLabel.cpp
+    src/elements/subcomponents/MachineMarker.cpp
+    src/elements/subcomponents/RobotMarker.cpp
 
-    src/elements/HStatusPanel.cpp
-    src/elements/VStatusPanel.cpp
+    src/elements/components/HeaderPanel.cpp
+    src/elements/components/TeamHeaderPanel.cpp
+    src/elements/components/HStatusPanel.cpp
+    src/elements/components/VStatusPanel.cpp
+    src/elements/components/MachineInfoExploration.cpp
+    src/elements/components/MachineInfoProduction.cpp
+    src/elements/components/ProductInfo.cpp
+    src/elements/components/RobotInfo.cpp
+    src/elements/components/GameField.cpp
 
-    src/elements/MachineInfoExploration.cpp
-    src/elements/MachineInfoProduction.cpp
-    src/elements/MachineLabelExploration.cpp
-    src/elements/MachineLabelProduction.cpp
-    src/elements/ProductInfo.cpp
-    src/elements/ProductLabel.cpp
-    src/elements/RobotInfo.cpp
-    src/elements/RobotLabel.cpp
-
-    src/elements/GameField.cpp
-    src/elements/MachineMarker.cpp
-    src/elements/RobotMarker.cpp
-
-    src/elements/TeamAreaPreGameSetup.cpp
-    src/elements/TeamAreaExploration.cpp
-    src/elements/TeamAreaProduction.cpp
-    src/elements/TeamAreaPostGame.cpp
-    src/elements/FieldArea.cpp
-    src/elements/CompleteAreaExploration.cpp
+    src/elements/areas/TeamAreaPreGameSetup.cpp
+    src/elements/areas/TeamAreaExploration.cpp
+    src/elements/areas/TeamAreaProduction.cpp
+    src/elements/areas/TeamAreaPostGame.cpp
+    src/elements/areas/FieldArea.cpp
+    src/elements/areas/CompleteAreaExploration.cpp
 )
 
 ## Add cmake target dependencies of the library

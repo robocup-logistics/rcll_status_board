@@ -111,6 +111,8 @@ void rcll_draw::VStatusPanel::setGeometry(int x, int y, int w, int h){
     blbl_phase_value.setSize(w, h / 9);
     blbl_time_value.setSize(w, h / 9);
     blbl_score_value.setSize(w, 2 * h / 9);
+
+    ROS_INFO("Vstatuspanel w=%i h=%i", w, h);
 }
 
 void rcll_draw::VStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){

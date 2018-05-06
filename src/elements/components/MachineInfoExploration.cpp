@@ -72,6 +72,7 @@ void rcll_draw::MachineInfoExploration::setGeometry(int x, int y, int w, int h, 
         mle_machines[machine_map[keys[i]]].setGeometry(x, y + (i + 3)*h/11, w, h/11);
     }
 
+    ROS_INFO("MachineInfoExploration w=%i h=%i", w, h);
 }
 
 void rcll_draw::MachineInfoExploration::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){

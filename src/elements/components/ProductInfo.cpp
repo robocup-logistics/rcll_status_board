@@ -41,6 +41,8 @@ void rcll_draw::ProductInfo::setGeometry(int x, int y, int w, int h, int gapsize
         product_labels[i].setGeometry(x + i * (gapsize + w1), y, w1, h);
         product_labels[i].setProduct(empty_product);
     }
+
+    ROS_INFO("ProductInfo w=%i h=%i", w, h);
 }
 
 void rcll_draw::ProductInfo::setProduct(ProductInformation pi, int index){

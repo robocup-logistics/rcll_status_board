@@ -109,6 +109,23 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, 
     }
 }
 
+void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst){
+    for (int y = 0; y < src.rows; ++y){
+        if (y_dst + y <= dst.rows){
+            for (int x = 0; x < src.cols; ++x){
+                if (x_dst + x <= dst.cols){
+                    cv::Vec4b & dst_pixel = dst.at<cv::Vec4b>(y_dst + y, x_dst + x);
+                    cv::Vec4b & src_pixel = src.at<cv::Vec4b>(y, x);
+                    dst_pixel[0] = src_pixel[0];
+                    dst_pixel[1] = src_pixel[1];
+                    dst_pixel[2] = src_pixel[2];
+                    dst_pixel[3] = src_pixel[3];
+                }
+            }
+        }
+    }
+}
+
 std::string rcll_draw::getFile(int number, int type){
     if (type == 1){ // base
         if (number == 1){ // red base

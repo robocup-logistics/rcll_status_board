@@ -116,6 +116,8 @@ void rcll_draw::HStatusPanel::setGeometry(int x, int y, int w, int h){
     blbl_score_value_mid.setSize(w / 4, h / 2);
     blbl_score_value_cyan.setSize(w1 * 0.4, h / 2);
     blbl_score_value_magenta.setSize(w1 * 0.4, h / 2);
+
+    ROS_INFO("Hastatuspanel w=%i h=%i", w, h);
 }
 
 void rcll_draw::HStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){

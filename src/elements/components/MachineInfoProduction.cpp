@@ -67,6 +67,8 @@ void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, int w, int h, i
             mlp_machines[machine_map[keys[i]]].setGeometry(x + w1 + gapsize, y + (i-3) * h * 0.2, w1, h*0.2);
         }
     }
+
+    ROS_INFO("MachineInfoProduction w=%i h=%i", w, h);
 }
 
 void rcll_draw::MachineInfoProduction::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){

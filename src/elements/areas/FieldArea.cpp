@@ -50,7 +50,7 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
     hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
     thp_team_cyan.setGeometry(x, y, w * 0.2, h * 0.1);
     thp_team_magenta.setGeometry(x + w * 0.8, y, w * 0.2, h * 0.1);
-    gf_gamefield.setGeometry(x, y + h * 0.1 + gapsize, w, h * 0.9 - gapsize);
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW()) / 2, y + h * 0.1 + gapsize, 1.0);
     blbl_text.setSize(w, h * 0.1);
     blbl_text.setPos(x, y + h - gapsize);
 }
@@ -72,11 +72,11 @@ void rcll_draw::FieldArea::setGameField(rcll_vis_msgs::SetGameField &setgamefiel
 }
 
 void rcll_draw::FieldArea::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
-    return gf_gamefield.setRobots(robots);
+    gf_gamefield.setRobots(robots);
 }
 
 void rcll_draw::FieldArea::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
-    return gf_gamefield.setMachines(machines);
+    gf_gamefield.setMachines(machines);
 }
 
 void rcll_draw::FieldArea::draw(cv::Mat &mat){
