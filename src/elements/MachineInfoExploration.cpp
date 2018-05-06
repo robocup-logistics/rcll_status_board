@@ -30,6 +30,7 @@ rcll_draw::MachineInfoExploration::MachineInfoExploration(){
 }
 
 rcll_draw::MachineInfoExploration::MachineInfoExploration(Team team){
+    this->team = team;
     blbl_header1.setAlignment(rcll_draw::CenterCenter);
     blbl_header2.setAlignment(rcll_draw::CenterCenter);
     blbl_header1.setBackgroundColor(rcll_draw::C_WHITE);

@@ -159,6 +159,7 @@ add_library(rcll_draw
     src/elements/TeamAreaProduction.cpp
     src/elements/TeamAreaPostGame.cpp
     src/elements/FieldArea.cpp
+    src/elements/CompleteAreaExploration.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -169,6 +170,7 @@ add_dependencies(rcll_draw ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+add_executable(complete_status_board_node   src/complete_status_board.cpp)
 add_executable(team_status_board_node   src/team_status_board.cpp)
 add_executable(field_status_board_node  src/field_status_board.cpp)
 add_executable(static_values_node  src/static_values_publisher.cpp)
@@ -182,12 +184,14 @@ add_executable(llsf_interface_node  src/llsf_interface.cpp src/llsf_communicator
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
+add_dependencies(complete_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(team_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(field_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(static_values_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(llsf_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(complete_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(static_values_node ${catkin_LIBRARIES})
