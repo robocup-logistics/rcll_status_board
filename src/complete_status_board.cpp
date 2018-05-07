@@ -52,7 +52,6 @@ void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
 }
 
 void cb_gamefield(rcll_vis_msgs::SetGameField msg){
-    ROS_INFO("Initializing gamefield with w=%1.2f h=%1.2f zx=%i zy=%i", msg.field_length, msg.field_width, msg.zones_x, msg.zones_y);
     complete_area_exploration.setGameField(msg);
 }
 
@@ -91,7 +90,6 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    rcll_draw::Team team = rcll_draw::NO_TEAM;
     std::string title = "STATUS BOARD";
     rcll_draw::setImagePath(image_path);
 
@@ -105,19 +103,16 @@ int main(int argc, char** argv){
     }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
-    rcll_draw::HeaderPanel header(title, team);
-    header.setGeometry(bordergapsize, res_x, bordergapsize);
 
     complete_area_exploration = rcll_draw::CompleteAreaExploration(rcll_draw::NO_TEAM);
-    complete_area_exploration.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    complete_area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize, gapsize);
     complete_area_exploration.setRefBoxView(refbox_view);
     ros::spinOnce();
 
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
-        cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
-        header.draw(mat);
-        complete_area_exploration.draw(mat);
+        cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+        complete_area_exploration.draw(mat, false);
         cv::imshow(title, mat);
         char key = (char)cv::waitKey(1);
         if (key == 27){

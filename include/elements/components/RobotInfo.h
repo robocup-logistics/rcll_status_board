@@ -38,11 +38,21 @@ namespace rcll_draw {
         RobotInfo(Team team);
         ~RobotInfo();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
 
     private:
+        int x, y = 0;
+        int w = 805, h = 345;
+        int gapsize = 20;
+        double scale = 1.0;
+        cv::Mat origin;
+
         Team team;
         BoxLabel blbl_header;
 

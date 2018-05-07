@@ -39,11 +39,21 @@ namespace rcll_draw {
         MachineInfoExploration(Team team);
         ~MachineInfoExploration();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
+        void setShortDisplay(bool short_display);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
 
     private:
+        int x, y = 0;
+        int w = 1000, h = 691;
+        double scale = 1.0;
+        cv::Mat origin;
+
         Team team;
         BoxLabel blbl_header1;
         BoxLabel blbl_header2;

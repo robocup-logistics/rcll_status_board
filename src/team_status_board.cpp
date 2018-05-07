@@ -164,10 +164,6 @@ int main(int argc, char** argv){
     cv::Mat mat(res_y, res_x, CV_8UC4);
     cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
 
-    rcll_draw::HeaderPanel header(title, team);
-    header.setGeometry(bordergapsize, res_x, bordergapsize);
-    header.draw(mat);
-
     main_area_pregamesetup = rcll_draw::TeamAreaPreGameSetup();
     main_area_pregamesetup.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
 
@@ -180,30 +176,31 @@ int main(int argc, char** argv){
     main_area_postgame = rcll_draw::TeamAreaPostGame();
     main_area_postgame.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
 
-    double paging_timer = 0.0;
+    ros::spinOnce();
+
+    double paging_timer = product_page_time;
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
-        header.draw(mat);
 
         if(gamephase == rcll_draw::PRE_GAME){
-            main_area_pregamesetup.draw(mat);
+            main_area_pregamesetup.draw(mat, false);
         } else if(gamephase == rcll_draw::SETUP){
-            main_area_pregamesetup.draw(mat);
+            main_area_pregamesetup.draw(mat, false);
         } else if (gamephase == rcll_draw::EXPLORATION){
-            main_area_exploration.draw(mat);
+            main_area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){
 
             paging_timer +=loop_rate.expectedCycleTime().toSec();
 
-            if (paging_timer > product_page_time){
+            if (paging_timer >= product_page_time){
                 main_area_production.paging();
                 paging_timer = 0.0;
             }
 
-            main_area_production.draw(mat);
+            main_area_production.draw(mat, false);
         } else if (gamephase == rcll_draw::POST_GAME){
-            main_area_postgame.draw(mat);
+            main_area_postgame.draw(mat, false);
         }
 
         cv::imshow(title, mat);

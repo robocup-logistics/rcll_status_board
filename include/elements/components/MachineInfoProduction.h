@@ -39,11 +39,21 @@ namespace rcll_draw {
         MachineInfoProduction(Team team);
         ~MachineInfoProduction();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
 
     private:
+        int x, y = 0;
+        int w = 985, h = 345;
+        int gapsize = 20;
+        double scale = 1.0;
+        cv::Mat origin;
+
         Team team;
         BoxLabel blbl_header;
 

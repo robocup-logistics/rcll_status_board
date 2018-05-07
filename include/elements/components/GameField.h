@@ -51,12 +51,12 @@ namespace rcll_draw {
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setRefBoxView(bool refbox_view);
 
-        int getW();
-        int getH();
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
 
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
 
     private:
         int x, y = 0;

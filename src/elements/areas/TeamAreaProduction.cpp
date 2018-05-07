@@ -50,10 +50,10 @@ void rcll_draw::TeamAreaProduction::setGeometry(int x, int y, int w, int h, int 
     this->y = y;
     this->w = w;
     this->h = h;
-    vsp_gameinfo.setGeometry(x, y, w1 * 0.12, h * 0.6);
-    pi_productinfo.setGeometry(x + gapsize + w1 * 0.12, y, w1 * 0.88, h * 0.6, gapsize);
-    mip_machineinfo.setGeometry(x, y + h * 0.6, w1 * 0.55, h * 0.4, gapsize);
-    ri_robotinfo.setGeometry(x + w1 * 0.55 + gapsize, y + h * 0.6, w1 * 0.45, h * 0.4, gapsize);
+    vsp_gameinfo.setGeometry(x, y, 1.0);
+    pi_productinfo.setGeometry(x + gapsize + w1 * 0.12, y, 0.96);
+    mip_machineinfo.setGeometry(x, y + h * 0.6, 1.0);
+    ri_robotinfo.setGeometry(x + w1 * 0.55 + gapsize, y + h * 0.6, 1.0);
 }
 
 void rcll_draw::TeamAreaProduction::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
@@ -80,9 +80,9 @@ void rcll_draw::TeamAreaProduction::paging(){
     pi_productinfo.paging();
 }
 
-void rcll_draw::TeamAreaProduction::draw(cv::Mat &mat){
-    vsp_gameinfo.draw(mat);
-    pi_productinfo.draw(mat);
-    mip_machineinfo.draw(mat);
-    ri_robotinfo.draw(mat);
+void rcll_draw::TeamAreaProduction::draw(cv::Mat &mat, bool show_element_borders){
+    vsp_gameinfo.draw(mat, show_element_borders);
+    pi_productinfo.draw(mat, show_element_borders);
+    mip_machineinfo.draw(mat, show_element_borders);
+    ri_robotinfo.draw(mat, show_element_borders);
 }

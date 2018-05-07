@@ -27,10 +27,11 @@ SOFTWARE.
 // MachineInfoProduction ####################################################################
 
 rcll_draw::MachineInfoProduction::MachineInfoProduction(){
-
+    origin = cv::Mat(h, w, CV_8UC4);
 }
 
 rcll_draw::MachineInfoProduction::MachineInfoProduction(Team team){
+    origin = cv::Mat(h, w, CV_8UC4);
     blbl_header.setAlignment(rcll_draw::CenterCenter);
     blbl_header.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_header.setBorderColor(rcll_draw::C_WHITE);
@@ -55,20 +56,30 @@ rcll_draw::MachineInfoProduction::~MachineInfoProduction(){
 
 }
 
-void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
     int w1 = (w - gapsize) / 2;
-    blbl_header.setPos(x, y);
-    blbl_header.setSize(w, h*0.2);
+    blbl_header.setPos(0, 0);
+    blbl_header.setSize(w, h * 0.2);
 
     for (size_t i = 0; i < keys.size(); i++){
-        if (i < 4){
-            mlp_machines[machine_map[keys[i]]].setGeometry(x, y + (i+1) * h * 0.2, w1, h * 0.2);
+        if (i < 3){
+            mlp_machines[machine_map[keys[i]]].setGeometry(0, (i+1) * h * 0.2, w1, h * 0.2);
         } else {
-            mlp_machines[machine_map[keys[i]]].setGeometry(x + w1 + gapsize, y + (i-3) * h * 0.2, w1, h*0.2);
+            mlp_machines[machine_map[keys[i]]].setGeometry(w1 + gapsize, (i-2) * h * 0.2, w1, h*0.2);
         }
     }
+}
 
-    ROS_INFO("MachineInfoProduction w=%i h=%i", w, h);
+int rcll_draw::MachineInfoProduction::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::MachineInfoProduction::getH(double scale){
+    return (int)((double)h * scale);
 }
 
 void rcll_draw::MachineInfoProduction::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
@@ -80,9 +91,17 @@ void rcll_draw::MachineInfoProduction::setMachines(std::vector<rcll_vis_msgs::Ma
     }
 }
 
-void rcll_draw::MachineInfoProduction::draw(cv::Mat &mat){
-    blbl_header.draw(mat);
+void rcll_draw::MachineInfoProduction::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_header.draw(origin);
     for (size_t i = 0; i < keys.size(); i++){
-        mlp_machines[machine_map[keys[i]]].draw(mat);
+        mlp_machines[machine_map[keys[i]]].draw(origin);
     }
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

@@ -26,10 +26,11 @@ SOFTWARE.
 // RobotInfo ####################################################################
 
 rcll_draw::RobotInfo::RobotInfo(){
-
+    origin = cv::Mat(h, w, CV_8UC4);
 }
 
 rcll_draw::RobotInfo::RobotInfo(Team team){
+    origin = cv::Mat(h, w, CV_8UC4);
     blbl_header.setAlignment(rcll_draw::CenterCenter);
     blbl_header.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_header.setBorderColor(rcll_draw::C_WHITE);
@@ -57,16 +58,26 @@ rcll_draw::RobotInfo::~RobotInfo(){
 
 }
 
-void rcll_draw::RobotInfo::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::RobotInfo::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
     int w1 = (w - 2 * gapsize) / 3;
-    blbl_header.setPos(x, y);
+    blbl_header.setPos(0, 0);
     blbl_header.setSize(w, h*0.2);
 
     for (size_t i = 0; i < rl_robots.size(); i++){
-        rl_robots[i].setGeometry(x + i * (gapsize + w1), y + h*0.2, w1, h*0.8);
+        rl_robots[i].setGeometry(i * (gapsize + w1), h*0.2, w1, h*0.8);
     }
+}
 
-    ROS_INFO("RobotInfo w=%i h=%i", w, h);
+int rcll_draw::RobotInfo::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::RobotInfo::getH(double scale){
+    return (int)((double)h * scale);
 }
 
 void rcll_draw::RobotInfo::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
@@ -77,9 +88,17 @@ void rcll_draw::RobotInfo::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
     }
 }
 
-void rcll_draw::RobotInfo::draw(cv::Mat &mat){
-    blbl_header.draw(mat);
+void rcll_draw::RobotInfo::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_header.draw(origin);
     for (size_t i = 0; i < rl_robots.size(); i++){
-        rl_robots[i].draw(mat);
+        rl_robots[i].draw(origin);
     }
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

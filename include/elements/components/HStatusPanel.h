@@ -37,10 +37,19 @@ namespace rcll_draw {
         HStatusPanel();
         ~HStatusPanel();
 
-        void setGeometry(int x, int y, int w, int h);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
         void setContent(rcll_vis_msgs::GameInfo &gameinfo);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
     private:
+        int x, y = 0;
+        int w = 1087, h = 86;
+        double scale = 1.0;
+        cv::Mat origin;
+
         BoxLabel blbl_state_header;
         BoxLabel blbl_state_value;
         BoxLabel blbl_phase_header;

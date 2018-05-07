@@ -45,7 +45,7 @@ namespace rcll_draw {
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;

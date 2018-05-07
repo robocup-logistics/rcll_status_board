@@ -31,6 +31,7 @@ rcll_draw::CompleteAreaExploration::CompleteAreaExploration(){
 }
 
 rcll_draw::CompleteAreaExploration::CompleteAreaExploration(rcll_draw::Team team){
+    hp_header = HeaderPanel("STATUS BOARD", team);
     hsp_gameinfo = HStatusPanel();
     thp_team_header_cyan = TeamHeaderPanel();
     thp_team_header_magenta = TeamHeaderPanel();
@@ -48,16 +49,32 @@ void rcll_draw::CompleteAreaExploration::setGeometry(int x, int y, int w, int h,
     this->y = y;
     this->w = w;
     this->h = h;
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1 - gapsize);
-    gf_gamefield.setGeometry(x + w * 0.15, y + h * 0.1 + gapsize, 0.7);
-    thp_team_header_cyan.setGeometry(x, y, w * 0.15, h * 0.2);
-    thp_team_header_magenta.setGeometry(x + w * 0.85, y + h * 0.1 + gapsize, w * 0.15, h * 0.2);
-    mie_machine_info_cyan.setGeometry(x, y, w * 0.15, h * 0.78 - gapsize, gapsize);
-    mie_machine_info_magenta.setGeometry(x + w * 0.85, y + h * 0.1 + gapsize, w * 0.15, h * 0.78 - gapsize, gapsize);
+
+    mie_machine_info_cyan.setShortDisplay(true);
+    mie_machine_info_magenta.setShortDisplay(true);
+
+    int cur_y = y;
+
+    hp_header.setGeometry(x + (w - hp_header.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hp_header.getH(1.0) + gapsize;
+
+    hsp_gameinfo.setGeometry(x + w * 0.2, cur_y, 1.0);
+    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+
+    thp_team_header_cyan.setGeometry(x, cur_y, 1.0);
+    thp_team_header_magenta.setGeometry(x + w - thp_team_header_magenta.getW(1.0), cur_y, 1.0);
+    cur_y += thp_team_header_cyan.getH(1.0) + gapsize;
+
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(0.8)) / 2, cur_y, 0.8);
+    cur_y += gapsize;
+
+    mie_machine_info_cyan.setGeometry(x, cur_y, 0.5);
+    mie_machine_info_magenta.setGeometry(x + w - mie_machine_info_magenta.getW(0.5), cur_y, 0.5);
 }
 
 void rcll_draw::CompleteAreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     hsp_gameinfo.setContent(gameinfo);
+    gf_gamefield.setPhase((rcll_draw::GamePhase)gameinfo.game_phase);
     thp_team_header_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
     thp_team_header_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
 }
@@ -80,11 +97,16 @@ void rcll_draw::CompleteAreaExploration::setRobots(std::vector<rcll_vis_msgs::Ro
     return gf_gamefield.setRobots(robots);
 }
 
-void rcll_draw::CompleteAreaExploration::draw(cv::Mat &mat){
-    hsp_gameinfo.draw(mat);
-    gf_gamefield.draw(mat);
-    mie_machine_info_cyan.draw(mat);
-    mie_machine_info_magenta.draw(mat);
-    thp_team_header_cyan.draw(mat);
-    thp_team_header_magenta.draw(mat);
+void rcll_draw::CompleteAreaExploration::draw(cv::Mat &mat, bool show_element_borders){
+    hp_header.draw(mat, show_element_borders);
+    hsp_gameinfo.draw(mat, show_element_borders);
+    gf_gamefield.draw(mat, show_element_borders);
+    mie_machine_info_cyan.draw(mat, show_element_borders);
+    mie_machine_info_magenta.draw(mat, show_element_borders);
+    thp_team_header_cyan.draw(mat, show_element_borders);
+    thp_team_header_magenta.draw(mat, show_element_borders);
+
+    if (show_element_borders){
+        cv::rectangle(mat, cv::Point(x, y), cv::Point (x+w-1, y+h-1), rcll_draw::getColor(rcll_draw::C_BLUE), 1);
+    }
 }

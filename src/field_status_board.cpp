@@ -52,7 +52,6 @@ void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
 }
 
 void cb_gamefield(rcll_vis_msgs::SetGameField msg){
-    ROS_INFO("Initializing gamefield with w=%1.2f h=%1.2f zx=%i zy=%i", msg.field_length, msg.field_width, msg.zones_x, msg.zones_y);
     main_area_field.setGameField(msg);
 }
 
@@ -91,7 +90,6 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    rcll_draw::Team team = rcll_draw::NO_TEAM;
     std::string title = "FIELD STATUS BOARD";
     rcll_draw::setImagePath(image_path);
 
@@ -105,8 +103,6 @@ int main(int argc, char** argv){
     }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
-    rcll_draw::HeaderPanel header(title, team);
-    header.setGeometry(bordergapsize, res_x, bordergapsize);
     main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
     main_area_field.setRefBoxView(refbox_view);
     ros::spinOnce();
@@ -114,8 +110,7 @@ int main(int argc, char** argv){
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
-        header.draw(mat);
-        main_area_field.draw(mat);
+        main_area_field.draw(mat, false);
         cv::imshow(title, mat);
         char key = (char)cv::waitKey(1);
         if (key == 27){

@@ -64,7 +64,7 @@ void rcll_draw::ProductLabel::setGeometry(int x, int y, int w, int h){
     blbl_progress.setPos(x, y + h * 0.7);
     blbl_deadline.setPos(x, y + h * 0.8);
     blbl_points.setPos(x, y + h * 0.9);
-    product.setPos(x, y + h * 0.07);
+    product.setPos(x + w * 0.2, y + h * 0.1);
 
     blbl_name.setSize(w, h * 0.1);
     blbl_progress.setSize(w, h * 0.1);
@@ -75,10 +75,10 @@ void rcll_draw::ProductLabel::setGeometry(int x, int y, int w, int h){
 
     for (size_t i = 0; i < img_step_progress.size(); i++){
         img_step_progress[i].setScale(0.175);
-        img_step_progress[i].setPos(x + w * 0.6, y + h * 0.37 - i * h * 0.08);
+        img_step_progress[i].setPos(x + w * 0.8, y + h * 0.4 - i * h * 0.08);
     }
 
-    img_product_progress.setPos(x + w * 0.2, y - h * 0.03);
+    img_product_progress.setPos(x + w * 0.4, y);
 }
 
 void rcll_draw::ProductLabel::setProduct(ProductInformation pi){
@@ -177,14 +177,16 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::Product plan){
 
 void rcll_draw::ProductLabel::draw(cv::Mat &mat){
     if (product_information.product_id > 0){
-        blbl_name.draw(mat);
-        blbl_progress.draw(mat);
-        blbl_deadline.draw(mat);
-        blbl_points.draw(mat);
-        product.draw(mat);
         for (size_t i = 0; i < img_step_progress.size(); i++){
             img_step_progress[i].draw(mat);
         }
         img_product_progress.draw(mat);
+
+        product.draw(mat);
+
+        blbl_name.draw(mat);
+        blbl_progress.draw(mat);
+        blbl_deadline.draw(mat);
+        blbl_points.draw(mat);
     }
 }

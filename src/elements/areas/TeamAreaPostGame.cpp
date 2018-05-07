@@ -76,8 +76,8 @@ void rcll_draw::TeamAreaPostGame::setGeometry(int x, int y, int w, int h, int ga
     this->w = w;
     this->h = h;
 
-    thp_team_cyan.setGeometry(x + w * 0.2, y + h * 0.3, w * 0.2, h * 0.1);
-    thp_team_magenta.setGeometry(x + w * 0.6, y + h * 0.3, w * 0.2, h * 0.1);
+    thp_team_cyan.setGeometry(x + w * 0.2, y + h * 0.3, 1.0);
+    thp_team_magenta.setGeometry(x + w * 0.6, y + h * 0.3, 1.0);
 
     blbl_versus.setSize(w * 0.1, h * 0.1 / 3);
     blbl_versus.setPos(x + w * 0.45, y + h * 0.3 + h * 0.1 * 2 / 3);
@@ -90,15 +90,15 @@ void rcll_draw::TeamAreaPostGame::setGeometry(int x, int y, int w, int h, int ga
     blbl_points_magenta.setSize(w * 0.2, h * 0.1);
     blbl_points_magenta.setPos(x + w * 0.6, y + h * 0.42);
 
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
+    hsp_gameinfo.setGeometry(x + w * 0.2, y, 1.0);
 }
 
-void rcll_draw::TeamAreaPostGame::draw(cv::Mat &mat){
-    thp_team_cyan.draw(mat);
-    thp_team_magenta.draw(mat);
+void rcll_draw::TeamAreaPostGame::draw(cv::Mat &mat, bool show_element_borders){
+    thp_team_cyan.draw(mat, show_element_borders);
+    thp_team_magenta.draw(mat, show_element_borders);
     blbl_versus.draw(mat);
     blbl_text.draw(mat);
-    hsp_gameinfo.draw(mat);
+    hsp_gameinfo.draw(mat, show_element_borders);
     blbl_points.draw(mat);
     blbl_points_cyan.draw(mat);
     blbl_points_magenta.draw(mat);

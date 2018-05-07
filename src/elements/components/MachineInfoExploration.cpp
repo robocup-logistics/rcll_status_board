@@ -26,10 +26,11 @@ SOFTWARE.
 
 // MachineInfoExploration ####################################################################
 rcll_draw::MachineInfoExploration::MachineInfoExploration(){
-
+    origin = cv::Mat(h, w, CV_8UC4);
 }
 
 rcll_draw::MachineInfoExploration::MachineInfoExploration(Team team){
+    origin = cv::Mat(h, w, CV_8UC4);
     this->team = team;
     blbl_header1.setAlignment(rcll_draw::CenterCenter);
     blbl_header2.setAlignment(rcll_draw::CenterCenter);
@@ -63,16 +64,37 @@ rcll_draw::MachineInfoExploration::~MachineInfoExploration(){
 
 }
 
-void rcll_draw::MachineInfoExploration::setGeometry(int x, int y, int w, int h, int gapsize){
-    blbl_header1.setPos(x, y);
-    blbl_header2.setPos(x, y + h/11);
+void rcll_draw::MachineInfoExploration::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
+    blbl_header1.setPos(0, 0);
+    blbl_header2.setPos(0, h/11);
     blbl_header1.setSize(w, h/11);
     blbl_header2.setSize(w, h/11);
     for (size_t i = 0; i < keys.size(); i++){
-        mle_machines[machine_map[keys[i]]].setGeometry(x, y + (i + 3)*h/11, w, h/11);
+        mle_machines[machine_map[keys[i]]].setGeometry(0, (i + 3)*h/11, w, h/11);
     }
+}
 
-    ROS_INFO("MachineInfoExploration w=%i h=%i", w, h);
+int rcll_draw::MachineInfoExploration::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::MachineInfoExploration::getH(double scale){
+    return (int)((double)h * scale);
+}
+
+void rcll_draw::MachineInfoExploration::setShortDisplay(bool short_display){
+    if (short_display){
+        w = 750;
+        h = 900;
+        origin = cv::Mat(h, w, CV_8UC4);
+    }
+    for (size_t i = 0; i < keys.size(); i++){
+        mle_machines[machine_map[keys[i]]].setShortDisplay(short_display);
+    }
 }
 
 void rcll_draw::MachineInfoExploration::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
@@ -83,10 +105,18 @@ void rcll_draw::MachineInfoExploration::setMachines(std::vector<rcll_vis_msgs::M
     }
 }
 
-void rcll_draw::MachineInfoExploration::draw(cv::Mat &mat){
-    blbl_header1.draw(mat);
-    blbl_header2.draw(mat);
+void rcll_draw::MachineInfoExploration::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_header1.draw(origin);
+    blbl_header2.draw(origin);
     for (size_t i = 0; i < keys.size(); i++){
-        mle_machines[machine_map[keys[i]]].draw(mat);
+        mle_machines[machine_map[keys[i]]].draw(origin);
     }
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

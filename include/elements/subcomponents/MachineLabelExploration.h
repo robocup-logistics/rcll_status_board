@@ -38,11 +38,14 @@ namespace rcll_draw {
         ~MachineLabelExploration();
 
         void setGeometry(int x, int y, int w, int h);
+        void setShortDisplay(bool short_display);
         void setMachine(rcll_vis_msgs::Machine &machine);
         void setHeader(std::string status1, std::string status2);
         void draw(cv::Mat &mat);
 
     private:
+        bool short_display = false;
+
         BoxLabel blbl_machinename;
         BoxLabel blbl_status1;
         BoxLabel blbl_status2;

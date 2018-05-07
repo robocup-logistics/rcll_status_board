@@ -33,13 +33,23 @@ namespace rcll_draw {
         ProductInfo();
         ~ProductInfo();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
         void setProduct(ProductInformation pi, int index);
         void setProductsCount(size_t count);
         void paging();
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_border = false);
 
     private:
+        int x, y = 0;
+        int w = 1642, h = 540;
+        int gapsize = 20;
+        double scale = 1.0;
+        cv::Mat origin;
+
         std::vector<ProductInformation> products;
         std::vector<ProductLabel> product_labels;
 

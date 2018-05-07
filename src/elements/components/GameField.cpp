@@ -82,12 +82,12 @@ void rcll_draw::GameField::setGeometry(int x, int y, double scale){
     this->scale = scale;
 }
 
-int rcll_draw::GameField::getW(){
-    return w;
+int rcll_draw::GameField::getW(double scale){
+    return (int)((double)w * scale);
 }
 
-int rcll_draw::GameField::getH(){
-    return h;
+int rcll_draw::GameField::getH(double scale){
+    return (int)((double)h * scale);
 }
 
 void rcll_draw::GameField::setRefBoxView(bool refbox_view){
@@ -233,7 +233,9 @@ void rcll_draw::GameField::setMachines(std::vector<rcll_vis_msgs::Machine> &mach
     }
 }
 
-void rcll_draw::GameField::draw(cv::Mat &mat){
+void rcll_draw::GameField::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
     rct_background2.draw(origin);
 
     for (size_t i = 0; i < lnes_walls.size(); i++){
@@ -273,5 +275,9 @@ void rcll_draw::GameField::draw(cv::Mat &mat){
         }
     }
 
-    rcll_draw::mergeImages(mat, origin, x, y);
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

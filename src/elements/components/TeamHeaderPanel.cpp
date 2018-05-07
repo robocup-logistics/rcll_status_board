@@ -26,7 +26,7 @@ SOFTWARE.
 
 // TeamHeaderPanel ####################################################################
 rcll_draw::TeamHeaderPanel::TeamHeaderPanel(){
-
+    origin = cv::Mat(h, w, CV_8UC4);
 }
 
 rcll_draw::TeamHeaderPanel::~TeamHeaderPanel(){
@@ -54,20 +54,38 @@ void rcll_draw::TeamHeaderPanel::setTeam(std::string team_name, rcll_draw::Team 
     blbl_header_name.setBorderColor(rcll_draw::C_WHITE);
 }
 
-void rcll_draw::TeamHeaderPanel::setGeometry(int x, int y, int w, int h){
-    blbl_header_color.setPos(x, y);
-    blbl_header_name.setPos(x, y + 2 * h / 3);
+void rcll_draw::TeamHeaderPanel::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
 
-    blbl_header_color.setSize(w, 2 * h / 3);
-    blbl_header_name.setSize(w, h / 3);
+    blbl_header_name.setPos(0, 0);
+    blbl_header_color.setPos(0, 3 * h / 5);
 
-    blbl_header_color.setFontSize(2.0);
-    blbl_header_name.setFontSize(1.0);
+    blbl_header_name.setSize(w, 3 * h / 5);
+    blbl_header_color.setSize(w, 2 * h / 5);
 
-    ROS_INFO("TeamheaderPanel w=%i h=%i", w, h);
+    blbl_header_name.setFontSize(1.7);
+    blbl_header_color.setFontSize(1.0);
 }
 
-void rcll_draw::TeamHeaderPanel::draw(cv::Mat &mat){
-    blbl_header_color.draw(mat);
-    blbl_header_name.draw(mat);
+int rcll_draw::TeamHeaderPanel::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::TeamHeaderPanel::getH(double scale){
+    return (int)((double)h * scale);
+}
+
+void rcll_draw::TeamHeaderPanel::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_header_color.draw(origin);
+    blbl_header_name.draw(origin);
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

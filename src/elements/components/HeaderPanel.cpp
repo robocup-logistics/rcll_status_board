@@ -25,7 +25,12 @@ SOFTWARE.
 #include <HeaderPanel.h>
 
 // HeaderPanel ####################################################################
+rcll_draw::HeaderPanel::HeaderPanel(){
+    //origin = cv::Mat(h, w, CV_8UC4);
+}
+
 rcll_draw::HeaderPanel::HeaderPanel(std::string content, rcll_draw::Team team){
+    origin = cv::Mat(h, w, CV_8UC4);
     blbl_header.setContent(content);
     blbl_header.setAlignment(rcll_draw::Alignment::CenterCenter);
     blbl_header.setBackgroundColor(rcll_draw::C_WHITE);
@@ -43,14 +48,32 @@ rcll_draw::HeaderPanel::~HeaderPanel(){
 
 }
 
-void rcll_draw::HeaderPanel::setGeometry(int y, int w, int h){
-    blbl_header.setPos(0, y);
+void rcll_draw::HeaderPanel::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
+    blbl_header.setPos(0, 0);
     blbl_header.setSize(w, h);
     blbl_header.setFontSize(2.0);
-
-    ROS_INFO("HeaderPanel w=%i h=%i", w, h);
 }
 
-void rcll_draw::HeaderPanel::draw(cv::Mat &mat){
-    blbl_header.draw(mat);
+int rcll_draw::HeaderPanel::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::HeaderPanel::getH(double scale){
+    return (int)((double)h * scale);
+}
+
+void rcll_draw::HeaderPanel::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_header.draw(origin);
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

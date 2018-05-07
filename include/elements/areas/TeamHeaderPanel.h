@@ -36,9 +36,18 @@ namespace rcll_draw {
         ~TeamHeaderPanel();
 
         void setTeam(std::string team_name, rcll_draw::Team team_color);
-        void setGeometry(int x, int y, int w, int h);
-        void draw(cv::Mat &mat);
+        void setGeometry(int x, int y, double scale);
+
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
+        void draw(cv::Mat &mat, bool show_element_border = false);
     private:
+        int x, y = 0;
+        int w = 362, h = 100;
+        double scale = 1.0;
+        cv::Mat origin;
+
         BoxLabel blbl_header_color;
         BoxLabel blbl_header_name;
     };

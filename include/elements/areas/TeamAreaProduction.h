@@ -50,7 +50,7 @@ namespace rcll_draw {
         void setProduct(ProductInformation pi, int index);
         void setProductsCount(size_t count);
         void paging();
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;

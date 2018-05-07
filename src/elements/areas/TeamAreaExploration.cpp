@@ -43,8 +43,8 @@ void rcll_draw::TeamAreaExploration::setGeometry(int x, int y, int w, int h, int
     this->y = y;
     this->w = w;
     this->h = h;
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
-    mie_machine_info.setGeometry(x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.8, gapsize);
+    hsp_gameinfo.setGeometry(x + w * 0.2, y, 1.0);
+    mie_machine_info.setGeometry(x + w * 0.2, y + h * 0.2, 1.0);
 }
 
 void rcll_draw::TeamAreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
@@ -55,7 +55,7 @@ void rcll_draw::TeamAreaExploration::setMachines(std::vector<rcll_vis_msgs::Mach
     mie_machine_info.setMachines(machines);
 }
 
-void rcll_draw::TeamAreaExploration::draw(cv::Mat &mat){
-    hsp_gameinfo.draw(mat);
-    mie_machine_info.draw(mat);
+void rcll_draw::TeamAreaExploration::draw(cv::Mat &mat, bool show_element_borders){
+    hsp_gameinfo.draw(mat, show_element_borders);
+    mie_machine_info.draw(mat, show_element_borders);
 }

@@ -27,6 +27,7 @@ SOFTWARE.
 // ProductInfo ####################################################################
 rcll_draw::ProductInfo::ProductInfo(){
     product_labels.resize(4);
+    origin = cv::Mat(h, w, CV_8UC4);
 
     empty_product.product_id = 0;
 }
@@ -35,14 +36,24 @@ rcll_draw::ProductInfo::~ProductInfo(){
 
 }
 
-void rcll_draw::ProductInfo::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::ProductInfo::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
     int w1 = (w - 3 * gapsize) / 4;
     for(size_t i = 0; i < product_labels.size(); i++){
-        product_labels[i].setGeometry(x + i * (gapsize + w1), y, w1, h);
+        product_labels[i].setGeometry(i * (gapsize + w1), 0, w1, h);
         product_labels[i].setProduct(empty_product);
     }
+}
 
-    ROS_INFO("ProductInfo w=%i h=%i", w, h);
+int rcll_draw::ProductInfo::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::ProductInfo::getH(double scale){
+    return (int)((double)h * scale);
 }
 
 void rcll_draw::ProductInfo::setProduct(ProductInformation pi, int index){
@@ -78,8 +89,16 @@ void rcll_draw::ProductInfo::paging(){
     }
 }
 
-void rcll_draw::ProductInfo::draw(cv::Mat &mat){
+void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
     for (size_t i = 0; i < product_labels.size(); i++){
-        product_labels[i].draw(mat);
+        product_labels[i].draw(origin);
     }
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

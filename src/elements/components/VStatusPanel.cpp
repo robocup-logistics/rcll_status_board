@@ -26,11 +26,12 @@ SOFTWARE.
 
 // VStatusPanel ####################################################################
 rcll_draw::VStatusPanel::VStatusPanel(){
+    origin = cv::Mat(h, w, CV_8UC4);
     this->team = rcll_draw::NO_TEAM;
 }
 
-
 rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::Team team){
+    origin = cv::Mat(h, w, CV_8UC4);
     this->team = team;
     blbl_state_header.setContent("STATE");
     blbl_phase_header.setContent("PHASE");
@@ -93,15 +94,19 @@ rcll_draw::VStatusPanel::~VStatusPanel(){
 
 }
 
-void rcll_draw::VStatusPanel::setGeometry(int x, int y, int w, int h){
-    blbl_state_header.setPos(x, y);
-    blbl_phase_header.setPos(x, y + 2 * h / 9);
-    blbl_time_header.setPos(x, y + 4 * h / 9);
-    blbl_score_header.setPos(x, y + 6 * h / 9);
-    blbl_state_value.setPos(x, y + 1 * h / 9);
-    blbl_phase_value.setPos(x, y + 3 * h / 9);
-    blbl_time_value.setPos(x, y + 5 * h / 9);
-    blbl_score_value.setPos(x, y + 7 * h / 9);
+void rcll_draw::VStatusPanel::setGeometry(int x, int y, double scale){
+    this->x = x;
+    this->y = y;
+    this->scale = scale;
+
+    blbl_state_header.setPos(0, 0);
+    blbl_phase_header.setPos(0, 2 * h / 9);
+    blbl_time_header.setPos(0, 4 * h / 9);
+    blbl_score_header.setPos(0, 6 * h / 9);
+    blbl_state_value.setPos(0, 1 * h / 9);
+    blbl_phase_value.setPos(0, 3 * h / 9);
+    blbl_time_value.setPos(0, 5 * h / 9);
+    blbl_score_value.setPos(0, 7 * h / 9);
 
     blbl_state_header.setSize(w, h / 9);
     blbl_phase_header.setSize(w, h / 9);
@@ -111,9 +116,16 @@ void rcll_draw::VStatusPanel::setGeometry(int x, int y, int w, int h){
     blbl_phase_value.setSize(w, h / 9);
     blbl_time_value.setSize(w, h / 9);
     blbl_score_value.setSize(w, 2 * h / 9);
-
-    ROS_INFO("Vstatuspanel w=%i h=%i", w, h);
 }
+
+int rcll_draw::VStatusPanel::getW(double scale){
+    return (int)((double)w * scale);
+}
+
+int rcll_draw::VStatusPanel::getH(double scale){
+    return (int)((double)h * scale);
+}
+
 
 void rcll_draw::VStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){
     int min = gameinfo.phase_time / 60;
@@ -132,13 +144,21 @@ void rcll_draw::VStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){
     }
 }
 
-void rcll_draw::VStatusPanel::draw(cv::Mat &mat){
-    blbl_state_header.draw(mat);
-    blbl_phase_header.draw(mat);
-    blbl_time_header.draw(mat);
-    blbl_score_header.draw(mat);
-    blbl_state_value.draw(mat);
-    blbl_phase_value.draw(mat);
-    blbl_time_value.draw(mat);
-    blbl_score_value.draw(mat);
+void rcll_draw::VStatusPanel::draw(cv::Mat &mat, bool show_element_border){
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+    blbl_state_header.draw(origin);
+    blbl_phase_header.draw(origin);
+    blbl_time_header.draw(origin);
+    blbl_score_header.draw(origin);
+    blbl_state_value.draw(origin);
+    blbl_phase_value.draw(origin);
+    blbl_time_value.draw(origin);
+    blbl_score_value.draw(origin);
+
+    if (show_element_border){
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
+    }
+
+    rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

@@ -47,10 +47,10 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
     this->y = y;
     this->w = w;
     this->h = h;
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, w * 0.6, h * 0.1);
-    thp_team_cyan.setGeometry(x, y, w * 0.2, h * 0.1);
-    thp_team_magenta.setGeometry(x + w * 0.8, y, w * 0.2, h * 0.1);
-    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW()) / 2, y + h * 0.1 + gapsize, 1.0);
+    hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, y, 1.0);
+    thp_team_cyan.setGeometry(x, y, 1.0);
+    thp_team_magenta.setGeometry(x + w * 0.8, y, 1.0);
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(1.0)) / 2, y + h * 0.1 + gapsize, 1.0);
     blbl_text.setSize(w, h * 0.1);
     blbl_text.setPos(x, y + h - gapsize);
 }
@@ -79,11 +79,11 @@ void rcll_draw::FieldArea::setMachines(std::vector<rcll_vis_msgs::Machine> &mach
     gf_gamefield.setMachines(machines);
 }
 
-void rcll_draw::FieldArea::draw(cv::Mat &mat){
-    hsp_gameinfo.draw(mat);
-    thp_team_cyan.draw(mat);
-    thp_team_magenta.draw(mat);
-    gf_gamefield.draw(mat);
+void rcll_draw::FieldArea::draw(cv::Mat &mat, bool show_element_borders){
+    hsp_gameinfo.draw(mat, show_element_borders);
+    thp_team_cyan.draw(mat, show_element_borders);
+    thp_team_magenta.draw(mat, show_element_borders);
+    gf_gamefield.draw(mat, show_element_borders);
 
     if (gamephase == rcll_draw::EXPLORATION){
         blbl_text.draw(mat);

@@ -32,12 +32,21 @@ namespace rcll_draw {
 
     class HeaderPanel {
     public:
+        HeaderPanel();
         HeaderPanel(std::string content, Team team);
         ~HeaderPanel();
 
-        void setGeometry(int y, int w, int h);
-        void draw(cv::Mat &mat);
+        void setGeometry(int x, int y, double scale);
+        int getW(double scale = 1.0);
+        int getH(double scale = 1.0);
+
+        void draw(cv::Mat &mat, bool show_element_border = false);
     private:
+        int x, y = 0;
+        int w = 1000, h = 54;
+        double scale = 1.0;
+        cv::Mat origin;
+
         BoxLabel blbl_header;
     };
 }

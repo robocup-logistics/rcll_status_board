@@ -26,6 +26,7 @@ SOFTWARE.
 #define RCLL_COMPLETE_AREA_EXPLORATION_H
 
 #include <util.h>
+#include <HeaderPanel.h>
 #include <HStatusPanel.h>
 #include <TeamHeaderPanel.h>
 #include <MachineInfoExploration.h>
@@ -51,7 +52,7 @@ namespace rcll_draw {
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setRefBoxView(bool refbox_view);
 
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
@@ -59,6 +60,7 @@ namespace rcll_draw {
 
         rcll_draw::GamePhase gamephase;
 
+        HeaderPanel hp_header;
         HStatusPanel hsp_gameinfo;
         TeamHeaderPanel thp_team_header_cyan;
         TeamHeaderPanel thp_team_header_magenta;

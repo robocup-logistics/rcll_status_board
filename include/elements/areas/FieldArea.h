@@ -50,7 +50,7 @@ namespace rcll_draw {
         void setRefBoxView(bool refbox_view);
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;

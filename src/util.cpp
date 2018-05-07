@@ -126,6 +126,13 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst){
     }
 }
 
+void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst, double scale){
+    cv::Mat tmp;
+    cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
+    rcll_draw::mergeImages(dst, tmp, x_dst, y_dst);
+    tmp.resize(0);
+}
+
 std::string rcll_draw::getFile(int number, int type){
     if (type == 1){ // base
         if (number == 1){ // red base

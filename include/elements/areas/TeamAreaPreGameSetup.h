@@ -45,7 +45,7 @@ namespace rcll_draw {
         void setTeams(std::string team_name_cyan, std::string team_name_magenta);
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
-        void draw(cv::Mat &mat);
+        void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
