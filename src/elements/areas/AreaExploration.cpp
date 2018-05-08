@@ -22,16 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <CompleteAreaExploration.h>
+#include <AreaExploration.h>
 
-// CompleteAreaExploration ####################################################################
+// AreaExploration ####################################################################
 
-rcll_draw::CompleteAreaExploration::CompleteAreaExploration(){
-
-}
-
-rcll_draw::CompleteAreaExploration::CompleteAreaExploration(rcll_draw::Team team){
-    hp_header = HeaderPanel("STATUS BOARD", team);
+rcll_draw::AreaExploration::AreaExploration(){
+    hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
     hsp_gameinfo = HStatusPanel();
     thp_team_header_cyan = TeamHeaderPanel();
     thp_team_header_magenta = TeamHeaderPanel();
@@ -40,11 +36,11 @@ rcll_draw::CompleteAreaExploration::CompleteAreaExploration(rcll_draw::Team team
     gf_gamefield = GameField();
 }
 
-rcll_draw::CompleteAreaExploration::~CompleteAreaExploration(){
+rcll_draw::AreaExploration::~AreaExploration(){
 
 }
 
-void rcll_draw::CompleteAreaExploration::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::AreaExploration::setGeometry(int x, int y, int w, int h){
     this->x = x;
     this->y = y;
     this->w = w;
@@ -72,32 +68,32 @@ void rcll_draw::CompleteAreaExploration::setGeometry(int x, int y, int w, int h,
     mie_machine_info_magenta.setGeometry(x + w - mie_machine_info_magenta.getW(0.5), cur_y, 0.5);
 }
 
-void rcll_draw::CompleteAreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+void rcll_draw::AreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     hsp_gameinfo.setContent(gameinfo);
     gf_gamefield.setPhase((rcll_draw::GamePhase)gameinfo.game_phase);
     thp_team_header_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
     thp_team_header_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
 }
 
-void rcll_draw::CompleteAreaExploration::setRefBoxView(bool refbox_view){
+void rcll_draw::AreaExploration::setRefBoxView(bool refbox_view){
     gf_gamefield.setRefBoxView(refbox_view);
 }
 
-void rcll_draw::CompleteAreaExploration::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+void rcll_draw::AreaExploration::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
     gf_gamefield.setMachines(machines);
     mie_machine_info_cyan.setMachines(machines);
     mie_machine_info_magenta.setMachines(machines);
 }
 
-void rcll_draw::CompleteAreaExploration::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
+void rcll_draw::AreaExploration::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
     gf_gamefield.setGameField(setgamefield);
 }
 
-void rcll_draw::CompleteAreaExploration::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
+void rcll_draw::AreaExploration::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
     return gf_gamefield.setRobots(robots);
 }
 
-void rcll_draw::CompleteAreaExploration::draw(cv::Mat &mat, bool show_element_borders){
+void rcll_draw::AreaExploration::draw(cv::Mat &mat, bool show_element_borders){
     hp_header.draw(mat, show_element_borders);
     hsp_gameinfo.draw(mat, show_element_borders);
     gf_gamefield.draw(mat, show_element_borders);

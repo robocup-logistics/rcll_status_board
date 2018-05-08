@@ -25,8 +25,8 @@ SOFTWARE.
 #include <MachineInfoExploration.h>
 
 // MachineInfoExploration ####################################################################
-rcll_draw::MachineInfoExploration::MachineInfoExploration(){
-    origin = cv::Mat(h, w, CV_8UC4);
+rcll_draw::MachineInfoExploration::MachineInfoExploration() : rcll_draw::MachineInfoExploration::MachineInfoExploration(rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::MachineInfoExploration::MachineInfoExploration(Team team){
@@ -42,6 +42,7 @@ rcll_draw::MachineInfoExploration::MachineInfoExploration(Team team){
     blbl_header2.setFontSize(2.0);
     blbl_header1.setContent("MACHINE DETECTION");
     blbl_header2.setContent("REPORTS");
+
     if (team == rcll_draw::CYAN){
         blbl_header1.setFrontColor(rcll_draw::C_CYAN_DARK);
         blbl_header2.setFrontColor(rcll_draw::C_CYAN_DARK);

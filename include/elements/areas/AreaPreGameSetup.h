@@ -22,47 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_TEAM_AREA_PRODUCTION_H
-#define RCLL_TEAM_AREA_PRODUCTION_H
+#ifndef RCLL_AREA_PREGAME_SETUP_H
+#define RCLL_AREA_PREGAME_SETUP_H
 
 #include <util.h>
-#include <VStatusPanel.h>
-#include <ProductInfo.h>
-#include <MachineInfoProduction.h>
-#include <RobotInfo.h>
+
+#include <HeaderPanel.h>
+#include <TeamHeaderPanel.h>
+#include <HStatusPanel.h>
+#include <BoxLabel.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/Machine.h>
-#include <rcll_vis_msgs/Robot.h>
-#include <rcll_vis_msgs/Product.h>
 
 namespace rcll_draw {
-    class TeamAreaProduction {
-    public:
-        TeamAreaProduction();
-        TeamAreaProduction(Team team);
-        ~TeamAreaProduction();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+    // ##################################################
+
+    class AreaPreGameSetup {
+    public:
+        AreaPreGameSetup();
+        AreaPreGameSetup(Team team);
+        ~AreaPreGameSetup();
+
+        void setTeams(std::string team_name_cyan, std::string team_name_magenta);
+        void setGeometry(int x, int y, int w, int h);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
-        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
-        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
-        void setProduct(ProductInformation pi, int index);
-        void setProductsCount(size_t count);
-        void paging();
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
         int w, h = 1;
+        int gapsize = 40;
 
-        Team team;
-        VStatusPanel vsp_gameinfo;
-        ProductInfo pi_productinfo;
-        MachineInfoProduction mip_machineinfo;
-        RobotInfo ri_robotinfo;
-
-
+        HeaderPanel hp_header;
+        TeamHeaderPanel thp_team_cyan;
+        TeamHeaderPanel thp_team_magenta;
+        BoxLabel blbl_versus;
+        BoxLabel blbl_text;
+        HStatusPanel hsp_gameinfo;
     };
 }
 

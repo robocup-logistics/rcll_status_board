@@ -26,8 +26,8 @@ SOFTWARE.
 
 // MachineInfoProduction ####################################################################
 
-rcll_draw::MachineInfoProduction::MachineInfoProduction(){
-    origin = cv::Mat(h, w, CV_8UC4);
+rcll_draw::MachineInfoProduction::MachineInfoProduction() : rcll_draw::MachineInfoProduction::MachineInfoProduction(rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::MachineInfoProduction::MachineInfoProduction(Team team){

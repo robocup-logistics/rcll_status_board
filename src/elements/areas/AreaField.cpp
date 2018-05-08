@@ -22,10 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <FieldArea.h>
-// FieldArea ####################################################################
+#include <AreaField.h>
 
-rcll_draw::FieldArea::FieldArea(){
+// AreaField ####################################################################
+
+rcll_draw::AreaField::AreaField(){
     hsp_gameinfo = HStatusPanel();
     thp_team_cyan = TeamHeaderPanel();
     thp_team_magenta = TeamHeaderPanel();
@@ -38,11 +39,11 @@ rcll_draw::FieldArea::FieldArea(){
     blbl_text.setFontSize(1.0);
 }
 
-rcll_draw::FieldArea::~FieldArea(){
+rcll_draw::AreaField::~AreaField(){
 
 }
 
-void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::AreaField::setGeometry(int x, int y, int w, int h, int gapsize){
     this->x = x;
     this->y = y;
     this->w = w;
@@ -55,11 +56,11 @@ void rcll_draw::FieldArea::setGeometry(int x, int y, int w, int h, int gapsize){
     blbl_text.setPos(x, y + h - gapsize);
 }
 
-void rcll_draw::FieldArea::setRefBoxView(bool refbox_view){
+void rcll_draw::AreaField::setRefBoxView(bool refbox_view){
     gf_gamefield.setRefBoxView(refbox_view);
 }
 
-void rcll_draw::FieldArea::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+void rcll_draw::AreaField::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     hsp_gameinfo.setContent(gameinfo);
     thp_team_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
     thp_team_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
@@ -67,19 +68,19 @@ void rcll_draw::FieldArea::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     gf_gamefield.setPhase((rcll_draw::GamePhase)gameinfo.game_phase);
 }
 
-void rcll_draw::FieldArea::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
+void rcll_draw::AreaField::setGameField(rcll_vis_msgs::SetGameField &setgamefield){
     gf_gamefield.setGameField(setgamefield);
 }
 
-void rcll_draw::FieldArea::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
+void rcll_draw::AreaField::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
     gf_gamefield.setRobots(robots);
 }
 
-void rcll_draw::FieldArea::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+void rcll_draw::AreaField::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
     gf_gamefield.setMachines(machines);
 }
 
-void rcll_draw::FieldArea::draw(cv::Mat &mat, bool show_element_borders){
+void rcll_draw::AreaField::draw(cv::Mat &mat, bool show_element_borders){
     hsp_gameinfo.draw(mat, show_element_borders);
     thp_team_cyan.draw(mat, show_element_borders);
     thp_team_magenta.draw(mat, show_element_borders);

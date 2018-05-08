@@ -78,7 +78,7 @@ std::vector<std::string> rcll_draw::splitString(std::string s){
 
 cv::Mat rcll_draw::readImage(std::string file){
     cv::Mat result;
-    if (file != ""){
+    if (rcll_draw::getImagePath() != "" && file != ""){
         cv::cvtColor(cv::imread(rcll_draw::getImagePath() + file), result, CV_BGR2BGRA);
     } else {
         result = cv::Mat(10, 10, CV_8UC4);

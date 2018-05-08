@@ -22,40 +22,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <TeamAreaExploration.h>
-// TeamAreaExploration ####################################################################
+#include <AreaExplorationTeam.h>
 
-rcll_draw::TeamAreaExploration::TeamAreaExploration(){
+// AreaExplorationTeam ####################################################################
+
+rcll_draw::AreaExplorationTeam::AreaExplorationTeam() : rcll_draw::AreaExplorationTeam::AreaExplorationTeam(rcll_draw::NO_TEAM){
 
 }
 
-rcll_draw::TeamAreaExploration::TeamAreaExploration(rcll_draw::Team team){
+rcll_draw::AreaExplorationTeam::AreaExplorationTeam(rcll_draw::Team team){
+    if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("CYAN STATUS BOARD", team);
+    } else if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
+    } else {
+        hp_header = HeaderPanel("STATUS BOARD", team);
+    }
     hsp_gameinfo = HStatusPanel();
     mie_machine_info = MachineInfoExploration(team);
 }
 
-rcll_draw::TeamAreaExploration::~TeamAreaExploration(){
+rcll_draw::AreaExplorationTeam::~AreaExplorationTeam(){
 
 }
 
-void rcll_draw::TeamAreaExploration::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::AreaExplorationTeam::setGeometry(int x, int y, int w, int h){
     this->x = x;
     this->y = y;
     this->w = w;
     this->h = h;
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, 1.0);
-    mie_machine_info.setGeometry(x + w * 0.2, y + h * 0.2, 1.0);
+
+    int cur_y = y;
+
+    hp_header.setGeometry(x + (w - hp_header.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hp_header.getH(1.0) + gapsize;
+
+    hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+
+    mie_machine_info.setGeometry(x + (w - mie_machine_info.getW(1.0)) / 2, cur_y, 1.0);
 }
 
-void rcll_draw::TeamAreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+void rcll_draw::AreaExplorationTeam::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     hsp_gameinfo.setContent(gameinfo);
 }
 
-void rcll_draw::TeamAreaExploration::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+void rcll_draw::AreaExplorationTeam::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
     mie_machine_info.setMachines(machines);
 }
 
-void rcll_draw::TeamAreaExploration::draw(cv::Mat &mat, bool show_element_borders){
+void rcll_draw::AreaExplorationTeam::draw(cv::Mat &mat, bool show_element_borders){
+    hp_header.draw(mat, show_element_borders);
     hsp_gameinfo.draw(mat, show_element_borders);
     mie_machine_info.draw(mat, show_element_borders);
 }

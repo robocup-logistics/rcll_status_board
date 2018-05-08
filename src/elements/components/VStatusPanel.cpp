@@ -25,9 +25,8 @@ SOFTWARE.
 #include <VStatusPanel.h>
 
 // VStatusPanel ####################################################################
-rcll_draw::VStatusPanel::VStatusPanel(){
-    origin = cv::Mat(h, w, CV_8UC4);
-    this->team = rcll_draw::NO_TEAM;
+rcll_draw::VStatusPanel::VStatusPanel() : rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::Team team){
@@ -81,6 +80,7 @@ rcll_draw::VStatusPanel::VStatusPanel(rcll_draw::Team team){
     blbl_state_value.setFrontColor(rcll_draw::C_BLACK);
     blbl_phase_value.setFrontColor(rcll_draw::C_BLACK);
     blbl_time_value.setFrontColor(rcll_draw::C_BLACK);
+
     if (team == rcll_draw::CYAN){
         blbl_score_value.setFrontColor(rcll_draw::C_CYAN_DARK);
     } else if (team == rcll_draw::MAGENTA){

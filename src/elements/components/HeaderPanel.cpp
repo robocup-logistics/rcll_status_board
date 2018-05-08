@@ -25,8 +25,8 @@ SOFTWARE.
 #include <HeaderPanel.h>
 
 // HeaderPanel ####################################################################
-rcll_draw::HeaderPanel::HeaderPanel(){
-    //origin = cv::Mat(h, w, CV_8UC4);
+rcll_draw::HeaderPanel::HeaderPanel() : rcll_draw::HeaderPanel::HeaderPanel("", rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::HeaderPanel::HeaderPanel(std::string content, rcll_draw::Team team){

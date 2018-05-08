@@ -22,43 +22,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_TEAM_AREA_POSTGAME_H
-#define RCLL_TEAM_AREA_POSTGAME_H
+#ifndef RCLL_AREA_EXPLORATION_H
+#define RCLL_AREA_EXPLORATION_H
 
 #include <util.h>
-#include <TeamHeaderPanel.h>
+#include <HeaderPanel.h>
 #include <HStatusPanel.h>
-#include <BoxLabel.h>
+#include <TeamHeaderPanel.h>
+#include <MachineInfoExploration.h>
+#include <GameField.h>
 
+#include <rcll_vis_msgs/Machine.h>
+#include <rcll_vis_msgs/Robot.h>
+#include <rcll_vis_msgs/Products.h>
 #include <rcll_vis_msgs/GameInfo.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 namespace rcll_draw {
-
-    // ##################################################
-
-    class TeamAreaPostGame {
+    class AreaExploration {
     public:
-        TeamAreaPostGame();
-        TeamAreaPostGame(Team team);
-        ~TeamAreaPostGame();
+        AreaExploration();
+        ~AreaExploration();
 
-        void setTeams(std::string team_name_cyan, std::string team_name_magenta);
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, int w, int h);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
+        void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
+        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
+        void setRefBoxView(bool refbox_view);
+
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
         int w, h = 1;
+        int gapsize = 40;
 
-        TeamHeaderPanel thp_team_cyan;
-        TeamHeaderPanel thp_team_magenta;
-        BoxLabel blbl_points_cyan;
-        BoxLabel blbl_points_magenta;
-        BoxLabel blbl_versus;
-        BoxLabel blbl_points;
-        BoxLabel blbl_text;
+        HeaderPanel hp_header;
         HStatusPanel hsp_gameinfo;
+        TeamHeaderPanel thp_team_header_cyan;
+        TeamHeaderPanel thp_team_header_magenta;
+        MachineInfoExploration mie_machine_info_cyan;
+        MachineInfoExploration mie_machine_info_magenta;
+        GameField gf_gamefield;
     };
 }
 

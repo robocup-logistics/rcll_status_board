@@ -44,23 +44,30 @@ This node draws the status boards for both teams
 ====================================================================================================== */
 
 namespace {
-    rcll_draw::CompleteAreaExploration complete_area_exploration;
+    rcll_draw::GamePhase gamephase;
+
+    rcll_draw::AreaPreGameSetup area_pregamesetup;
+    rcll_draw::AreaExploration area_exploration;
+    rcll_draw::AreaPostGame area_postgame;
 }
 
 void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
-    complete_area_exploration.setGameInfo(msg);
+    gamephase = (rcll_draw::GamePhase)msg.game_phase;
+    area_pregamesetup.setGameInfo(msg);
+    area_exploration.setGameInfo(msg);
+    area_postgame.setGameInfo(msg);
 }
 
 void cb_gamefield(rcll_vis_msgs::SetGameField msg){
-    complete_area_exploration.setGameField(msg);
+    area_exploration.setGameField(msg);
 }
 
 void cb_machines(rcll_vis_msgs::Machines msg){
-    complete_area_exploration.setMachines(msg.machines);
+    area_exploration.setMachines(msg.machines);
 }
 
 void cb_robots(rcll_vis_msgs::Robots msg){
-    complete_area_exploration.setRobots(msg.robots);
+    area_exploration.setRobots(msg.robots);
 }
 
 int main(int argc, char** argv){
@@ -94,7 +101,6 @@ int main(int argc, char** argv){
     rcll_draw::setImagePath(image_path);
 
     int bordergapsize = 0.05 * res_y;
-    int gapsize = 0.02 * res_y;
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
@@ -104,15 +110,40 @@ int main(int argc, char** argv){
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
 
-    complete_area_exploration = rcll_draw::CompleteAreaExploration(rcll_draw::NO_TEAM);
-    complete_area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize, gapsize);
-    complete_area_exploration.setRefBoxView(refbox_view);
+    area_pregamesetup = rcll_draw::AreaPreGameSetup();
+    area_pregamesetup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+
+    area_exploration = rcll_draw::AreaExploration();
+    area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+    area_exploration.setRefBoxView(refbox_view);
+
+    area_postgame = rcll_draw::AreaPostGame();
+    area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+
     ros::spinOnce();
 
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
-        complete_area_exploration.draw(mat, false);
+        if(gamephase == rcll_draw::PRE_GAME){
+            area_pregamesetup.draw(mat, false);
+        } else if(gamephase == rcll_draw::SETUP){
+            area_pregamesetup.draw(mat, false);
+        } else if (gamephase == rcll_draw::EXPLORATION){
+            area_exploration.draw(mat, false);
+        } else if (gamephase == rcll_draw::PRODUCTION){
+            /*
+            paging_timer +=loop_rate.expectedCycleTime().toSec();
+
+            if (paging_timer >= product_page_time){
+                main_area_production.paging();
+                paging_timer = 0.0;
+            }
+
+            complete_area_production.draw(mat, false);*/
+        } else if (gamephase == rcll_draw::POST_GAME){
+            area_postgame.draw(mat, false);
+        }
         cv::imshow(title, mat);
         char key = (char)cv::waitKey(1);
         if (key == 27){

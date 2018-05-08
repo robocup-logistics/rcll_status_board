@@ -44,7 +44,7 @@ This node draws the field status board for both teams
 ====================================================================================================== */
 
 namespace {
-    rcll_draw::FieldArea main_area_field;
+    rcll_draw::AreaField main_area_field;
 }
 
 void cb_gameinfo(rcll_vis_msgs::GameInfo msg){

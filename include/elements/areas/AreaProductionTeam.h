@@ -22,51 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_COMPLETE_AREA_EXPLORATION_H
-#define RCLL_COMPLETE_AREA_EXPLORATION_H
+#ifndef RCLL_AREA_PRODUCTION_TEAM_H
+#define RCLL_AREA_PRODUCTION_TEAM_H
 
 #include <util.h>
-#include <HeaderPanel.h>
-#include <HStatusPanel.h>
-#include <TeamHeaderPanel.h>
-#include <MachineInfoExploration.h>
-#include <GameField.h>
 
+#include <HeaderPanel.h>
+#include <VStatusPanel.h>
+#include <ProductInfo.h>
+#include <MachineInfoProduction.h>
+#include <RobotInfo.h>
+
+#include <rcll_vis_msgs/GameInfo.h>
 #include <rcll_vis_msgs/Machine.h>
 #include <rcll_vis_msgs/Robot.h>
-#include <rcll_vis_msgs/Products.h>
-#include <rcll_vis_msgs/GameInfo.h>
-#include <rcll_vis_msgs/SetGameField.h>
+#include <rcll_vis_msgs/Product.h>
 
 namespace rcll_draw {
-    class CompleteAreaExploration {
+    class AreaProductionTeam {
     public:
-        CompleteAreaExploration();
-        CompleteAreaExploration(rcll_draw::Team team);
-        ~CompleteAreaExploration();
+        AreaProductionTeam();
+        AreaProductionTeam(Team team);
+        ~AreaProductionTeam();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
-        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
-        void setRefBoxView(bool refbox_view);
-
+        void setProduct(ProductInformation pi, int index);
+        void setProductsCount(size_t count);
+        void paging();
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
         int w, h = 1;
 
-        rcll_draw::GamePhase gamephase;
+        Team team;
 
         HeaderPanel hp_header;
-        HStatusPanel hsp_gameinfo;
-        TeamHeaderPanel thp_team_header_cyan;
-        TeamHeaderPanel thp_team_header_magenta;
-        MachineInfoExploration mie_machine_info_cyan;
-        MachineInfoExploration mie_machine_info_magenta;
-        GameField gf_gamefield;
+        VStatusPanel vsp_gameinfo;
+        ProductInfo pi_productinfo;
+        MachineInfoProduction mip_machineinfo;
+        RobotInfo ri_robotinfo;
+
+
     };
 }
 

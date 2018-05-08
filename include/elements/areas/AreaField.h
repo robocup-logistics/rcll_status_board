@@ -22,28 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_TEAM_AREA_EXPLORATION_H
-#define RCLL_TEAM_AREA_EXPLORATION_H
+#ifndef RCLL_AREA_FIELD_H
+#define RCLL_AREA_FIELD_H
 
 #include <util.h>
 #include <HStatusPanel.h>
-#include <MachineInfoExploration.h>
+#include <TeamHeaderPanel.h>
+#include <GameField.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
 #include <rcll_vis_msgs/Machine.h>
+#include <rcll_vis_msgs/Robot.h>
+#include <rcll_vis_msgs/SetGameField.h>
 
 namespace rcll_draw {
 
     // ##################################################
 
-    class TeamAreaExploration {
+    class AreaField {
     public:
-        TeamAreaExploration();
-        TeamAreaExploration(Team team);
-        ~TeamAreaExploration();
+        AreaField();
+        ~AreaField();
 
         void setGeometry(int x, int y, int w, int h, int gapsize);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
+        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
+        void setRefBoxView(bool refbox_view);
+        void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
@@ -51,9 +56,14 @@ namespace rcll_draw {
         int x, y = 0;
         int w, h = 1;
 
-        Team team;
+        rcll_draw::GamePhase gamephase;
+
         HStatusPanel hsp_gameinfo;
-        MachineInfoExploration mie_machine_info;
+        TeamHeaderPanel thp_team_cyan;
+        TeamHeaderPanel thp_team_magenta;
+        GameField gf_gamefield;
+        BoxLabel blbl_text;
+
     };
 }
 

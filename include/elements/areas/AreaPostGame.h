@@ -22,10 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_TEAM_AREA_PREGAME_SETUP_H
-#define RCLL_TEAM_AREA_PREGAME_SETUP_H
+#ifndef RCLL_AREA_POSTGAME_H
+#define RCLL_AREA_POSTGAME_H
 
 #include <util.h>
+
+#include <HeaderPanel.h>
 #include <TeamHeaderPanel.h>
 #include <HStatusPanel.h>
 #include <BoxLabel.h>
@@ -36,24 +38,29 @@ namespace rcll_draw {
 
     // ##################################################
 
-    class TeamAreaPreGameSetup {
+    class AreaPostGame {
     public:
-        TeamAreaPreGameSetup();
-        TeamAreaPreGameSetup(Team team);
-        ~TeamAreaPreGameSetup();
+        AreaPostGame();
+        AreaPostGame(Team team);
+        ~AreaPostGame();
 
         void setTeams(std::string team_name_cyan, std::string team_name_magenta);
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, int w, int h);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
         int w, h = 1;
+        int gapsize = 40;
 
+        HeaderPanel hp_header;
         TeamHeaderPanel thp_team_cyan;
         TeamHeaderPanel thp_team_magenta;
+        BoxLabel blbl_points_cyan;
+        BoxLabel blbl_points_magenta;
         BoxLabel blbl_versus;
+        BoxLabel blbl_points;
         BoxLabel blbl_text;
         HStatusPanel hsp_gameinfo;
     };

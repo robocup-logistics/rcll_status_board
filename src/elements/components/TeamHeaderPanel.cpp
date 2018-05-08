@@ -26,6 +26,7 @@ SOFTWARE.
 
 // TeamHeaderPanel ####################################################################
 rcll_draw::TeamHeaderPanel::TeamHeaderPanel(){
+
     origin = cv::Mat(h, w, CV_8UC4);
 }
 

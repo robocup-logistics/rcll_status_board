@@ -35,6 +35,8 @@ namespace rcll_draw {
         ~BoxLabel();
 
         void setSize(int w, int h);
+        int getW();
+        int getH();
         void setBackgroundColor(Color c);
         void setBorderColor(Color c);
         void setBorderSize(int bordersize);

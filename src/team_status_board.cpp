@@ -47,31 +47,31 @@ namespace {
 
     rcll_draw::Team team = rcll_draw::NO_TEAM;
 
-    rcll_draw::TeamAreaPreGameSetup main_area_pregamesetup;
-    rcll_draw::TeamAreaExploration main_area_exploration;
-    rcll_draw::TeamAreaProduction main_area_production;
-    rcll_draw::TeamAreaPostGame main_area_postgame;
+    rcll_draw::AreaPreGameSetup area_pregamesetup;
+    rcll_draw::AreaExplorationTeam area_exploration;
+    rcll_draw::AreaProductionTeam area_production;
+    rcll_draw::AreaPostGame area_postgame;
 }
 
 void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
     gamephase = (rcll_draw::GamePhase)msg.game_phase;
-    main_area_pregamesetup.setGameInfo(msg);
-    main_area_exploration.setGameInfo(msg);
-    main_area_production.setGameInfo(msg);
-    main_area_postgame.setGameInfo(msg);
+    area_pregamesetup.setGameInfo(msg);
+    area_exploration.setGameInfo(msg);
+    area_production.setGameInfo(msg);
+    area_postgame.setGameInfo(msg);
 }
 
 void cb_machines(rcll_vis_msgs::Machines msg){
-    main_area_exploration.setMachines(msg.machines);
-    main_area_production.setMachines(msg.machines);
+    area_exploration.setMachines(msg.machines);
+    area_production.setMachines(msg.machines);
 }
 
 void cb_robots(rcll_vis_msgs::Robots msg){
-    main_area_production.setRobots(msg.robots);
+    area_production.setRobots(msg.robots);
 }
 
 void cb_products(const rcll_vis_msgs::Products::ConstPtr& msg){
-    main_area_production.setProductsCount(msg->orders.size());
+    area_production.setProductsCount(msg->orders.size());
     for (size_t i = 0; i < msg->orders.size(); i++){
         rcll_draw::ProductInformation pi;
         pi.product_id = msg->orders[i].product_id;
@@ -106,7 +106,7 @@ void cb_products(const rcll_vis_msgs::Products::ConstPtr& msg){
             pi.points = msg->orders[i].points_magenta;
         }
 
-        main_area_production.setProduct(pi, i);
+        area_production.setProduct(pi, i);
     }
 }
 
@@ -164,17 +164,17 @@ int main(int argc, char** argv){
     cv::Mat mat(res_y, res_x, CV_8UC4);
     cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
 
-    main_area_pregamesetup = rcll_draw::TeamAreaPreGameSetup();
-    main_area_pregamesetup.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    area_pregamesetup = rcll_draw::AreaPreGameSetup(team);
+    area_pregamesetup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
 
-    main_area_exploration = rcll_draw::TeamAreaExploration(team);
-    main_area_exploration.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    area_exploration = rcll_draw::AreaExplorationTeam(team);
+    area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
 
-    main_area_production = rcll_draw::TeamAreaProduction(team);
-    main_area_production.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    area_production = rcll_draw::AreaProductionTeam(team);
+    area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize, gapsize);
 
-    main_area_postgame = rcll_draw::TeamAreaPostGame();
-    main_area_postgame.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    area_postgame = rcll_draw::AreaPostGame(team);
+    area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
 
     ros::spinOnce();
 
@@ -184,23 +184,23 @@ int main(int argc, char** argv){
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
 
         if(gamephase == rcll_draw::PRE_GAME){
-            main_area_pregamesetup.draw(mat, false);
+            area_pregamesetup.draw(mat, false);
         } else if(gamephase == rcll_draw::SETUP){
-            main_area_pregamesetup.draw(mat, false);
+            area_pregamesetup.draw(mat, false);
         } else if (gamephase == rcll_draw::EXPLORATION){
-            main_area_exploration.draw(mat, false);
+            area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){
 
             paging_timer +=loop_rate.expectedCycleTime().toSec();
 
             if (paging_timer >= product_page_time){
-                main_area_production.paging();
+                area_production.paging();
                 paging_timer = 0.0;
             }
 
-            main_area_production.draw(mat, false);
+            area_production.draw(mat, false);
         } else if (gamephase == rcll_draw::POST_GAME){
-            main_area_postgame.draw(mat, false);
+            area_postgame.draw(mat, false);
         }
 
         cv::imshow(title, mat);

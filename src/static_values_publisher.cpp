@@ -199,7 +199,7 @@ int main(int argc, char** argv){
             robot_pos_x = {3.5, -5.0, -2.0, -1.5, 6.5, -6.5};
             robot_pos_y = {2.5, 5.0, 1.5, 5.5, 3.5, 2.5};
             //robot_rot = {10, 50, 100, 200, 150, 300};
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 200){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 5){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.team_points_cyan = 53;
@@ -208,7 +208,7 @@ int main(int argc, char** argv){
             robot_pos_x = {2.5, -4.0, -3.0, -4.5, 3.5, -1.5};
             robot_pos_y = {1.5, 6.0, 3.5, 3.5, 2.5, 5.5};
             //robot_rot = {50, 60, 220, 100, 300, 250};
-        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 200){ // set to POST_GAME
+        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 5){ // set to POST_GAME
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;

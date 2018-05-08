@@ -25,8 +25,8 @@ SOFTWARE.
 #include <RobotInfo.h>
 // RobotInfo ####################################################################
 
-rcll_draw::RobotInfo::RobotInfo(){
-    origin = cv::Mat(h, w, CV_8UC4);
+rcll_draw::RobotInfo::RobotInfo() : rcll_draw::RobotInfo::RobotInfo(rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::RobotInfo::RobotInfo(Team team){

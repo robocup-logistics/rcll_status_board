@@ -22,10 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <TeamAreaPostGame.h>
-// TeamAreaPostGame ####################################################################
+#include <AreaPostGame.h>
 
-rcll_draw::TeamAreaPostGame::TeamAreaPostGame(){
+// AreaPostGame ####################################################################
+
+rcll_draw::AreaPostGame::AreaPostGame() : rcll_draw::AreaPostGame::AreaPostGame(rcll_draw::NO_TEAM){
+
+}
+
+rcll_draw::AreaPostGame::AreaPostGame(rcll_draw::Team team){
+    if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("CYAN STATUS BOARD", team);
+    } else if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
+    } else {
+        hp_header = HeaderPanel("STATUS BOARD", team);
+    }
+
     blbl_versus.setContent("versus");
     blbl_text.setContent("The game has ended. Thank you for watching this match!");
     blbl_points.setContent("Score");
@@ -58,11 +71,11 @@ rcll_draw::TeamAreaPostGame::TeamAreaPostGame(){
     blbl_points_magenta.setFontSize(2.0);
 }
 
-rcll_draw::TeamAreaPostGame::~TeamAreaPostGame(){
+rcll_draw::AreaPostGame::~AreaPostGame(){
 
 }
 
-void rcll_draw::TeamAreaPostGame::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+void rcll_draw::AreaPostGame::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     thp_team_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
     thp_team_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
     blbl_points_cyan.setContent(std::to_string(gameinfo.team_points_cyan));
@@ -70,30 +83,41 @@ void rcll_draw::TeamAreaPostGame::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo)
     hsp_gameinfo.setContent(gameinfo);
 }
 
-void rcll_draw::TeamAreaPostGame::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::AreaPostGame::setGeometry(int x, int y, int w, int h){
     this->x = x;
     this->y = y;
     this->w = w;
     this->h = h;
 
-    thp_team_cyan.setGeometry(x + w * 0.2, y + h * 0.3, 1.0);
-    thp_team_magenta.setGeometry(x + w * 0.6, y + h * 0.3, 1.0);
-
     blbl_versus.setSize(w * 0.1, h * 0.1 / 3);
-    blbl_versus.setPos(x + w * 0.45, y + h * 0.3 + h * 0.1 * 2 / 3);
     blbl_points.setSize(w * 0.1, h * 0.1 / 3);
-    blbl_points.setPos(x + w * 0.45, y + h * 0.45);
     blbl_text.setSize(w * 0.8, h * 0.1);
-    blbl_text.setPos(x + w * 0.1, y + h * 0.6);
     blbl_points_cyan.setSize(w * 0.2, h * 0.1);
-    blbl_points_cyan.setPos(x + w * 0.2, y + h * 0.42);
     blbl_points_magenta.setSize(w * 0.2, h * 0.1);
-    blbl_points_magenta.setPos(x + w * 0.6, y + h * 0.42);
 
-    hsp_gameinfo.setGeometry(x + w * 0.2, y, 1.0);
+    int cur_y = y;
+
+    hp_header.setGeometry(x + (w - hp_header.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hp_header.getH(1.0) + gapsize;
+
+    hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+
+    thp_team_cyan.setGeometry(x + 0.3 * w - thp_team_cyan.getW(1.0) / 2, cur_y, 1.0);
+    thp_team_magenta.setGeometry(x + 0.7 * w - thp_team_magenta.getW(1.0) / 2, cur_y, 1.0);
+    blbl_versus.setPos(x + (w - blbl_versus.getW()) / 2, cur_y + blbl_versus.getH() / 2);
+    cur_y += thp_team_cyan.getH(1.0) + gapsize;
+
+    blbl_points_cyan.setPos(x + 0.3 * w - blbl_points_cyan.getW() / 2, cur_y);
+    blbl_points_magenta.setPos(x + 0.7 * w - blbl_points_magenta.getW() / 2, cur_y);
+    blbl_points.setPos(x + (w - blbl_points.getW()) / 2, cur_y + blbl_points.getH());
+    cur_y += blbl_points_cyan.getH() + 2 * gapsize;
+
+    blbl_text.setPos(x + (w - blbl_text.getW()) / 2, cur_y);
 }
 
-void rcll_draw::TeamAreaPostGame::draw(cv::Mat &mat, bool show_element_borders){
+void rcll_draw::AreaPostGame::draw(cv::Mat &mat, bool show_element_borders){
+    hp_header.draw(mat, show_element_borders);
     thp_team_cyan.draw(mat, show_element_borders);
     thp_team_magenta.draw(mat, show_element_borders);
     blbl_versus.draw(mat);

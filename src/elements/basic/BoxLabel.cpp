@@ -38,6 +38,14 @@ void rcll_draw::BoxLabel::setSize(int w, int h){
     this->h = h;
 }
 
+int rcll_draw::BoxLabel::getW(){
+    return w;
+}
+
+int rcll_draw::BoxLabel::getH(){
+    return h;
+}
+
 void rcll_draw::BoxLabel::setBackgroundColor(Color c){
     this->backgroundcolor = c;
 }

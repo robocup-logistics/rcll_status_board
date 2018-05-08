@@ -155,12 +155,12 @@ add_library(rcll_draw
     src/elements/components/RobotInfo.cpp
     src/elements/components/GameField.cpp
 
-    src/elements/areas/TeamAreaPreGameSetup.cpp
-    src/elements/areas/TeamAreaExploration.cpp
-    src/elements/areas/TeamAreaProduction.cpp
-    src/elements/areas/TeamAreaPostGame.cpp
-    src/elements/areas/FieldArea.cpp
-    src/elements/areas/CompleteAreaExploration.cpp
+    src/elements/areas/AreaPreGameSetup.cpp
+    src/elements/areas/AreaExplorationTeam.cpp
+    src/elements/areas/AreaProductionTeam.cpp
+    src/elements/areas/AreaPostGame.cpp
+    src/elements/areas/AreaField.cpp
+    src/elements/areas/AreaExploration.cpp
 )
 
 ## Add cmake target dependencies of the library

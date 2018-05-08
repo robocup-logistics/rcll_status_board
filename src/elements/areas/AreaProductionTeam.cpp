@@ -22,65 +22,81 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <TeamAreaProduction.h>
+#include <AreaProductionTeam.h>
 
-// TeamAreaProduction ####################################################################
+// AreaProductionTeam ####################################################################
 
-rcll_draw::TeamAreaProduction::TeamAreaProduction(){
+rcll_draw::AreaProductionTeam::AreaProductionTeam(){
+    hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
     vsp_gameinfo = VStatusPanel(rcll_draw::NO_TEAM);
     pi_productinfo = ProductInfo();
     mip_machineinfo = MachineInfoProduction(rcll_draw::NO_TEAM);
     ri_robotinfo = RobotInfo(rcll_draw::NO_TEAM);
 }
 
-rcll_draw::TeamAreaProduction::TeamAreaProduction(rcll_draw::Team team){
+rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::Team team){
+    if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("CYAN STATUS BOARD", team);
+    } else if (team == rcll_draw::CYAN){
+        hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
+    } else {
+        hp_header = HeaderPanel("STATUS BOARD", team);
+    }
     vsp_gameinfo = VStatusPanel(team);
     pi_productinfo = ProductInfo();
     mip_machineinfo = MachineInfoProduction(team);
     ri_robotinfo = RobotInfo(team);
 }
 
-rcll_draw::TeamAreaProduction::~TeamAreaProduction(){
+rcll_draw::AreaProductionTeam::~AreaProductionTeam(){
 
 }
 
-void rcll_draw::TeamAreaProduction::setGeometry(int x, int y, int w, int h, int gapsize){
-    int w1 = (w - gapsize);
+void rcll_draw::AreaProductionTeam::setGeometry(int x, int y, int w, int h, int gapsize){
     this->x = x;
     this->y = y;
     this->w = w;
     this->h = h;
-    vsp_gameinfo.setGeometry(x, y, 1.0);
-    pi_productinfo.setGeometry(x + gapsize + w1 * 0.12, y, 0.96);
-    mip_machineinfo.setGeometry(x, y + h * 0.6, 1.0);
-    ri_robotinfo.setGeometry(x + w1 * 0.55 + gapsize, y + h * 0.6, 1.0);
+
+    int cur_y = y;
+
+    hp_header.setGeometry(x + (w - hp_header.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hp_header.getH(1.0) + gapsize;
+
+    vsp_gameinfo.setGeometry(x, cur_y, 1.0);
+    pi_productinfo.setGeometry(x + w - pi_productinfo.getW(0.96), cur_y, 0.96);
+    cur_y += vsp_gameinfo.getH(1.0) + gapsize;
+
+    mip_machineinfo.setGeometry(x, cur_y, 1.0);
+    ri_robotinfo.setGeometry(x + w - ri_robotinfo.getW(), cur_y, 1.0);
 }
 
-void rcll_draw::TeamAreaProduction::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
+void rcll_draw::AreaProductionTeam::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     vsp_gameinfo.setContent(gameinfo);
 }
 
-void rcll_draw::TeamAreaProduction::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
+void rcll_draw::AreaProductionTeam::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
     return mip_machineinfo.setMachines(machines);
 }
 
-void rcll_draw::TeamAreaProduction::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
+void rcll_draw::AreaProductionTeam::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
     return ri_robotinfo.setRobots(robots);
 }
 
-void rcll_draw::TeamAreaProduction::setProduct(ProductInformation pi, int index){
+void rcll_draw::AreaProductionTeam::setProduct(ProductInformation pi, int index){
     pi_productinfo.setProduct(pi, index);
 }
 
-void rcll_draw::TeamAreaProduction::setProductsCount(size_t count){
+void rcll_draw::AreaProductionTeam::setProductsCount(size_t count){
     pi_productinfo.setProductsCount(count);
 }
 
-void rcll_draw::TeamAreaProduction::paging(){
+void rcll_draw::AreaProductionTeam::paging(){
     pi_productinfo.paging();
 }
 
-void rcll_draw::TeamAreaProduction::draw(cv::Mat &mat, bool show_element_borders){
+void rcll_draw::AreaProductionTeam::draw(cv::Mat &mat, bool show_element_borders){
+    hp_header.draw(mat, show_element_borders);
     vsp_gameinfo.draw(mat, show_element_borders);
     pi_productinfo.draw(mat, show_element_borders);
     mip_machineinfo.draw(mat, show_element_borders);
