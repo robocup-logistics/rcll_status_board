@@ -31,6 +31,7 @@ rcll_draw::RobotInfo::RobotInfo() : rcll_draw::RobotInfo::RobotInfo(rcll_draw::N
 
 rcll_draw::RobotInfo::RobotInfo(Team team){
     origin = cv::Mat(h, w, CV_8UC4);
+    this->team = team;
     blbl_header.setAlignment(rcll_draw::CenterCenter);
     blbl_header.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_header.setBorderColor(rcll_draw::C_WHITE);
@@ -44,13 +45,13 @@ rcll_draw::RobotInfo::RobotInfo(Team team){
         blbl_header.setFrontColor(rcll_draw::C_BLACK);
     }
 
-
     for (size_t i = 0; i < keys.size(); i++){
         RobotLabel rl;
         rcll_vis_msgs::Robot robot;
         robot.key = keys[i];
         rl.setRobot(robot);
         rl_robots.push_back(rl);
+        robot_map[keys[i]] = i;
     }
 }
 

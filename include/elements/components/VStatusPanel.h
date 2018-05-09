@@ -58,7 +58,9 @@ namespace rcll_draw {
         BoxLabel blbl_time_header;
         BoxLabel blbl_time_value;
         BoxLabel blbl_score_header;
-        BoxLabel blbl_score_value;
+        BoxLabel blbl_score_value_cyan;
+        BoxLabel blbl_score_value_mid;
+        BoxLabel blbl_score_value_magenta;
     };
 }
 

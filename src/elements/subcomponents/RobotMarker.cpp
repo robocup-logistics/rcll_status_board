@@ -96,7 +96,7 @@ void rcll_draw::RobotMarker::setRobot(rcll_vis_msgs::Robot &robot){
 }
 
 void rcll_draw::RobotMarker::draw(cv::Mat &mat){
-    if (pose_set && ((ros::Time::now() - robot.stamp.data).toSec() < 5.0)){
+    if (robot.active && pose_set && ((ros::Time::now() - robot.stamp.data).toSec() < 5.0)){
         crc_robot.draw(mat);
         blbl_id.draw(mat);
         arr_heading.draw(mat);

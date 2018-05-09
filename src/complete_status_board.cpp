@@ -48,6 +48,7 @@ namespace {
 
     rcll_draw::AreaPreGameSetup area_pregamesetup;
     rcll_draw::AreaExploration area_exploration;
+    rcll_draw::AreaProduction area_production;
     rcll_draw::AreaPostGame area_postgame;
 }
 
@@ -55,19 +56,27 @@ void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
     gamephase = (rcll_draw::GamePhase)msg.game_phase;
     area_pregamesetup.setGameInfo(msg);
     area_exploration.setGameInfo(msg);
+    area_production.setGameInfo(msg);
     area_postgame.setGameInfo(msg);
 }
 
 void cb_gamefield(rcll_vis_msgs::SetGameField msg){
     area_exploration.setGameField(msg);
+    area_production.setGameField(msg);
 }
 
 void cb_machines(rcll_vis_msgs::Machines msg){
     area_exploration.setMachines(msg.machines);
+    area_production.setMachines(msg.machines);
 }
 
 void cb_robots(rcll_vis_msgs::Robots msg){
     area_exploration.setRobots(msg.robots);
+    area_production.setRobots(msg.robots);
+}
+
+void cb_products(rcll_vis_msgs::Products msg){
+    area_production.setProducts(msg.orders);
 }
 
 int main(int argc, char** argv){
@@ -80,17 +89,20 @@ int main(int argc, char** argv){
     bool fullscreen = false;
     std::string image_path = "";
     bool refbox_view = false;
+    double product_page_time = 10.0;
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_gamefield = nh.subscribe("refbox/gamefield", 10, cb_gamefield);
     ros::Subscriber sub_robots = nh.subscribe("refbox/robots", 10, cb_robots);
     ros::Subscriber sub_machines = nh.subscribe("refbox/machines", 10, cb_machines);
+    ros::Subscriber sub_products = nh.subscribe("refbox/products", 10, cb_products);
 
     private_nh.getParam("screen_x", res_x);
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
     private_nh.getParam("refbox_view", refbox_view);
+    //private_nh.getParam("product_page_time", product_page_time);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
@@ -117,11 +129,15 @@ int main(int argc, char** argv){
     area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
     area_exploration.setRefBoxView(refbox_view);
 
+    area_production = rcll_draw::AreaProduction();
+    area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+
     area_postgame = rcll_draw::AreaPostGame();
     area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
 
     ros::spinOnce();
 
+    double paging_timer = 0.0;
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
@@ -132,15 +148,15 @@ int main(int argc, char** argv){
         } else if (gamephase == rcll_draw::EXPLORATION){
             area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){
-            /*
             paging_timer +=loop_rate.expectedCycleTime().toSec();
 
-            if (paging_timer >= product_page_time){
-                main_area_production.paging();
+            if (paging_timer > product_page_time){
+                area_production.paging();
                 paging_timer = 0.0;
             }
 
-            complete_area_production.draw(mat, false);*/
+
+            area_production.draw(mat, false);
         } else if (gamephase == rcll_draw::POST_GAME){
             area_postgame.draw(mat, false);
         }

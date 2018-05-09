@@ -39,6 +39,7 @@ namespace rcll_draw {
         MachineInfoProduction(Team team);
         ~MachineInfoProduction();
 
+        void setShortDisplay(bool short_display);
         void setGeometry(int x, int y, double scale);
 
         int getW(double scale = 1.0);
@@ -49,10 +50,12 @@ namespace rcll_draw {
 
     private:
         int x, y = 0;
-        int w = 985, h = 345;
+        int w = 980, h = 345;
         int gapsize = 20;
         double scale = 1.0;
         cv::Mat origin;
+
+        bool short_display = false;
 
         Team team;
         BoxLabel blbl_header;

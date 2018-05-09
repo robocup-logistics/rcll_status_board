@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef RCLL_AREA_PRODUCTION_TEAM_H
-#define RCLL_AREA_PRODUCTION_TEAM_H
+#ifndef RCLL_AREA_PRODUCTION_H
+#define RCLL_AREA_PRODUCTION_H
 
 #include <util.h>
 
@@ -32,6 +32,7 @@ SOFTWARE.
 #include <ProductInfo.h>
 #include <MachineInfoProduction.h>
 #include <RobotInfo.h>
+#include <GameField.h>
 
 #include <rcll_vis_msgs/GameInfo.h>
 #include <rcll_vis_msgs/Machine.h>
@@ -39,34 +40,39 @@ SOFTWARE.
 #include <rcll_vis_msgs/Product.h>
 
 namespace rcll_draw {
-    class AreaProductionTeam {
+    class AreaProduction {
     public:
-        AreaProductionTeam();
-        AreaProductionTeam(Team team);
-        ~AreaProductionTeam();
+        AreaProduction();
+        ~AreaProduction();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, int w, int h);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
-        void setProduct(ProductInformation pi, int index);
-        void setProductsCount(size_t count);
+        void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
+        void setProducts(std::vector<rcll_vis_msgs::Product> &products);
         void paging();
+        void setRefBoxView(bool refbox_view);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:
         int x, y = 0;
         int w, h = 1;
+        int gapsize = 40;
 
         Team team;
 
+        int paging_count = 0;
+
         HeaderPanel hp_header;
         VStatusPanel vsp_gameinfo;
-        ProductInfo pi_productinfo;
-        MachineInfoProduction mip_machineinfo;
-        RobotInfo ri_robotinfo;
-
-
+        ProductInfo pi_productinfo_cyan;
+        ProductInfo pi_productinfo_magenta;
+        MachineInfoProduction mip_machineinfo_cyan;
+        MachineInfoProduction mip_machineinfo_magenta;
+        RobotInfo ri_robotinfo_cyan;
+        RobotInfo ri_robotinfo_magenta;
+        GameField gf_gamefield;
     };
 }
 

@@ -61,16 +61,36 @@ void rcll_draw::MachineInfoProduction::setGeometry(int x, int y, double scale){
     this->y = y;
     this->scale = scale;
 
-    int w1 = (w - gapsize) / 2;
-    blbl_header.setPos(0, 0);
-    blbl_header.setSize(w, h * 0.2);
+    if (!short_display){
+        blbl_header.setPos(0, 0);
+        blbl_header.setSize(w, h * 0.2);
 
-    for (size_t i = 0; i < keys.size(); i++){
-        if (i < 3){
-            mlp_machines[machine_map[keys[i]]].setGeometry(0, (i+1) * h * 0.2, w1, h * 0.2);
-        } else {
-            mlp_machines[machine_map[keys[i]]].setGeometry(w1 + gapsize, (i-2) * h * 0.2, w1, h*0.2);
+        int w1 = (w - gapsize) / 2;
+
+        for (size_t i = 0; i < keys.size(); i++){
+            if (i < 3){
+                mlp_machines[machine_map[keys[i]]].setGeometry(0, (i+1) * h * 0.2, w1, h * 0.2);
+            } else {
+                mlp_machines[machine_map[keys[i]]].setGeometry(w1 + gapsize, (i-2) * h * 0.2, w1, h*0.2);
+            }
         }
+    } else {
+        blbl_header.setPos(0, 0);
+        blbl_header.setSize(w, h / 8);
+
+        for (size_t i = 0; i < keys.size(); i++){
+            mlp_machines[machine_map[keys[i]]].setGeometry(0, (i+1) * h / 8, w, h / 8);
+        }
+    }
+}
+
+void rcll_draw::MachineInfoProduction::setShortDisplay(bool short_display){
+    this->short_display = short_display;
+
+    if (short_display){
+        w = 480;
+        h = 552;
+        origin = cv::Mat(h, w, CV_8UC4);
     }
 }
 
@@ -93,15 +113,12 @@ void rcll_draw::MachineInfoProduction::setMachines(std::vector<rcll_vis_msgs::Ma
 
 void rcll_draw::MachineInfoProduction::draw(cv::Mat &mat, bool show_element_border){
     cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
-
     blbl_header.draw(origin);
     for (size_t i = 0; i < keys.size(); i++){
         mlp_machines[machine_map[keys[i]]].draw(origin);
     }
-
     if (show_element_border){
         cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_RED), 1);
     }
-
     rcll_draw::mergeImages(mat, origin, x, y, scale);
 }

@@ -70,44 +70,8 @@ void cb_robots(rcll_vis_msgs::Robots msg){
     area_production.setRobots(msg.robots);
 }
 
-void cb_products(const rcll_vis_msgs::Products::ConstPtr& msg){
-    area_production.setProductsCount(msg->orders.size());
-    for (size_t i = 0; i < msg->orders.size(); i++){
-        rcll_draw::ProductInformation pi;
-        pi.product_id = msg->orders[i].product_id;
-        pi.quantity_id = msg->orders[i].quantity_id;
-        pi.deadline = msg->orders[i].end_delivery_time;
-        pi.points_max = msg->orders[i].points_max;
-        pi.plan.complexity = msg->orders[i].complexity;
-        pi.plan.base = msg->orders[i].structure[0];
-        pi.plan.ring1 = msg->orders[i].structure[1];
-        pi.plan.ring2 = msg->orders[i].structure[2];
-        pi.plan.ring3 = msg->orders[i].structure[3];
-        pi.plan.cap = msg->orders[i].structure[4];
-        if (team == rcll_draw::CYAN){
-            pi.plan.status_base = msg->orders[i].step_stati_cyan[0];
-            pi.plan.status_ring1 = msg->orders[i].step_stati_cyan[1];
-            pi.plan.status_ring2 = msg->orders[i].step_stati_cyan[2];
-            pi.plan.status_ring3 = msg->orders[i].step_stati_cyan[3];
-            pi.plan.status_cap = msg->orders[i].step_stati_cyan[4];
-            pi.plan.status_product = msg->orders[i].step_stati_cyan[5];
-
-            pi.progress = msg->orders[i].progress_cyan;
-            pi.points = msg->orders[i].points_cyan;
-        } else if (team == rcll_draw::MAGENTA){
-            pi.plan.status_base = msg->orders[i].step_stati_magenta[0];
-            pi.plan.status_ring1 = msg->orders[i].step_stati_magenta[1];
-            pi.plan.status_ring2 = msg->orders[i].step_stati_magenta[2];
-            pi.plan.status_ring3 = msg->orders[i].step_stati_magenta[3];
-            pi.plan.status_cap = msg->orders[i].step_stati_magenta[4];
-            pi.plan.status_product = msg->orders[i].step_stati_magenta[5];
-
-            pi.progress = msg->orders[i].progress_magenta;
-            pi.points = msg->orders[i].points_magenta;
-        }
-
-        area_production.setProduct(pi, i);
-    }
+void cb_products(rcll_vis_msgs::Products msg){
+    area_production.setProducts(msg.orders);
 }
 
 int main(int argc, char** argv){
@@ -119,7 +83,6 @@ int main(int argc, char** argv){
     int res_x = 1920;
     int res_y = 1080;
     bool fullscreen = false;
-    double product_page_time = 10.0;
     std::string image_path = "";
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
@@ -132,7 +95,6 @@ int main(int argc, char** argv){
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
-    private_nh.getParam("product_page_time", product_page_time);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
@@ -178,7 +140,6 @@ int main(int argc, char** argv){
 
     ros::spinOnce();
 
-    double paging_timer = product_page_time;
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
@@ -190,14 +151,6 @@ int main(int argc, char** argv){
         } else if (gamephase == rcll_draw::EXPLORATION){
             area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){
-
-            paging_timer +=loop_rate.expectedCycleTime().toSec();
-
-            if (paging_timer >= product_page_time){
-                area_production.paging();
-                paging_timer = 0.0;
-            }
-
             area_production.draw(mat, false);
         } else if (gamephase == rcll_draw::POST_GAME){
             area_postgame.draw(mat, false);

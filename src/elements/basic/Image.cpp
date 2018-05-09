@@ -70,24 +70,9 @@ void rcll_draw::Image::setAngle(double angle){
 }
 
 void rcll_draw::Image::draw(cv::Mat &mat){
-    cv::Mat tmp2;
-    try {
-        cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_CUBIC);
-        if (tmp2.data){
-            cv::Rect rect(x, y, tmp2.cols, tmp2.rows);
-            cv::Mat roi = mat(rect);
-            tmp2.copyTo(roi);
-        } else {
-            ROS_WARN("Could not open or find the picture at '%s'", path.c_str());
-        }
-    } catch (cv::Exception &e){
-        ROS_ERROR("%s", e.what());
-        ROS_INFO("x=%i y=%i w=%i h=%i", x, y, tmp2.cols, tmp2.rows);
-    }
+    rcll_draw::mergeImages(mat, image, x, y, s);
 }
 
 void rcll_draw::Image::draw(cv::Mat &mat, cv::Scalar alpha_color){
-    cv::Mat tmp2;
-    cv::resize(this->image, tmp2, cv::Size(), s, s, cv::INTER_NEAREST);
-    rcll_draw::mergeImages(mat, tmp2, alpha_color, x, y);
+    rcll_draw::mergeImages(mat, image, alpha_color, x, y, s);
 }

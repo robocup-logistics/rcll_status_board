@@ -29,7 +29,7 @@ SOFTWARE.
 rcll_draw::AreaProductionTeam::AreaProductionTeam(){
     hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
     vsp_gameinfo = VStatusPanel(rcll_draw::NO_TEAM);
-    pi_productinfo = ProductInfo();
+    pi_productinfo = ProductInfo(rcll_draw::NO_TEAM);
     mip_machineinfo = MachineInfoProduction(rcll_draw::NO_TEAM);
     ri_robotinfo = RobotInfo(rcll_draw::NO_TEAM);
 }
@@ -43,7 +43,7 @@ rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::Team team){
         hp_header = HeaderPanel("STATUS BOARD", team);
     }
     vsp_gameinfo = VStatusPanel(team);
-    pi_productinfo = ProductInfo();
+    pi_productinfo = ProductInfo(team);
     mip_machineinfo = MachineInfoProduction(team);
     ri_robotinfo = RobotInfo(team);
 }
@@ -76,23 +76,15 @@ void rcll_draw::AreaProductionTeam::setGameInfo(rcll_vis_msgs::GameInfo &gameinf
 }
 
 void rcll_draw::AreaProductionTeam::setMachines(std::vector<rcll_vis_msgs::Machine> &machines){
-    return mip_machineinfo.setMachines(machines);
+    mip_machineinfo.setMachines(machines);
 }
 
 void rcll_draw::AreaProductionTeam::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
-    return ri_robotinfo.setRobots(robots);
+    ri_robotinfo.setRobots(robots);
 }
 
-void rcll_draw::AreaProductionTeam::setProduct(ProductInformation pi, int index){
-    pi_productinfo.setProduct(pi, index);
-}
-
-void rcll_draw::AreaProductionTeam::setProductsCount(size_t count){
-    pi_productinfo.setProductsCount(count);
-}
-
-void rcll_draw::AreaProductionTeam::paging(){
-    pi_productinfo.paging();
+void rcll_draw::AreaProductionTeam::setProducts(std::vector<rcll_vis_msgs::Product> &products){
+    pi_productinfo.setProducts(products);
 }
 
 void rcll_draw::AreaProductionTeam::draw(cv::Mat &mat, bool show_element_borders){

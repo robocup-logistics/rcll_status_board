@@ -87,9 +87,11 @@ namespace rcll_draw {
     bool getSignalOnceEveryXSeconds(ros::Time time, int intervall, ros::Rate basic_rate);
     std::vector<std::string> splitString(std::string s);
     cv::Mat readImage(std::string file);
+    void mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst, double scale);
     void mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst);
-    void mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst);
     void mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst, double scale);
+    void mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst);
+
     std::string getFile(int number, int type);
     std::string getGamePhaseStr(int gamephase);
     std::string getGameStateStr(int gamestate);

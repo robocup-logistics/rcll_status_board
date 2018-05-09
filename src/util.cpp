@@ -89,9 +89,9 @@ cv::Mat rcll_draw::readImage(std::string file){
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst){
     for (int y = 0; y < src.rows; ++y){
-        if (y_dst + y <= dst.rows){
+        if (y_dst + y < dst.rows){
             for (int x = 0; x < src.cols; ++x){
-                if (x_dst + x <= dst.cols){
+                if (x_dst + x < dst.cols){
                     cv::Vec4b & dst_pixel = dst.at<cv::Vec4b>(y_dst + y, x_dst + x);
                     cv::Vec4b & src_pixel = src.at<cv::Vec4b>(y, x);
                     // if pixel is alphacolor
@@ -111,9 +111,9 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, 
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst){
     for (int y = 0; y < src.rows; ++y){
-        if (y_dst + y <= dst.rows){
+        if (y_dst + y < dst.rows){
             for (int x = 0; x < src.cols; ++x){
-                if (x_dst + x <= dst.cols){
+                if (x_dst + x < dst.cols){
                     cv::Vec4b & dst_pixel = dst.at<cv::Vec4b>(y_dst + y, x_dst + x);
                     cv::Vec4b & src_pixel = src.at<cv::Vec4b>(y, x);
                     dst_pixel[0] = src_pixel[0];
@@ -127,10 +127,21 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst){
 }
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst, double scale){
-    cv::Mat tmp;
-    cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
-    rcll_draw::mergeImages(dst, tmp, x_dst, y_dst);
-    tmp.resize(0);
+    if (src.rows > 0 && src.cols > 0){
+        cv::Mat tmp;
+        cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
+        rcll_draw::mergeImages(dst, tmp, x_dst, y_dst);
+        tmp.resize(0);
+    }
+}
+
+void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst, double scale){
+    if (src.rows > 0 && src.cols > 0){
+        cv::Mat tmp;
+        cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
+        rcll_draw::mergeImages(dst, tmp, alpha_color, x_dst, y_dst);
+        tmp.resize(0);
+    }
 }
 
 std::string rcll_draw::getFile(int number, int type){

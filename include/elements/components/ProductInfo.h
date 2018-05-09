@@ -25,12 +25,16 @@ SOFTWARE.
 #define RCLL_PRODUCT_INFO_H
 
 #include <util.h>
+
+#include <rcll_vis_msgs/Product.h>
+
 #include <ProductLabel.h>
 
 namespace rcll_draw {
     class ProductInfo {
     public:
         ProductInfo();
+        ProductInfo(rcll_draw::Team team, int displayed_products = 4);
         ~ProductInfo();
 
         void setGeometry(int x, int y, double scale);
@@ -38,24 +42,28 @@ namespace rcll_draw {
         int getW(double scale = 1.0);
         int getH(double scale = 1.0);
 
-        void setProduct(ProductInformation pi, int index);
-        void setProductsCount(size_t count);
-        void paging();
+        void setProducts(std::vector<rcll_vis_msgs::Product> &products);
         void draw(cv::Mat &mat, bool show_element_border = false);
+
+        static void getKeys(std::map<std::string, rcll_draw::ProductLabel> &mapping, std::vector<std::string> &keys);
 
     private:
         int x, y = 0;
-        int w = 1642, h = 540;
+        int w = 1640, h = 540;
+        int w_product = 395;
         int gapsize = 20;
         double scale = 1.0;
         cv::Mat origin;
 
-        std::vector<ProductInformation> products;
-        std::vector<ProductLabel> product_labels;
+        size_t displayed_products = 4;
+        Team team;
 
-        ProductInformation empty_product;
+        std::vector<std::string> keys;
+        std::vector<std::string> display;
+        std::map<std::string, ProductLabel> pls_products;
 
-        size_t page = 0;
+        int shift = 0;
+        int shiftover = 0;
     };
 }
 

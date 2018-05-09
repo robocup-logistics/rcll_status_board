@@ -49,9 +49,7 @@ namespace rcll_draw {
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
-        void setProduct(ProductInformation pi, int index);
-        void setProductsCount(size_t count);
-        void paging();
+        void setProducts(std::vector<rcll_vis_msgs::Product> &products);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:

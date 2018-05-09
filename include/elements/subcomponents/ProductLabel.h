@@ -26,12 +26,15 @@ SOFTWARE.
 #define RCLL_PRODUCT_LABEL_H
 
 #include <util.h>
+
+#include <rcll_vis_msgs/Product.h>
+
 #include <BoxLabel.h>
 #include <Image.h>
 
 namespace rcll_draw {
 
-    struct Product {
+    struct ProductPlan {
         int complexity; //0-3
         int base;   // 1=RED, 2=BLACK, 3=SILVER
         int ring1;  // 1=BLUE, 2=GREEN, 3=ORANGE, 4=YELLOW
@@ -50,7 +53,7 @@ namespace rcll_draw {
     struct ProductInformation {
         int product_id;
         int quantity_id;
-        Product plan;
+        ProductPlan plan;
         double progress;
         int deadline;
         int points;
@@ -62,21 +65,25 @@ namespace rcll_draw {
         ProductLabel();
         ~ProductLabel();
 
-        void setGeometry(int x, int y, int w, int h);
-        void setProduct(ProductInformation pi);
-        cv::Mat createProductImage(Product plan);
+        void setGeometry(int x, int y);
+        int getW();
+        int getH();
+        void setProduct(rcll_vis_msgs::Product &product, rcll_draw::Team team);
+        cv::Mat createProductImage(ProductPlan plan);
         void draw(cv::Mat &mat);
 
     private:
+        int x, y = 0;
+        int w = 400, h = 540;
+        cv::Mat origin;
+
         BoxLabel blbl_name;
         BoxLabel blbl_progress;
         BoxLabel blbl_deadline;
         BoxLabel blbl_points;
-        Image product;
+        Image img_product;
         std::vector<Image> img_step_progress;
         Image img_product_progress;
-
-        ProductInformation product_information;
     };
 }
 

@@ -25,11 +25,15 @@ SOFTWARE.
 #include <ProductInfo.h>
 
 // ProductInfo ####################################################################
-rcll_draw::ProductInfo::ProductInfo(){
-    product_labels.resize(4);
-    origin = cv::Mat(h, w, CV_8UC4);
+rcll_draw::ProductInfo::ProductInfo() : rcll_draw::ProductInfo::ProductInfo(rcll_draw::NO_TEAM){
 
-    empty_product.product_id = 0;
+}
+
+rcll_draw::ProductInfo::ProductInfo(rcll_draw::Team team, int displayed_products){
+    this->displayed_products = displayed_products;
+    this->team = team;
+    w = displayed_products * w_product;
+    origin = cv::Mat(h, w, CV_8UC4);
 }
 
 rcll_draw::ProductInfo::~ProductInfo(){
@@ -40,12 +44,6 @@ void rcll_draw::ProductInfo::setGeometry(int x, int y, double scale){
     this->x = x;
     this->y = y;
     this->scale = scale;
-
-    int w1 = (w - 3 * gapsize) / 4;
-    for(size_t i = 0; i < product_labels.size(); i++){
-        product_labels[i].setGeometry(i * (gapsize + w1), 0, w1, h);
-        product_labels[i].setProduct(empty_product);
-    }
 }
 
 int rcll_draw::ProductInfo::getW(double scale){
@@ -56,44 +54,34 @@ int rcll_draw::ProductInfo::getH(double scale){
     return (int)((double)h * scale);
 }
 
-void rcll_draw::ProductInfo::setProduct(ProductInformation pi, int index){
-    if (index >= 0 && index < (int)products.size()){
-        products[index] = pi;
+void rcll_draw::ProductInfo::setProducts(std::vector<rcll_vis_msgs::Product> &products){
+    for (size_t i = 0; i < products.size(); i++){
+        std::string key = std::to_string(products[i].product_id) + "-" + std::to_string(products[i].quantity_id);
+        pls_products[key].setProduct(products[i], team);
     }
-}
-
-void rcll_draw::ProductInfo::setProductsCount(size_t count){
-    products.clear();
-    products.resize(count);
-}
-
-void rcll_draw::ProductInfo::paging(){
-    size_t pages = products.size() / product_labels.size();
-
-    if (products.size() % product_labels.size() > 0){
-        pages +=1;
-    }
-
-    page++;
-    if (page >= pages){
-        page = 0;
-    }
-
-    for (size_t i = 0; i < product_labels.size(); i++){
-        size_t product_index = page * product_labels.size() + i;
-        if (product_index < products.size()){
-            product_labels[i].setProduct(products[product_index]);
-        } else {
-            product_labels[i].setProduct(empty_product);
-        }
-    }
+    getKeys(pls_products, keys);
+    display = keys;
 }
 
 void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
-    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+    if (display.size() > 0){
+        int canvas_w = display.size() * w_product;
+        cv::Mat canvas = cv::Mat(h, canvas_w, CV_8UC4);
+        cv::rectangle(canvas, cv::Point(0, 0), cv::Point (canvas_w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
 
-    for (size_t i = 0; i < product_labels.size(); i++){
-        product_labels[i].draw(origin);
+        int cur_x = 0;
+        for (size_t i = 0; i < display.size(); i++){
+            pls_products[display[i]].setGeometry(cur_x, 0);
+            pls_products[display[i]].draw(canvas);
+            cur_x += pls_products[display[i]].getW() + gapsize;
+        }
+
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+
+        cv::Rect roi = cv::Rect(shift, 0, std::min(w, canvas_w - shift), h);
+        cv::Mat crop = canvas(roi);
+
+        rcll_draw::mergeImages(origin, crop, 0, 0);
     }
 
     if (show_element_border){
@@ -101,4 +89,26 @@ void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
     }
 
     rcll_draw::mergeImages(mat, origin, x, y, scale);
+
+    if (display.size() > displayed_products){
+        if (shift >= (int)((display.size() - displayed_products) * w_product)){
+            if (shiftover < 10){
+                shiftover++;
+            } else {
+                shiftover=0;
+                shift=0;
+            }
+        } else {
+            shift+=10;
+        }
+    } else {
+        shift = 0;
+    }
+}
+
+void rcll_draw::ProductInfo::getKeys(std::map<std::string, rcll_draw::ProductLabel> &mapping, std::vector<std::string> &keys){
+    keys.clear();
+    for (std::map<std::string, rcll_draw::ProductLabel>::iterator it = mapping.begin(); it != mapping.end(); ++it) {
+        keys.push_back(it->first);
+    }
 }

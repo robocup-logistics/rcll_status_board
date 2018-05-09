@@ -34,6 +34,7 @@ rcll_draw::AreaExploration::AreaExploration(){
     mie_machine_info_cyan = MachineInfoExploration(rcll_draw::CYAN);
     mie_machine_info_magenta = MachineInfoExploration(rcll_draw::MAGENTA);
     gf_gamefield = GameField();
+    gf_gamefield.setRefBoxView(false);
 }
 
 rcll_draw::AreaExploration::~AreaExploration(){
@@ -90,7 +91,7 @@ void rcll_draw::AreaExploration::setGameField(rcll_vis_msgs::SetGameField &setga
 }
 
 void rcll_draw::AreaExploration::setRobots(std::vector<rcll_vis_msgs::Robot> &robots){
-    return gf_gamefield.setRobots(robots);
+    gf_gamefield.setRobots(robots);
 }
 
 void rcll_draw::AreaExploration::draw(cv::Mat &mat, bool show_element_borders){
