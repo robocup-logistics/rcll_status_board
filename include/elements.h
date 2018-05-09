@@ -23,6 +23,7 @@
 
 #include <GameField.h>
 
+<<<<<<< HEAD
 #include <AreaExplorationTeam.h>
 #include <AreaProductionTeam.h>
 #include <AreaPreGameSetup.h>
@@ -30,5 +31,13 @@
 #include <AreaField.h>
 #include <AreaExploration.h>
 
+=======
+#include <TeamAreaPreGameSetup.h>
+#include <TeamAreaExploration.h>
+#include <TeamAreaProduction.h>
+#include <TeamAreaPostGame.h>
+#include <FieldArea.h>
+//#include <CompleteAreaExploration.h>
+>>>>>>> a2d4c7f5bab6c1e7358e766368d6c603c30617ae
 
 #endif

@@ -161,6 +161,7 @@ add_library(rcll_draw
     src/elements/areas/AreaPostGame.cpp
     src/elements/areas/AreaField.cpp
     src/elements/areas/AreaExploration.cpp
+    src/elements/areas/AreaProduction.cpp
 )
 
 ## Add cmake target dependencies of the library
