@@ -46,7 +46,8 @@ This node draws the status boards for both teams
 namespace {
     rcll_draw::GamePhase gamephase;
 
-    rcll_draw::AreaPreGameSetup area_pregamesetup;
+    rcll_draw::AreaPreGameSetup area_pregame;
+    rcll_draw::AreaField area_setup;
     rcll_draw::AreaExploration area_exploration;
     rcll_draw::AreaProduction area_production;
     rcll_draw::AreaPostGame area_postgame;
@@ -54,23 +55,27 @@ namespace {
 
 void cb_gameinfo(rcll_vis_msgs::GameInfo msg){
     gamephase = (rcll_draw::GamePhase)msg.game_phase;
-    area_pregamesetup.setGameInfo(msg);
+    area_pregame.setGameInfo(msg);
+    area_setup.setGameInfo(msg);
     area_exploration.setGameInfo(msg);
     area_production.setGameInfo(msg);
     area_postgame.setGameInfo(msg);
 }
 
 void cb_gamefield(rcll_vis_msgs::SetGameField msg){
+    area_setup.setGameField(msg);
     area_exploration.setGameField(msg);
     area_production.setGameField(msg);
 }
 
 void cb_machines(rcll_vis_msgs::Machines msg){
+    area_setup.setMachines(msg.machines);
     area_exploration.setMachines(msg.machines);
     area_production.setMachines(msg.machines);
 }
 
 void cb_robots(rcll_vis_msgs::Robots msg){
+    area_setup.setRobots(msg.robots);
     area_exploration.setRobots(msg.robots);
     area_production.setRobots(msg.robots);
 }
@@ -122,8 +127,12 @@ int main(int argc, char** argv){
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
 
-    area_pregamesetup = rcll_draw::AreaPreGameSetup();
-    area_pregamesetup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+    area_pregame = rcll_draw::AreaPreGameSetup();
+    area_pregame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+
+    area_setup = rcll_draw::AreaField();
+    area_setup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+    area_setup.setRefBoxView(refbox_view);
 
     area_exploration = rcll_draw::AreaExploration();
     area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
@@ -142,9 +151,9 @@ int main(int argc, char** argv){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
         if(gamephase == rcll_draw::PRE_GAME){
-            area_pregamesetup.draw(mat, false);
+            area_pregame.draw(mat, false);
         } else if(gamephase == rcll_draw::SETUP){
-            area_pregamesetup.draw(mat, false);
+            area_setup.draw(mat, false);
         } else if (gamephase == rcll_draw::EXPLORATION){
             area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){

@@ -94,7 +94,6 @@ int main(int argc, char** argv){
     rcll_draw::setImagePath(image_path);
 
     int bordergapsize = 0.05 * res_y;
-    int gapsize = 0.02 * res_y;
 
     cv::namedWindow(title, CV_WINDOW_NORMAL);
 
@@ -103,7 +102,7 @@ int main(int argc, char** argv){
     }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
-    main_area_field.setGeometry(bordergapsize, bordergapsize * 3, res_x - 2 * bordergapsize, res_y - 4 * bordergapsize, gapsize);
+    main_area_field.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
     main_area_field.setRefBoxView(refbox_view);
     ros::spinOnce();
 

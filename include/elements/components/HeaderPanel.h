@@ -43,7 +43,7 @@ namespace rcll_draw {
         void draw(cv::Mat &mat, bool show_element_border = false);
     private:
         int x, y = 0;
-        int w = 1000, h = 54;
+        int w = 1500, h = 54;
         double scale = 1.0;
         cv::Mat origin;
 

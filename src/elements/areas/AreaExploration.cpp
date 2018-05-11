@@ -27,7 +27,7 @@ SOFTWARE.
 // AreaExploration ####################################################################
 
 rcll_draw::AreaExploration::AreaExploration(){
-    hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
+    hp_header = HeaderPanel("LOGISTICS LEAGUE - EXPLORATION", rcll_draw::NO_TEAM);
     hsp_gameinfo = HStatusPanel();
     thp_team_header_cyan = TeamHeaderPanel();
     thp_team_header_magenta = TeamHeaderPanel();
@@ -35,6 +35,12 @@ rcll_draw::AreaExploration::AreaExploration(){
     mie_machine_info_magenta = MachineInfoExploration(rcll_draw::MAGENTA);
     gf_gamefield = GameField();
     gf_gamefield.setRefBoxView(false);
+
+    blbl_text.setContent("The goal for the robots is to detect and report the machines positions and orientations.");
+    blbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
+    blbl_text.setBackgroundColor(rcll_draw::C_WHITE);
+    blbl_text.setBorderColor(rcll_draw::C_WHITE);
+    blbl_text.setFontSize(1.0);
 }
 
 rcll_draw::AreaExploration::~AreaExploration(){
@@ -56,17 +62,20 @@ void rcll_draw::AreaExploration::setGeometry(int x, int y, int w, int h){
     cur_y += hp_header.getH(1.0) + gapsize;
 
     hsp_gameinfo.setGeometry(x + w * 0.2, cur_y, 1.0);
-    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+    cur_y += hsp_gameinfo.getH(1.0) + 2 * gapsize;
+
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(0.8)) / 2, cur_y, 0.8);
 
     thp_team_header_cyan.setGeometry(x, cur_y, 1.0);
     thp_team_header_magenta.setGeometry(x + w - thp_team_header_magenta.getW(1.0), cur_y, 1.0);
     cur_y += thp_team_header_cyan.getH(1.0) + gapsize;
 
-    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(0.8)) / 2, cur_y, 0.8);
-    cur_y += gapsize;
-
     mie_machine_info_cyan.setGeometry(x, cur_y, 0.5);
     mie_machine_info_magenta.setGeometry(x + w - mie_machine_info_magenta.getW(0.5), cur_y, 0.5);
+    cur_y += mie_machine_info_cyan.getH(0.5) + gapsize;
+
+    blbl_text.setSize(w, h * 0.05);
+    blbl_text.setPos(x, cur_y);
 }
 
 void rcll_draw::AreaExploration::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
@@ -102,6 +111,7 @@ void rcll_draw::AreaExploration::draw(cv::Mat &mat, bool show_element_borders){
     mie_machine_info_magenta.draw(mat, show_element_borders);
     thp_team_header_cyan.draw(mat, show_element_borders);
     thp_team_header_magenta.draw(mat, show_element_borders);
+    blbl_text.draw(mat);
 
     if (show_element_borders){
         cv::rectangle(mat, cv::Point(x, y), cv::Point (x+w-1, y+h-1), rcll_draw::getColor(rcll_draw::C_BLUE), 1);

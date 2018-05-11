@@ -71,11 +71,11 @@ void rcll_draw::RobotMarker::setRobot(rcll_vis_msgs::Robot &robot){
     this->diameter = 0.5;
 
     if (refbox_view){
-        ang = -(robot.yaw);
+        ang = -(robot.yaw+M_PI/2);
         offset_x = origin_x + robot.x * pixel_per_meter;
         offset_y = origin_y - robot.y * pixel_per_meter;
     } else {
-        ang = -(robot.yaw+M_PI);
+        ang = -(robot.yaw+M_PI+M_PI/2);
         offset_x = origin_x - robot.x * pixel_per_meter;
         offset_y = origin_y + robot.y * pixel_per_meter;
     }

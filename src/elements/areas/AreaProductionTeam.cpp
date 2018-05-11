@@ -26,12 +26,8 @@ SOFTWARE.
 
 // AreaProductionTeam ####################################################################
 
-rcll_draw::AreaProductionTeam::AreaProductionTeam(){
-    hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
-    vsp_gameinfo = VStatusPanel(rcll_draw::NO_TEAM);
-    pi_productinfo = ProductInfo(rcll_draw::NO_TEAM);
-    mip_machineinfo = MachineInfoProduction(rcll_draw::NO_TEAM);
-    ri_robotinfo = RobotInfo(rcll_draw::NO_TEAM);
+rcll_draw::AreaProductionTeam::AreaProductionTeam() : rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::NO_TEAM){
+
 }
 
 rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::Team team){
@@ -40,7 +36,7 @@ rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::Team team){
     } else if (team == rcll_draw::CYAN){
         hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
     } else {
-        hp_header = HeaderPanel("STATUS BOARD", team);
+        hp_header = HeaderPanel("LOGISTICS LEAGUE - PRODUCTION", team);
     }
     vsp_gameinfo = VStatusPanel(team);
     pi_productinfo = ProductInfo(team);

@@ -26,6 +26,8 @@ SOFTWARE.
 #define RCLL_AREA_FIELD_H
 
 #include <util.h>
+
+#include <HeaderPanel.h>
 #include <HStatusPanel.h>
 #include <TeamHeaderPanel.h>
 #include <GameField.h>
@@ -44,7 +46,7 @@ namespace rcll_draw {
         AreaField();
         ~AreaField();
 
-        void setGeometry(int x, int y, int w, int h, int gapsize);
+        void setGeometry(int x, int y, int w, int h);
         void setGameInfo(rcll_vis_msgs::GameInfo &gameinfo);
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setRefBoxView(bool refbox_view);
@@ -55,9 +57,11 @@ namespace rcll_draw {
     private:
         int x, y = 0;
         int w, h = 1;
+        int gapsize = 40;
 
         rcll_draw::GamePhase gamephase;
 
+        HeaderPanel hp_header;
         HStatusPanel hsp_gameinfo;
         TeamHeaderPanel thp_team_cyan;
         TeamHeaderPanel thp_team_magenta;

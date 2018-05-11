@@ -65,6 +65,7 @@ namespace rcll_draw {
         MachineInfoExploration mie_machine_info_cyan;
         MachineInfoExploration mie_machine_info_magenta;
         GameField gf_gamefield;
+        BoxLabel blbl_text;
     };
 }
 

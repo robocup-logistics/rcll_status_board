@@ -27,7 +27,7 @@ SOFTWARE.
 // AreaProduction ####################################################################
 
 rcll_draw::AreaProduction::AreaProduction(){
-    hp_header = HeaderPanel("STATUS BOARD", rcll_draw::NO_TEAM);
+    hp_header = HeaderPanel("LOGISTICS LEAGUE - PRODUCTION", rcll_draw::NO_TEAM);
     vsp_gameinfo = VStatusPanel(rcll_draw::NO_TEAM);
     pi_productinfo_cyan = ProductInfo(rcll_draw::CYAN, 3);
     pi_productinfo_magenta = ProductInfo(rcll_draw::MAGENTA, 3);

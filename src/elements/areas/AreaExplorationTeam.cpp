@@ -36,7 +36,7 @@ rcll_draw::AreaExplorationTeam::AreaExplorationTeam(rcll_draw::Team team){
     } else if (team == rcll_draw::CYAN){
         hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
     } else {
-        hp_header = HeaderPanel("STATUS BOARD", team);
+        hp_header = HeaderPanel("LOGISTICS LEAGUE - EXPLORATION", team);
     }
     hsp_gameinfo = HStatusPanel();
     mie_machine_info = MachineInfoExploration(team);

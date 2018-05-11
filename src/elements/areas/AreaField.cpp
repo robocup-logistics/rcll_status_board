@@ -27,6 +27,7 @@ SOFTWARE.
 // AreaField ####################################################################
 
 rcll_draw::AreaField::AreaField(){
+    hp_header = HeaderPanel("LOGISTICS LEAGUE", rcll_draw::NO_TEAM);
     hsp_gameinfo = HStatusPanel();
     thp_team_cyan = TeamHeaderPanel();
     thp_team_magenta = TeamHeaderPanel();
@@ -43,17 +44,27 @@ rcll_draw::AreaField::~AreaField(){
 
 }
 
-void rcll_draw::AreaField::setGeometry(int x, int y, int w, int h, int gapsize){
+void rcll_draw::AreaField::setGeometry(int x, int y, int w, int h){
     this->x = x;
     this->y = y;
     this->w = w;
     this->h = h;
-    hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, y, 1.0);
-    thp_team_cyan.setGeometry(x, y, 1.0);
-    thp_team_magenta.setGeometry(x + w * 0.8, y, 1.0);
-    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(1.0)) / 2, y + h * 0.1 + gapsize, 1.0);
-    blbl_text.setSize(w, h * 0.1);
-    blbl_text.setPos(x, y + h - gapsize);
+
+    int cur_y = y;
+
+    hp_header.setGeometry(x + (w - hp_header.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += hp_header.getH(1.0) + gapsize;
+
+    hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, cur_y, 1.0);
+    thp_team_cyan.setGeometry(x, cur_y, 1.0);
+    thp_team_magenta.setGeometry(x + w * 0.8, cur_y, 1.0);
+    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(1.0)) / 2, cur_y, 1.0);
+    cur_y += gf_gamefield.getH(1.0);
+
+    blbl_text.setSize(w, h * 0.05);
+    blbl_text.setPos(x, cur_y);
 }
 
 void rcll_draw::AreaField::setRefBoxView(bool refbox_view){
@@ -64,7 +75,7 @@ void rcll_draw::AreaField::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
     hsp_gameinfo.setContent(gameinfo);
     thp_team_cyan.setTeam(gameinfo.team_name_cyan, rcll_draw::CYAN);
     thp_team_magenta.setTeam(gameinfo.team_name_magenta, rcll_draw::MAGENTA);
-    this->gamephase = (rcll_draw::GamePhase)gameinfo.game_phase;
+    gamephase = (rcll_draw::GamePhase)gameinfo.game_phase;
     gf_gamefield.setPhase((rcll_draw::GamePhase)gameinfo.game_phase);
 }
 
@@ -81,6 +92,7 @@ void rcll_draw::AreaField::setMachines(std::vector<rcll_vis_msgs::Machine> &mach
 }
 
 void rcll_draw::AreaField::draw(cv::Mat &mat, bool show_element_borders){
+    hp_header.draw(mat, show_element_borders);
     hsp_gameinfo.draw(mat, show_element_borders);
     thp_team_cyan.draw(mat, show_element_borders);
     thp_team_magenta.draw(mat, show_element_borders);
