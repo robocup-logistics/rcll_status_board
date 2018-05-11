@@ -32,7 +32,7 @@ rcll_draw::ProductInfo::ProductInfo() : rcll_draw::ProductInfo::ProductInfo(rcll
 rcll_draw::ProductInfo::ProductInfo(rcll_draw::Team team, int displayed_products){
     this->displayed_products = displayed_products;
     this->team = team;
-    w = displayed_products * w_product;
+    w = (displayed_products * (w_product + gapsize)) - gapsize;
     origin = cv::Mat(h, w, CV_8UC4);
 }
 
@@ -61,12 +61,14 @@ void rcll_draw::ProductInfo::setProducts(std::vector<rcll_vis_msgs::Product> &pr
     }
     getKeys(pls_products, keys);
     display = keys;
+
+    prepare_draw();
 }
 
-void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
+void rcll_draw::ProductInfo::prepare_draw(){
     if (display.size() > 0){
-        int canvas_w = display.size() * w_product;
-        cv::Mat canvas = cv::Mat(h, canvas_w, CV_8UC4);
+        int canvas_w = (display.size() * (w_product + gapsize)) - gapsize;
+        canvas = cv::Mat(h, canvas_w, CV_8UC4);
         cv::rectangle(canvas, cv::Point(0, 0), cv::Point (canvas_w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
 
         int cur_x = 0;
@@ -75,11 +77,45 @@ void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
             pls_products[display[i]].draw(canvas);
             cur_x += pls_products[display[i]].getW() + gapsize;
         }
+    }
+}
 
+bool rcll_draw::ProductInfo::move(){
+    if (display.size() > displayed_products){
+        if (shift >= (int)((display.size() - displayed_products) * w_product)){
+            if (wait < 10){
+                wait++;
+                return true;
+            } else {
+                wait=0;
+                shift=0;
+                return false;
+            }
+        } else if(shift == 0){
+            if (wait < 10){
+                wait++;
+                return true;
+            } else {
+                wait=0;
+                shift+=10;
+                return true;
+            }
+        } else {
+            shift+=10;
+            return true;
+        }
+    } else {
+        shift = 0;
+        return false;
+    }
+}
+
+void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
+    if (display.size() > 0){
         cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
 
-        cv::Rect roi = cv::Rect(shift, 0, std::min(w, canvas_w - shift), h);
-        cv::Mat crop = canvas(roi);
+        cv::Rect roi = cv::Rect(shift, 0, std::min(w, canvas.cols - shift), h);
+        crop = canvas(roi);
 
         rcll_draw::mergeImages(origin, crop, 0, 0);
     }
@@ -89,21 +125,6 @@ void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
     }
 
     rcll_draw::mergeImages(mat, origin, x, y, scale);
-
-    if (display.size() > displayed_products){
-        if (shift >= (int)((display.size() - displayed_products) * w_product)){
-            if (shiftover < 10){
-                shiftover++;
-            } else {
-                shiftover=0;
-                shift=0;
-            }
-        } else {
-            shift+=10;
-        }
-    } else {
-        shift = 0;
-    }
 }
 
 void rcll_draw::ProductInfo::getKeys(std::map<std::string, rcll_draw::ProductLabel> &mapping, std::vector<std::string> &keys){

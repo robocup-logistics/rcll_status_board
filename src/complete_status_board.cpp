@@ -102,7 +102,7 @@ int main(int argc, char** argv){
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
     private_nh.getParam("refbox_view", refbox_view);
-    //private_nh.getParam("product_page_time", product_page_time);
+    private_nh.getParam("product_page_time", product_page_time);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
@@ -131,13 +131,13 @@ int main(int argc, char** argv){
 
     area_production = rcll_draw::AreaProduction();
     area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
+    area_production.setPagingTime(product_page_time);
 
     area_postgame = rcll_draw::AreaPostGame();
     area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
 
     ros::spinOnce();
 
-    double paging_timer = 0.0;
     while(ros::ok() && cvGetWindowHandle(title.c_str())){
         loop_rate.sleep();
         cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
@@ -148,14 +148,6 @@ int main(int argc, char** argv){
         } else if (gamephase == rcll_draw::EXPLORATION){
             area_exploration.draw(mat, false);
         } else if (gamephase == rcll_draw::PRODUCTION){
-            paging_timer +=loop_rate.expectedCycleTime().toSec();
-
-            if (paging_timer > product_page_time){
-                area_production.paging();
-                paging_timer = 0.0;
-            }
-
-
             area_production.draw(mat, false);
         } else if (gamephase == rcll_draw::POST_GAME){
             area_postgame.draw(mat, false);

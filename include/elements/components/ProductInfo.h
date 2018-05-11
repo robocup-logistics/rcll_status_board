@@ -43,6 +43,8 @@ namespace rcll_draw {
         int getH(double scale = 1.0);
 
         void setProducts(std::vector<rcll_vis_msgs::Product> &products);
+        void prepare_draw();
+        bool move();
         void draw(cv::Mat &mat, bool show_element_border = false);
 
         static void getKeys(std::map<std::string, rcll_draw::ProductLabel> &mapping, std::vector<std::string> &keys);
@@ -50,10 +52,12 @@ namespace rcll_draw {
     private:
         int x, y = 0;
         int w = 1640, h = 540;
-        int w_product = 395;
+        int w_product = 400;
         int gapsize = 20;
         double scale = 1.0;
         cv::Mat origin;
+        cv::Mat canvas;
+        cv::Mat crop;
 
         size_t displayed_products = 4;
         Team team;
@@ -63,7 +67,7 @@ namespace rcll_draw {
         std::map<std::string, ProductLabel> pls_products;
 
         int shift = 0;
-        int shiftover = 0;
+        int wait = 0;
     };
 }
 

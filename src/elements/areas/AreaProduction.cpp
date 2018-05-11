@@ -58,15 +58,15 @@ void rcll_draw::AreaProduction::setGeometry(int x, int y, int w, int h){
     cur_y += hp_header.getH(1.0) + gapsize;
 
     vsp_gameinfo.setGeometry(x + (w - vsp_gameinfo.getW(0.71)) / 2, cur_y, 0.71);
-    pi_productinfo_cyan.setGeometry(x, cur_y, 0.68);
-    pi_productinfo_magenta.setGeometry(x + w - pi_productinfo_magenta.getW(0.68), cur_y, 0.68);
+    pi_productinfo_cyan.setGeometry(x, cur_y, 0.65);
+    pi_productinfo_magenta.setGeometry(x + w - pi_productinfo_magenta.getW(0.65), cur_y, 0.65);
     ri_robotinfo_cyan.setGeometry(x, cur_y, 1.0);
     ri_robotinfo_magenta.setGeometry(x + w - ri_robotinfo_magenta.getW(1.0), cur_y, 1.0);
     cur_y += vsp_gameinfo.getH(0.71) + gapsize;
 
-    mip_machineinfo_cyan.setGeometry(x, cur_y, 0.75);
-    mip_machineinfo_magenta.setGeometry(x + w - mip_machineinfo_magenta.getW(0.75), cur_y, 0.75);
-    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(0.7)) / 2, cur_y, 0.7);
+    mip_machineinfo_cyan.setGeometry(x, cur_y, 0.85);
+    mip_machineinfo_magenta.setGeometry(x + w - mip_machineinfo_magenta.getW(0.85), cur_y, 0.85);
+    gf_gamefield.setGeometry(x + (w - gf_gamefield.getW(0.68)) / 2, cur_y, 0.68);
 }
 
 void rcll_draw::AreaProduction::setGameInfo(rcll_vis_msgs::GameInfo &gameinfo){
@@ -100,20 +100,31 @@ void rcll_draw::AreaProduction::setProducts(std::vector<rcll_vis_msgs::Product> 
     pi_productinfo_magenta.setProducts(products);
 }
 
-void rcll_draw::AreaProduction::paging(){
-    paging_count++;
+void rcll_draw::AreaProduction::setPagingTime(double paging_time){
+    this->paging_time = paging_time;
+    last_paging = ros::Time::now();
 }
 
 void rcll_draw::AreaProduction::draw(cv::Mat &mat, bool show_element_borders){
     hp_header.draw(mat, show_element_borders);
     vsp_gameinfo.draw(mat, show_element_borders);
 
+    bool allow_paging_by_move = true;
+
     if (paging_count % 2 == 0){
         pi_productinfo_cyan.draw(mat, show_element_borders);
         pi_productinfo_magenta.draw(mat, show_element_borders);
+        allow_paging_by_move &= !pi_productinfo_cyan.move();
+        allow_paging_by_move &= !pi_productinfo_magenta.move();
     } else {
+        allow_paging_by_move = true;
         ri_robotinfo_cyan.draw(mat, show_element_borders);
         ri_robotinfo_magenta.draw(mat, show_element_borders);
+    }
+
+    if (allow_paging_by_move && (ros::Time::now() - last_paging).toSec() >= paging_time){
+        paging_count++;
+        last_paging = ros::Time::now();
     }
 
     mip_machineinfo_cyan.draw(mat, show_element_borders);

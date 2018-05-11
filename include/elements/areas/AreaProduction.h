@@ -51,7 +51,7 @@ namespace rcll_draw {
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setProducts(std::vector<rcll_vis_msgs::Product> &products);
-        void paging();
+        void setPagingTime(double paging_time);
         void setRefBoxView(bool refbox_view);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
@@ -63,6 +63,8 @@ namespace rcll_draw {
         Team team;
 
         int paging_count = 0;
+        double paging_time = 5.0;
+        ros::Time last_paging;
 
         HeaderPanel hp_header;
         VStatusPanel vsp_gameinfo;

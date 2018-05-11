@@ -101,7 +101,7 @@ void rcll_draw::AreaPostGame::setGeometry(int x, int y, int w, int h){
     cur_y += hp_header.getH(1.0) + gapsize;
 
     hsp_gameinfo.setGeometry(x + (w - hsp_gameinfo.getW(1.0)) / 2, cur_y, 1.0);
-    cur_y += hsp_gameinfo.getH(1.0) + gapsize;
+    cur_y += hsp_gameinfo.getH(1.0) + 3 * gapsize;
 
     thp_team_cyan.setGeometry(x + 0.3 * w - thp_team_cyan.getW(1.0) / 2, cur_y, 1.0);
     thp_team_magenta.setGeometry(x + 0.7 * w - thp_team_magenta.getW(1.0) / 2, cur_y, 1.0);
