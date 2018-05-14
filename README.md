@@ -23,12 +23,14 @@ The following ROS packages are required to run this package:
 Install the required software, create a catkin workspace (see [create ROS catkin workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)) and download the required ROS packages into the workspaces src folder.
 
 Adjust the *llsf_msgs* packages to your system. Therefore set the REFBOX_ROOT_DIR path variable in the CMakeLists.txt file to your refbox installation path. (See also [llsf_msgs](https://github.com/ethflo/llsf_msgs) readme)
+
 ```
 (in CMakeLists.txt)
 ...
 set(REFBOX_ROOT_DIR /home/username/llsf-refbox)
 ...
 ```
+
 Build your catkin workspace (you will have to build the workspace again each time you update one of the ROS packages or the refbox)
 
 ```

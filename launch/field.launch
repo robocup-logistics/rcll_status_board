@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
 

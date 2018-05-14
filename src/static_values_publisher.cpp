@@ -79,7 +79,7 @@ int main(int argc, char** argv){
     rcll_vis_msgs::Machines machines_msg;
     rcll_vis_msgs::Machine machine;
     std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
-    std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "Ring Station 2"};
+    std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "RingStation 2"};
     std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
     std::vector<double> machine_pos_y = {2.5, 1.5, 5.5, 3.5, 4.5, 7.5, 6.5};
     std::vector<int> rot_c = {225, 135, 90, 270, 225, 180, 0};
@@ -120,8 +120,8 @@ int main(int argc, char** argv){
 
     rcll_vis_msgs::Robots robots_msg;
     rcll_vis_msgs::Robot robot;
-    std::vector<std::string> robot_keys = {"Rob1", "Rob2", "Rob3", "Rob1", "Rob2", "Rob3"};
-    std::vector<std::string> robots = {"Ulrich", "Tim", "Alain", "Joerg", "Klaus", "Basti"};
+    std::vector<std::string> robot_keys = {"R1", "R2", "R3", "R1", "R2", "R3"};
+    std::vector<std::string> robots = {"Ulrich", "Tim", "Christian", "Joerg", "Klaus", "Basti"};
     std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
     std::vector<int> team = {0, 0, 0, 1, 1, 1};
     std::vector<double> robot_pos_x = {4.5, 5.5, 6.5, -4.5, -5.5, -6.5};
@@ -181,7 +181,7 @@ int main(int argc, char** argv){
         // gameinfo
         gameinfo.game_state = 2;
         gameinfo.phase_time += loop_rate.expectedCycleTime().toSec();
-        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 5){ // set to SETUP
+        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 2){ // set to SETUP
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.team_points_cyan = 0;
@@ -190,7 +190,7 @@ int main(int argc, char** argv){
             robot_pos_x = {4.5, 5.5, 6.5, -4.5, -5.5, -6.5};
             robot_pos_y = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
             //robot_rot = {90, 180, 180, 90, 0, 0};
-        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 200){ // set to EXPLORATION
+        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 2){ // set to EXPLORATION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.team_points_cyan = 3;
@@ -199,7 +199,7 @@ int main(int argc, char** argv){
             robot_pos_x = {3.5, -5.0, -2.0, -1.5, 6.5, -6.5};
             robot_pos_y = {2.5, 5.0, 1.5, 5.5, 3.5, 2.5};
             //robot_rot = {10, 50, 100, 200, 150, 300};
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 200){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 3){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.team_points_cyan = 53;
@@ -208,7 +208,7 @@ int main(int argc, char** argv){
             robot_pos_x = {2.5, -4.0, -3.0, -4.5, 3.5, -1.5};
             robot_pos_y = {1.5, 6.0, 3.5, 3.5, 2.5, 5.5};
             //robot_rot = {50, 60, 220, 100, 300, 250};
-        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 200){ // set to POST_GAME
+        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 10000){ // set to POST_GAME
             gameinfo.phase_time = 0;
             gameinfo.game_state = 3;
             gameinfo.game_phase+=10;
@@ -227,7 +227,7 @@ int main(int argc, char** argv){
             robot.active = robot_active[i];
             robot.x = robot_pos_x[i];
             robot.y = robot_pos_y[i];
-            robot.yaw = (robot_rot[i] + 90) / 180.0 * M_PI;
+            robot.yaw = robot_rot[i] / 180.0 * M_PI;
             robot.active_time = robot_active_time[i];
             robot.maintenance_count = robot_maintenance[i];
             robot.status = robot_status[i];

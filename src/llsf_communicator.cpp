@@ -147,7 +147,7 @@ void LLSFRefBoxCommunicator::handle_reconnect_timer(const boost::system::error_c
 }
 
 void LLSFRefBoxCommunicator::client_connected() {
-    //io_service_.dispatch(boost::bind(&LLSFRefBoxCommunicator::refresh, this));
+
 }
 
 void LLSFRefBoxCommunicator::dispatch_client_connected() {
@@ -163,7 +163,6 @@ void LLSFRefBoxCommunicator::client_disconnected(const boost::system::error_code
         }
 
     }
-    //io_service_.dispatch(boost::bind(&LLSFRefBoxCommunicator::refresh, this));
 }
 
 void LLSFRefBoxCommunicator::dispatch_client_disconnected(const boost::system::error_code &error) {
@@ -192,9 +191,10 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         robots_msg.robots.clear();
         for (int i = 0; i < r->robots_size(); i++){
             llsf_msgs::Robot rob = r->robots(i);
-            if (rob.state() == llsf_msgs::ACTIVE){
+            int last_seen_delta = (int)ros::Time::now().toSec() - rob.last_seen().sec();
+            if (rob.state() == llsf_msgs::ACTIVE && last_seen_delta < 5.0){
                 rcll_vis_msgs::Robot robot;
-                robot.key = "Rob" + std::to_string(robot.robot_id);
+                robot.key = "R" + std::to_string(robot.robot_id);
                 robot.robot_name = rob.name();
                 robot.robot_id = rob.number();
                 robot.team = rob.team_color();
@@ -205,8 +205,10 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
                 robot.x = rob.pose().x();
                 robot.y = rob.pose().y();
                 robot.yaw = rob.pose().ori();
-                robot.stamp.data = ros::Time::now();
+                robot.stamp.data = ros::Time(rob.last_seen().sec(), rob.last_seen().nsec());
                 robots_msg.robots.push_back(robot);
+            } else {
+                ROS_WARN_THROTTLE(5, "Robot '%s' of team %s last seen@%i delta=%i is INACTIVE or timed out", rob.name().c_str(), rob.team().c_str(), (int)rob.last_seen().sec(), last_seen_delta);
             }
         }
         pub_robots.publish(robots_msg);

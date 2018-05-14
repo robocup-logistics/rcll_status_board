@@ -23,11 +23,12 @@
 
 #include <GameField.h>
 
-#include <TeamAreaPreGameSetup.h>
-#include <TeamAreaExploration.h>
-#include <TeamAreaProduction.h>
-#include <TeamAreaPostGame.h>
-#include <FieldArea.h>
-//#include <CompleteAreaExploration.h>
+#include <AreaExplorationTeam.h>
+#include <AreaProductionTeam.h>
+#include <AreaPreGameSetup.h>
+#include <AreaPostGame.h>
+#include <AreaField.h>
+#include <AreaExploration.h>
+#include <AreaProduction.h>
 
 #endif

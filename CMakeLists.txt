@@ -102,7 +102,7 @@ find_package(OpenCV REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include include/draw include/elements
+   INCLUDE_DIRS include include/elements include/elements/basic include/elements/subcomponents include/elements/components include/elements/areas
    LIBRARIES rcll_draw
    CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs
 #  DEPENDS system_lib
@@ -116,8 +116,11 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  include/draw
   include/elements
+  include/elements/basic
+  include/elements/subcomponents
+  include/elements/components
+  include/elements/areas
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
@@ -126,39 +129,39 @@ include_directories(
 add_library(rcll_draw
     src/util.cpp
 
-    src/draw/Label.cpp
-    src/draw/BoxLabel.cpp
-    src/draw/MultilineBoxLabel.cpp
-    src/draw/Rectangle.cpp
-    src/draw/Circle.cpp
-    src/draw/Image.cpp
-    src/draw/Line.cpp
-    src/draw/Arrow.cpp
+    src/elements/basic/Label.cpp
+    src/elements/basic/BoxLabel.cpp
+    src/elements/basic/MultilineBoxLabel.cpp
+    src/elements/basic/Rectangle.cpp
+    src/elements/basic/Circle.cpp
+    src/elements/basic/Image.cpp
+    src/elements/basic/Line.cpp
+    src/elements/basic/Arrow.cpp
 
-    src/elements/HeaderPanel.cpp
-    src/elements/TeamHeaderPanel.cpp
+    src/elements/subcomponents/MachineLabelExploration.cpp
+    src/elements/subcomponents/MachineLabelProduction.cpp
+    src/elements/subcomponents/ProductLabel.cpp
+    src/elements/subcomponents/RobotLabel.cpp
+    src/elements/subcomponents/MachineMarker.cpp
+    src/elements/subcomponents/RobotMarker.cpp
 
-    src/elements/HStatusPanel.cpp
-    src/elements/VStatusPanel.cpp
+    src/elements/components/HeaderPanel.cpp
+    src/elements/components/TeamHeaderPanel.cpp
+    src/elements/components/HStatusPanel.cpp
+    src/elements/components/VStatusPanel.cpp
+    src/elements/components/MachineInfoExploration.cpp
+    src/elements/components/MachineInfoProduction.cpp
+    src/elements/components/ProductInfo.cpp
+    src/elements/components/RobotInfo.cpp
+    src/elements/components/GameField.cpp
 
-    src/elements/MachineInfoExploration.cpp
-    src/elements/MachineInfoProduction.cpp
-    src/elements/MachineLabelExploration.cpp
-    src/elements/MachineLabelProduction.cpp
-    src/elements/ProductInfo.cpp
-    src/elements/ProductLabel.cpp
-    src/elements/RobotInfo.cpp
-    src/elements/RobotLabel.cpp
-
-    src/elements/GameField.cpp
-    src/elements/MachineMarker.cpp
-    src/elements/RobotMarker.cpp
-
-    src/elements/TeamAreaPreGameSetup.cpp
-    src/elements/TeamAreaExploration.cpp
-    src/elements/TeamAreaProduction.cpp
-    src/elements/TeamAreaPostGame.cpp
-    src/elements/FieldArea.cpp
+    src/elements/areas/AreaPreGameSetup.cpp
+    src/elements/areas/AreaExplorationTeam.cpp
+    src/elements/areas/AreaProductionTeam.cpp
+    src/elements/areas/AreaPostGame.cpp
+    src/elements/areas/AreaField.cpp
+    src/elements/areas/AreaExploration.cpp
+    src/elements/areas/AreaProduction.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -169,6 +172,7 @@ add_dependencies(rcll_draw ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+add_executable(complete_status_board_node   src/complete_status_board.cpp)
 add_executable(team_status_board_node   src/team_status_board.cpp)
 add_executable(field_status_board_node  src/field_status_board.cpp)
 add_executable(static_values_node  src/static_values_publisher.cpp)
@@ -182,12 +186,14 @@ add_executable(llsf_interface_node  src/llsf_interface.cpp src/llsf_communicator
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
+add_dependencies(complete_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(team_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(field_status_board_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(static_values_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(llsf_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(complete_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(static_values_node ${catkin_LIBRARIES})
