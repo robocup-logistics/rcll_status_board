@@ -26,14 +26,27 @@ SOFTWARE.
 
 // MachineLabelExploration ####################################################################
 
-rcll_draw::MachineLabelExploration::MachineLabelExploration(){
+rcll_draw::MachineLabelExploration::MachineLabelExploration(rcll_draw::Team team){
     blbl_machinename.setAlignment(rcll_draw::CenterLeft);
     blbl_status1.setAlignment(rcll_draw::CenterCenter);
     blbl_status2.setAlignment(rcll_draw::CenterCenter);
 
-    blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+
+    if (team == rcll_draw::CYAN){
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    } else if (team == rcll_draw::MAGENTA){
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    } else {
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    }
     blbl_status1.setBackgroundColor(rcll_draw::C_GREY_LIGHT);
     blbl_status2.setBackgroundColor(rcll_draw::C_GREY_LIGHT);
+
+    blbl_status1.setFrontColor(rcll_draw::C_BLACK);
+    blbl_status2.setFrontColor(rcll_draw::C_BLACK);
 
     blbl_machinename.setBorderColor(rcll_draw::C_WHITE);
     blbl_status1.setBorderColor(rcll_draw::C_WHITE);
@@ -42,10 +55,6 @@ rcll_draw::MachineLabelExploration::MachineLabelExploration(){
     blbl_machinename.setFontSize(0.9);
     blbl_status1.setFontSize(0.7);
     blbl_status2.setFontSize(0.7);
-
-    blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
-    blbl_status1.setFrontColor(rcll_draw::C_BLACK);
-    blbl_status2.setFrontColor(rcll_draw::C_BLACK);
 
     img_status1.setImage(rcll_draw::readImage(rcll_draw::getFile(4,4)));
     img_status2.setImage(rcll_draw::readImage(rcll_draw::getFile(4,4)));

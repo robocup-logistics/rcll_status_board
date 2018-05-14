@@ -46,7 +46,7 @@ rcll_draw::MachineInfoProduction::MachineInfoProduction(Team team){
     }
 
     for (size_t i = 0; i < keys.size(); i++){
-        mlp_machines.push_back(MachineLabelProduction());
+        mlp_machines.push_back(MachineLabelProduction(team));
         machine_map[keys[i]] = i;
     }
     this->team = team;

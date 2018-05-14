@@ -40,28 +40,28 @@ rcll_draw::GameField::GameField(){
     blbl_insertion_cyan1.setAlignment(rcll_draw::CenterCenter);
     blbl_insertion_cyan1.setBorderColor(rcll_draw::C_CYAN_DARK);
     blbl_insertion_cyan1.setBackgroundColor(rcll_draw::C_CYAN_DARK);
-    blbl_insertion_cyan1.setFrontColor(rcll_draw::C_BLACK);
+    blbl_insertion_cyan1.setFrontColor(rcll_draw::C_WHITE);
     blbl_insertion_cyan1.setFontSize(0.75);
 
     blbl_insertion_cyan2.setContent("Zone");
     blbl_insertion_cyan2.setAlignment(rcll_draw::CenterCenter);
     blbl_insertion_cyan2.setBorderColor(rcll_draw::C_CYAN_DARK);
     blbl_insertion_cyan2.setBackgroundColor(rcll_draw::C_CYAN_DARK);
-    blbl_insertion_cyan2.setFrontColor(rcll_draw::C_BLACK);
+    blbl_insertion_cyan2.setFrontColor(rcll_draw::C_WHITE);
     blbl_insertion_cyan2.setFontSize(0.75);
 
     blbl_insertion_magenta1.setContent("Insertion");
     blbl_insertion_magenta1.setAlignment(rcll_draw::CenterCenter);
     blbl_insertion_magenta1.setBorderColor(rcll_draw::C_MAGENTA_DARK);
     blbl_insertion_magenta1.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
-    blbl_insertion_magenta1.setFrontColor(rcll_draw::C_BLACK);
+    blbl_insertion_magenta1.setFrontColor(rcll_draw::C_WHITE);
     blbl_insertion_magenta1.setFontSize(0.75);
 
     blbl_insertion_magenta2.setContent("Zone");
     blbl_insertion_magenta2.setAlignment(rcll_draw::CenterCenter);
     blbl_insertion_magenta2.setBorderColor(rcll_draw::C_MAGENTA_DARK);
     blbl_insertion_magenta2.setBackgroundColor(rcll_draw::C_MAGENTA_DARK);
-    blbl_insertion_magenta2.setFrontColor(rcll_draw::C_BLACK);
+    blbl_insertion_magenta2.setFrontColor(rcll_draw::C_WHITE);
     blbl_insertion_magenta2.setFontSize(0.75);
 
     mm_machine_markers.resize(14);

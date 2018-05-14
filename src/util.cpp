@@ -77,14 +77,14 @@ std::vector<std::string> rcll_draw::splitString(std::string s){
 }
 
 cv::Mat rcll_draw::readImage(std::string file){
-    cv::Mat result;
+    tmp = cv::Mat(10, 10, CV_8UC4);
     if (rcll_draw::getImagePath() != "" && file != ""){
-        cv::cvtColor(cv::imread(rcll_draw::getImagePath() + file), result, CV_BGR2BGRA);
+        cv::cvtColor(cv::imread(rcll_draw::getImagePath() + file), tmp, CV_BGR2BGRA);
     } else {
-        result = cv::Mat(10, 10, CV_8UC4);
-        cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+        tmp = cv::Mat(10, 10, CV_8UC4);
+        cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
     }
-    return result;
+    return tmp;
 }
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst){
@@ -128,7 +128,6 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst){
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst, double scale){
     if (src.rows > 0 && src.cols > 0){
-        cv::Mat tmp;
         cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
         rcll_draw::mergeImages(dst, tmp, x_dst, y_dst);
         tmp.resize(0);
@@ -137,7 +136,6 @@ void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, int x_dst, int y_dst, do
 
 void rcll_draw::mergeImages(cv::Mat &dst, cv::Mat &src, cv::Scalar alpha_color, int x_dst, int y_dst, double scale){
     if (src.rows > 0 && src.cols > 0){
-        cv::Mat tmp;
         cv::resize(src, tmp, cv::Size(), scale, scale, cv::INTER_CUBIC);
         rcll_draw::mergeImages(dst, tmp, alpha_color, x_dst, y_dst);
         tmp.resize(0);

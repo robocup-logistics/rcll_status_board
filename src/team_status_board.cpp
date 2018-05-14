@@ -84,6 +84,8 @@ int main(int argc, char** argv){
     int res_y = 1080;
     bool fullscreen = false;
     std::string image_path = "";
+    double paging_wait_time = 10.0;
+    int shift_increase = 10;
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_robots = nh.subscribe("refbox/robots", 10, cb_robots);
@@ -95,6 +97,8 @@ int main(int argc, char** argv){
     private_nh.getParam("screen_y", res_y);
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
+    private_nh.getParam("paging_wait_time", paging_wait_time);
+    private_nh.getParam("shift_increase", shift_increase);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
@@ -134,6 +138,7 @@ int main(int argc, char** argv){
 
     area_production = rcll_draw::AreaProductionTeam(team);
     area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize, gapsize);
+    area_production.setPaging(paging_wait_time, shift_increase);
 
     area_postgame = rcll_draw::AreaPostGame(team);
     area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);

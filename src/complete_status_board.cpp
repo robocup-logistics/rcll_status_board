@@ -94,7 +94,9 @@ int main(int argc, char** argv){
     bool fullscreen = false;
     std::string image_path = "";
     bool refbox_view = false;
-    double product_page_time = 10.0;
+    double paging_time = 10.0;
+    double paging_wait_time = 10.0;
+    int shift_increase = 10;
 
     ros::Subscriber sub_gameinfo = nh.subscribe("refbox/gameinfo", 10, cb_gameinfo);
     ros::Subscriber sub_gamefield = nh.subscribe("refbox/gamefield", 10, cb_gamefield);
@@ -107,7 +109,9 @@ int main(int argc, char** argv){
     private_nh.getParam("fullscreen", fullscreen);
     private_nh.getParam("image_path", image_path);
     private_nh.getParam("refbox_view", refbox_view);
-    private_nh.getParam("product_page_time", product_page_time);
+    private_nh.getParam("paging_time", paging_time);
+    private_nh.getParam("paging_wait_time", paging_wait_time);
+    private_nh.getParam("shift_increase", shift_increase);
 
     if (image_path == ""){
         ROS_ERROR("Image path must not be empty!");
@@ -140,7 +144,7 @@ int main(int argc, char** argv){
 
     area_production = rcll_draw::AreaProduction();
     area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
-    area_production.setPagingTime(product_page_time);
+    area_production.setPaging(paging_time, paging_wait_time, shift_increase);
 
     area_postgame = rcll_draw::AreaPostGame();
     area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);

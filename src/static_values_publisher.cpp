@@ -120,7 +120,7 @@ int main(int argc, char** argv){
 
     rcll_vis_msgs::Robots robots_msg;
     rcll_vis_msgs::Robot robot;
-    std::vector<std::string> robot_keys = {"Rob1", "Rob2", "Rob3", "Rob1", "Rob2", "Rob3"};
+    std::vector<std::string> robot_keys = {"R1", "R2", "R3", "R1", "R2", "R3"};
     std::vector<std::string> robots = {"Ulrich", "Tim", "Christian", "Joerg", "Klaus", "Basti"};
     std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
     std::vector<int> team = {0, 0, 0, 1, 1, 1};
@@ -190,7 +190,7 @@ int main(int argc, char** argv){
             robot_pos_x = {4.5, 5.5, 6.5, -4.5, -5.5, -6.5};
             robot_pos_y = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
             //robot_rot = {90, 180, 180, 90, 0, 0};
-        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 10){ // set to EXPLORATION
+        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 2){ // set to EXPLORATION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.team_points_cyan = 3;
@@ -199,7 +199,7 @@ int main(int argc, char** argv){
             robot_pos_x = {3.5, -5.0, -2.0, -1.5, 6.5, -6.5};
             robot_pos_y = {2.5, 5.0, 1.5, 5.5, 3.5, 2.5};
             //robot_rot = {10, 50, 100, 200, 150, 300};
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 20){ // set to PRODUCTION
+        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 3){ // set to PRODUCTION
             gameinfo.phase_time = 0;
             gameinfo.game_state = 2;
             gameinfo.team_points_cyan = 53;

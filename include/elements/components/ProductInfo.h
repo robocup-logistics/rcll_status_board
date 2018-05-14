@@ -43,6 +43,7 @@ namespace rcll_draw {
         int getH(double scale = 1.0);
 
         void setProducts(std::vector<rcll_vis_msgs::Product> &products);
+        void setPaging(double paging_wait_time, int shift_increase);
         void prepare_draw();
         bool move();
         void draw(cv::Mat &mat, bool show_element_border = false);
@@ -67,7 +68,10 @@ namespace rcll_draw {
         std::map<std::string, ProductLabel> pls_products;
 
         int shift = 0;
-        int wait = 0;
+        double paging_wait_time = 5.0;
+        int shift_increase = 10;
+        bool wait_active = false;
+        ros::Time last_wait_begin;
     };
 }
 

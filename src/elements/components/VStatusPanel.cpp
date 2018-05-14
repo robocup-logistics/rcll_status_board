@@ -156,7 +156,7 @@ void rcll_draw::VStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){
     } else {
         blbl_score_value_cyan.setContent(std::to_string(gameinfo.team_points_cyan));
         blbl_score_value_magenta.setContent(std::to_string(gameinfo.team_points_magenta));
-        blbl_score_value_mid.setContent("/");
+        blbl_score_value_mid.setContent(":");
 
         blbl_score_value_cyan.setFontSize(1.3);
         blbl_score_value_mid.setFontSize(1.3);

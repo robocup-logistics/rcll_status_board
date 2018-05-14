@@ -9,7 +9,9 @@
 		<param name="screen_y" value="1080" />
 		<param name="fullscreen" value="false" />
 		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
-		<param name="product_page_time" value="5" />
+		<param name="paging_time" value="10" />
+		<param name="paging_wait_time" value="7" />
+		<param name="shift_increase" value="5" />
 		<param name="refbox_view" value="false" />
 	</node>
 </launch>

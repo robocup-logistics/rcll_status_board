@@ -50,6 +50,7 @@ namespace rcll_draw {
         void setMachines(std::vector<rcll_vis_msgs::Machine> &machines);
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setProducts(std::vector<rcll_vis_msgs::Product> &products);
+        void setPaging(double paging_wait_time, int shift_increase);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
     private:

@@ -36,7 +36,7 @@ rcll_draw::AreaProductionTeam::AreaProductionTeam(rcll_draw::Team team){
     } else if (team == rcll_draw::CYAN){
         hp_header = HeaderPanel("MAGENTA STATUS BOARD", team);
     } else {
-        hp_header = HeaderPanel("LOGISTICS LEAGUE - PRODUCTION", team);
+        hp_header = HeaderPanel("LOGISTICS LEAGUE", team);
     }
     vsp_gameinfo = VStatusPanel(team);
     pi_productinfo = ProductInfo(team);
@@ -81,6 +81,10 @@ void rcll_draw::AreaProductionTeam::setRobots(std::vector<rcll_vis_msgs::Robot> 
 
 void rcll_draw::AreaProductionTeam::setProducts(std::vector<rcll_vis_msgs::Product> &products){
     pi_productinfo.setProducts(products);
+}
+
+void rcll_draw::AreaProductionTeam::setPaging(double paging_wait_time, int shift_increase){
+    pi_productinfo.setPaging(paging_wait_time, shift_increase);
 }
 
 void rcll_draw::AreaProductionTeam::draw(cv::Mat &mat, bool show_element_borders){

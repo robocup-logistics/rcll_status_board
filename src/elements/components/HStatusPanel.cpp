@@ -33,7 +33,7 @@ rcll_draw::HStatusPanel::HStatusPanel(){
     blbl_phase_header.setContent("PHASE");
     blbl_time_header.setContent("TIME");
     blbl_score_header.setContent("SCORE");
-    blbl_score_value_mid.setContent("/");
+    blbl_score_value_mid.setContent(":");
 
     blbl_state_header.setAlignment(rcll_draw::CenterCenter);
     blbl_phase_header.setAlignment(rcll_draw::CenterCenter);

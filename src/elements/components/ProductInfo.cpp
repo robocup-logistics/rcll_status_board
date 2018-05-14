@@ -65,6 +65,11 @@ void rcll_draw::ProductInfo::setProducts(std::vector<rcll_vis_msgs::Product> &pr
     prepare_draw();
 }
 
+void rcll_draw::ProductInfo::setPaging(double paging_wait_time, int shift_increase){
+    this->paging_wait_time = paging_wait_time;
+    this->shift_increase = shift_increase;
+}
+
 void rcll_draw::ProductInfo::prepare_draw(){
     if (display.size() > 0){
         int canvas_w = (display.size() * (w_product + gapsize)) - gapsize;
@@ -81,28 +86,45 @@ void rcll_draw::ProductInfo::prepare_draw(){
 }
 
 bool rcll_draw::ProductInfo::move(){
+    // start wait timer if it is reset
+    if (!wait_active){
+        last_wait_begin = ros::Time::now();
+    }
+
     if (display.size() > displayed_products){
-        if (shift >= (int)((display.size() - displayed_products) * w_product)){
-            if (wait < 10){
-                wait++;
+        if (shift == 0){
+            if ((ros::Time::now() - last_wait_begin).toSec() < paging_wait_time){
+                wait_active = true;
                 return true;
             } else {
-                wait=0;
-                shift=0;
+                // do first shift
+                shift+=shift_increase;
+
+                // reset wait timer
+                wait_active = false;
+                last_wait_begin = ros::Time(0.0);
+                return true;
+            }
+        } else if (shift > 0 && shift < (int)((display.size() - displayed_products) * w_product)){
+            // do next shift
+            shift+=shift_increase;
+            return true;
+        } else if (shift >= (int)((display.size() - displayed_products) * w_product)){
+            if ((ros::Time::now() - last_wait_begin).toSec() < paging_wait_time){
+                wait_active = true;
+                return true;
+            } else {
+                // reset shift
+                shift = 0;
+
+                // reset wait timer
+                wait_active = false;
+                last_wait_begin = ros::Time(0.0);
                 return false;
             }
-        } else if(shift == 0){
-            if (wait < 10){
-                wait++;
-                return true;
-            } else {
-                wait=0;
-                shift+=10;
-                return true;
-            }
         } else {
-            shift+=10;
-            return true;
+            shift = 0;
+            return false;
         }
     } else {
         shift = 0;

@@ -33,7 +33,7 @@ SOFTWARE.
 namespace rcll_draw {
     class MachineLabelProduction {
     public:
-        MachineLabelProduction();
+        MachineLabelProduction(rcll_draw::Team team);
         ~MachineLabelProduction();
 
         void setGeometry(int x, int y, int w, int h);

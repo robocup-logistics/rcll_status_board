@@ -102,6 +102,7 @@ namespace rcll_draw {
     static std::string image_path;
     static const double machine_length = 0.7;
     static const double machine_width = 0.35;
+    static cv::Mat tmp;
 }
 
 #endif

@@ -28,6 +28,7 @@ SOFTWARE.
 #include <util.h>
 
 #include <HeaderPanel.h>
+#include <TeamHeaderPanel.h>
 #include <VStatusPanel.h>
 #include <ProductInfo.h>
 #include <MachineInfoProduction.h>
@@ -51,7 +52,7 @@ namespace rcll_draw {
         void setRobots(std::vector<rcll_vis_msgs::Robot> &robots);
         void setGameField(rcll_vis_msgs::SetGameField &setgamefield);
         void setProducts(std::vector<rcll_vis_msgs::Product> &products);
-        void setPagingTime(double paging_time);
+        void setPaging(double paging_time, double paging_wait_time, int shift_increase);
         void setRefBoxView(bool refbox_view);
         void draw(cv::Mat &mat, bool show_element_borders = false);
 
@@ -67,6 +68,8 @@ namespace rcll_draw {
         ros::Time last_paging;
 
         HeaderPanel hp_header;
+        TeamHeaderPanel thp_team_header_cyan;
+        TeamHeaderPanel thp_team_header_magenta;
         VStatusPanel vsp_gameinfo;
         ProductInfo pi_productinfo_cyan;
         ProductInfo pi_productinfo_magenta;
@@ -75,6 +78,7 @@ namespace rcll_draw {
         RobotInfo ri_robotinfo_cyan;
         RobotInfo ri_robotinfo_magenta;
         GameField gf_gamefield;
+        BoxLabel blbl_text;
     };
 }
 

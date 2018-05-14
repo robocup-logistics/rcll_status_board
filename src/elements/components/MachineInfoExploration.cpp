@@ -55,7 +55,7 @@ rcll_draw::MachineInfoExploration::MachineInfoExploration(Team team){
     }
 
     for (size_t i = 0; i < keys.size(); i++){
-        mle_machines.push_back(MachineLabelExploration());
+        mle_machines.push_back(MachineLabelExploration(team));
         machine_map[keys[i]] = i;
     }
     mle_machines[machine_map["H"]].setHeader("Position", "Orientation");

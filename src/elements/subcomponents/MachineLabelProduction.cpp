@@ -26,15 +26,27 @@ SOFTWARE.
 
 // MachineLabelProduction ####################################################################
 
-rcll_draw::MachineLabelProduction::MachineLabelProduction(){
+rcll_draw::MachineLabelProduction::MachineLabelProduction(rcll_draw::Team team){
     blbl_machinename.setAlignment(rcll_draw::CenterLeft);
     blbl_lamp1.setAlignment(rcll_draw::CenterCenter);
     blbl_lamp2.setAlignment(rcll_draw::CenterCenter);
 
-    blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+    if (team == rcll_draw::CYAN){
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    } else if (team == rcll_draw::MAGENTA){
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    } else {
+        blbl_machinename.setBackgroundColor(rcll_draw::C_BLACK);
+        blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
+    }
     blbl_lamp1.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_lamp2.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_border.setBackgroundColor(rcll_draw::C_TRANSPARENT);
+
+    blbl_lamp1.setFrontColor(rcll_draw::C_BLACK);
+    blbl_lamp2.setFrontColor(rcll_draw::C_BLACK);
 
     blbl_machinename.setBorderColor(rcll_draw::C_TRANSPARENT);
     blbl_lamp1.setBorderColor(rcll_draw::C_WHITE);
@@ -45,9 +57,7 @@ rcll_draw::MachineLabelProduction::MachineLabelProduction(){
     blbl_lamp1.setFontSize(0.7);
     blbl_lamp2.setFontSize(0.7);
 
-    blbl_machinename.setFrontColor(rcll_draw::C_WHITE);
-    blbl_lamp1.setFrontColor(rcll_draw::C_BLACK);
-    blbl_lamp2.setFrontColor(rcll_draw::C_BLACK);
+
 
     flashing = false;
 }

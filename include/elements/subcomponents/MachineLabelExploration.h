@@ -34,7 +34,7 @@ SOFTWARE.
 namespace rcll_draw {
     class MachineLabelExploration {
     public:
-        MachineLabelExploration();
+        MachineLabelExploration(rcll_draw::Team team);
         ~MachineLabelExploration();
 
         void setGeometry(int x, int y, int w, int h);

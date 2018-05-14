@@ -56,7 +56,7 @@ namespace rcll_draw {
         Team team;
         BoxLabel blbl_header;
 
-        std::vector<std::string> keys = {"Rob1", "Rob2", "Rob3"};
+        std::vector<std::string> keys = {"R1", "R2", "R3"};
         std::map<std::string, size_t> robot_map;
         std::vector<RobotLabel> rl_robots;
     };
