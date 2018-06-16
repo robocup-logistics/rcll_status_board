@@ -136,15 +136,16 @@ int main(int argc, char** argv){
 
     area_setup = rcll_draw::AreaField();
     area_setup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
-    area_setup.setRefBoxView(refbox_view);
+    area_setup.setRefBoxView(true);
 
     area_exploration = rcll_draw::AreaExploration();
     area_exploration.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
-    area_exploration.setRefBoxView(refbox_view);
+    area_exploration.setRefBoxView(false);
 
     area_production = rcll_draw::AreaProduction();
     area_production.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
     area_production.setPaging(paging_time, paging_wait_time, shift_increase);
+    area_production.setRefBoxView(false);
 
     area_postgame = rcll_draw::AreaPostGame();
     area_postgame.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
