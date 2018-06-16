@@ -31,12 +31,10 @@ SOFTWARE.
 #include <llsf_msgs/GameState.pb.h>
 #include <llsf_msgs/RobotInfo.pb.h>
 #include <llsf_msgs/MachineInfo.pb.h>
-#include <llsf_msgs/MachineCommands.pb.h>
-#include <llsf_msgs/AttentionMessage.pb.h>
 #include <llsf_msgs/OrderInfo.pb.h>
 #include <llsf_msgs/VersionInfo.pb.h>
 #include <llsf_msgs/GameInfo.pb.h>
-#include <llsf_msgs/RobotCommands.pb.h>
+#include <llsf_msgs/BeaconSignal.pb.h>
 
 #include <cursesp.h>
 #include <cursesf.h>
@@ -184,6 +182,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         gameinfo_msg.game_phase = (int)gstate->phase();
         gameinfo_msg.phase_time = gstate->game_time().sec();
         pub_gameinfo.publish(gameinfo_msg);
+        //ROS_INFO("GameStateMsg: %i Byte", gstate->ByteSize());
     }
 
     std::shared_ptr<llsf_msgs::RobotInfo> r;
@@ -212,6 +211,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
             }
         }
         pub_robots.publish(robots_msg);
+        //ROS_INFO("RobotInfo: %i Byte", r->ByteSize());
     }
 
     std::shared_ptr<llsf_msgs::MachineInfo> minfo;
@@ -241,6 +241,7 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
         }
 
         pub_machines.publish(machines_msg);
+        //ROS_INFO("MachineInfoMsg: %i Byte", minfo->ByteSize());
     }
 
     std::shared_ptr<llsf_msgs::OrderInfo> ordins;
@@ -276,11 +277,13 @@ void LLSFRefBoxCommunicator::client_msg(uint16_t comp_id, uint16_t msg_type, std
             }
         }
         pub_products.publish(products_msg);
+        //ROS_INFO("OrderInfoMsg: %i Byte", ordins->ByteSize());
     }
 
     std::shared_ptr<llsf_msgs::VersionInfo> vi;
     if ((vi = std::dynamic_pointer_cast<llsf_msgs::VersionInfo>(msg))) {
         ROS_INFO("Received VersionInfo: %i %i %i", (int)vi->version_major(), (int)vi->version_minor(), (int)vi->version_micro());
+        //ROS_INFO("VersionInfoMsg: %i Byte", vi->ByteSize());
     }
 }
 
@@ -289,10 +292,10 @@ int LLSFRefBoxCommunicator::run() {
     message_register.add_message_type<llsf_msgs::GameState>();
     message_register.add_message_type<llsf_msgs::RobotInfo>();
     message_register.add_message_type<llsf_msgs::MachineInfo>();
-    message_register.add_message_type<llsf_msgs::AttentionMessage>();
     message_register.add_message_type<llsf_msgs::OrderInfo>();
     message_register.add_message_type<llsf_msgs::VersionInfo>();
     message_register.add_message_type<llsf_msgs::GameInfo>();
+    message_register.add_message_type<llsf_msgs::BeaconSignal>();
 
     client->signal_connected().connect(boost::bind(&LLSFRefBoxCommunicator::dispatch_client_connected, this));
     client->signal_disconnected().connect(boost::bind(&LLSFRefBoxCommunicator::dispatch_client_disconnected, this, boost::asio::placeholders::error));

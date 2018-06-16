@@ -52,6 +52,7 @@ namespace llsf_msgs {
     class RobotInfo;
     class OrderInfo;
     class GameState;
+    class BeaconSignal;
 }
 
 class LLSFRefBoxCommunicator{
