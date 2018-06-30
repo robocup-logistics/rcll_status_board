@@ -196,7 +196,7 @@ add_dependencies(llsf_interface_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catki
 target_link_libraries(complete_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
-target_link_libraries(static_values_node ${catkin_LIBRARIES})
+target_link_libraries(static_values_node ${catkin_LIBRARIES} rcll_draw)
 target_link_libraries(llsf_interface_node ${catkin_LIBRARIES})
 
 #############

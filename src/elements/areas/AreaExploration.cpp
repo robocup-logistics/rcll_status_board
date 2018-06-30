@@ -36,7 +36,7 @@ rcll_draw::AreaExploration::AreaExploration(){
     gf_gamefield = GameField();
     gf_gamefield.setRefBoxView(false);
 
-    blbl_text.setContent("The goal for the robots is to detect and report the machines' positions and orientations.");
+    blbl_text.setContent("The task for the robots is to detect and report the machines' positions and orientations.");
     blbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
     blbl_text.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_text.setBorderColor(rcll_draw::C_WHITE);

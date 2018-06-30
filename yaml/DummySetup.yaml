@@ -1,0 +1,234 @@
+# Game Setup Parameters
+machines:
+# pose: index 0=x, index1=y, index2=rotation
+# status: index 0=exploration1, index 1=exploration2, index2=production
+# exploration_status: 0=UNREPORTED, 1=CORRECT, 2=WRONG
+# production_status: 0=IDLE, 1=BROKEN, 2=PROCESSING, 3=PROCESSED, 4=PREPARED, 5=DOWN, 6=READY-AT-OUTPUT, 7=WAIT-IDLE, 8=OFFLINE
+
+  names_short: [BS, DS, SS, CS1, CS2, RS1, RS2]
+
+  BS:
+    name_long: "BaseStation"
+    cyan:
+      pose: [2.5, 2.5, !degrees 225.0]
+      status: [0, 0, 0]
+    magenta:
+      pose: [-2.5, 2.5, !degrees 315.0]
+      status: [1, 1, 8]
+
+  DS:
+    name_long: "DeliveryStation"
+    cyan:
+      pose: [6.5, 1.5, !degrees 135.0]
+      status: [1, 0, 1]
+    magenta:
+      pose: [-6.5, 1.5, !degrees 45.0]
+      status: [2, 2, 7]
+
+  SS:
+    name_long: "StorageStation"
+    cyan:
+      pose: [6.5, 5.5, !degrees 90.0]
+      status: [1, 1, 2]
+    magenta:
+      pose: [-6.5, 5.5, !degrees 270.0]
+      status: [2, 0, 6]
+
+  CS1:
+    name_long: "CapStation 1"
+    cyan:
+      pose: [0.5, 3.5, !degrees 270.0]
+      status: [1, 2, 3]
+    magenta:
+      pose: [-0.5, 3.5, !degrees 270.0]
+      status: [1, 2, 5]
+
+
+  CS2:
+    name_long: "CapStation 2"
+    cyan:
+      pose: [-4.5, 4.5, !degrees 225.0]
+      status: [2, 0, 4]
+    magenta:
+      pose: [4.5, 4.5, !degrees 315.0]
+      status: [1, 1, 4]
+
+  RS1:
+    name_long: "RingStation 1"
+    cyan:
+      pose: [-1.5, 7.5, !degrees 180.0]
+      status: [2, 2, 5]
+    magenta:
+      pose: [1.5, 7.5, !degrees 180.0]
+      status: [1, 0, 3]
+
+  RS2:
+    name_long: "RingStation 2"
+    cyan:
+      pose: [3.5, 6.5, !degrees 0.0]
+      status: [1, 1, 6]
+    magenta:
+      pose: [-3.5, 6.5, !degrees 180.0]
+      status: [0, 0, 2]
+
+robots:
+  cyan:
+    keys: [R1, R2, R3]
+    R1:
+      name: Ulrich
+      id: 1
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [4.5, 0.5, !degrees 90.0]
+      pose_exploration: [3.5, 2.5, !degrees 10.0]
+      pose_production: [2.5, 1.5, !degrees 50.0]
+      active: true
+      active_time: 0.9
+      status: "Get cap at machine CS1 for product P1"
+      maintenances: 0
+    R2:
+      name: Tim
+      id: 2
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [5.5, 0.5, !degrees 180.0]
+      pose_exploration: [-5.5, 5.0, !degrees 50.0]
+      pose_production: [-4.0, 6.0, !degrees 60.0]
+      active: true
+      active_time: 0.8
+      status: "Get ring 2 at machine RS1 for product P7"
+      maintenances: 0
+    R3:
+      name: Christian
+      id: 3
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [6.5, 0.5, !degrees 180.0]
+      pose_exploration: [-2.0, 1.5, !degrees 100.0]
+      pose_production: [-3.0, 3.5, !degrees 220.0]
+      active: true
+      active_time: 0.7
+      status: "Deliver product P6 at DS"
+      maintenances: 1
+
+  magenta:
+    keys: [R1, R2, R3]
+    R1:
+      name: Joerg
+      id: 1
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [-4.5, 0.5, !degrees 90.0]
+      pose_exploration: [-1.5, 5.5, !degrees 200.0]
+      pose_production: [-4.5, 3.5, !degrees 100.0]
+      active: true
+      active_time: 1.0
+      status: "Get cap at machine CS1 for product P1"
+      maintenances: 0
+    R2:
+      name: Klaus
+      id: 2
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [-5.5, 0.5, !degrees 0.0]
+      pose_exploration: [6.5, 3.5, !degrees 150.0]
+      pose_production: [-3.5, 2.5, !degrees 300.0]
+      active: false
+      active_time: 0.0
+      status: ""
+      maintenances: 0
+    R3:
+      name: Basti
+      id: 3
+      # pose: index 0=x, index1=y, index2=rotation
+      pose_setup: [-6.5, 0.5, !degrees 0.0]
+      pose_exploration: [-6.5, 2.5, !degrees 300.0]
+      pose_production: [-1.5, 5.5, !degrees 250.0]
+      active: true
+      active_time: 0.6
+      status: "Deliver product P6 at DS"
+      maintenances: 1
+
+products:
+  list: [P1, P5, P6, P7]
+  # structure / step_stati: index 0=BASE, index 1=RING1, index 2=RING2, index 3=RING3, index 4=CAP, index 5=PRODUCT (just step_stati)
+  # structure:
+  # base 1=BASE_RED 2=BASE_BLACK 3=BASE_SILVER
+  # rings 0=NO_RING 1=RING_BLUE 2=RING_GREEN 3=RING_ORANGE 4=RING_YELLOW
+  # cap 1=CAP_BLACK 2=CAP_GREY
+  
+  # step_stati: 0=NOT_STARTED 1=CONSTRUCTION 2=DELIVERY 3=COMPLETED
+  P1:
+    order_id: 1
+    suborder_id: 1
+    complexity: 0
+    structure: [2, 0, 0, 0, 2]
+    cyan:
+      step_stati: [3, 0, 0, 0, 3, 3]
+      progress: 1.0
+      points: 30
+    magenta:
+      step_stati: [3, 0, 0, 0, 1, 1]
+      progress: 0.33
+      points: 0
+    points_max: 30
+    delivery_time: 567
+  P5:
+    order_id: 5
+    suborder_id: 1
+    complexity: 1
+    structure: [2, 1, 0, 0, 2]
+    cyan:
+      step_stati: [3, 1, 0, 0, 0, 1]
+      progress: 0.33
+      points: 0
+    magenta:
+      step_stati: [3, 3, 0, 0, 3, 3]
+      progress: 1.0
+      points: 30
+    points_max: 30
+    delivery_time: 789
+  P6:
+    order_id: 6
+    suborder_id: 1
+    complexity: 2
+    structure: [1, 2, 3, 0, 1]
+    cyan:
+      step_stati: [3, 3, 1, 0, 0, 1]
+      progress: 0.4
+      points: 5
+    magenta:
+      step_stati: [3, 3, 3, 3, 3, 2]
+      progress: 0.95
+      points: 50
+    points_max: 70
+    delivery_time: 123
+  P7:
+    order_id: 7
+    suborder_id: 1
+    complexity: 3
+    structure: [1, 4, 4, 3, 1]
+    cyan:
+      step_stati: [3, 3, 3, 3, 3, 2]
+      progress: 0.95
+      points: 25
+    magenta:
+      step_stati: [3, 3, 1, 0, 0, 1]
+      progress: 0.5
+      points: 30
+    points_max: 45
+    delivery_time: 456
+
+game:
+  cyan: 
+    team_name: "PYRO"
+    points_setup: 0
+    points_exploration: 0
+    points_production: 30
+    points_post_game: 90
+  magenta:
+    team_name: "GRIPS"
+    points_setup: 0
+    points_exploration: 14
+    points_production: 44
+    points_post_game: 104
+  duration:
+    pre_game: 1
+    setup: 20
+    exploration: 120
+    production: 180

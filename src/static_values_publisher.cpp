@@ -23,6 +23,8 @@ SOFTWARE.
 */
 #include <ros/ros.h>
 
+#include <constants.h>
+
 #include <rcll_vis_msgs/GameInfo.h>
 #include <rcll_vis_msgs/Products.h>
 #include <rcll_vis_msgs/Machines.h>
@@ -34,6 +36,194 @@ nodename:           "static_values_publisher"
 
 This node publishes static values and calls services once for testing purposes
 ====================================================================================================== */
+
+using namespace rcll_draw;
+
+struct Pose2D {
+    float x;
+    float y;
+    float rot;
+};
+
+struct DummyRobot {
+    std::string key;
+    std::string name;
+    int id;
+    int team;
+    Pose2D pose_setup;
+    Pose2D pose_exploration;
+    Pose2D pose_production;
+    bool active;
+    float active_time;
+    std::string status;
+    int maintenances;
+};
+
+struct DummyGameTeam {
+    std::string team_name;
+    int points_setup;
+    int points_exploration;
+    int points_production;
+    int points_post_game;
+};
+
+struct DummyGame {
+    DummyGameTeam team_cyan;
+    DummyGameTeam team_magenta;
+    int duration_pre_game;
+    int duration_setup;
+    int duration_exploration;
+    int duration_production;
+};
+
+namespace {
+    const std::vector<std::string> machine_statuses = {"IDLE", "BROKEN", "PROCESSING", "PROCESSED", "PREPARED", "DOWN", "READY-AT-OUTPUT", "WAIT-IDLE", "OFFLINE"};
+}
+
+void readGameField(ros::NodeHandle &nh, rcll_vis_msgs::SetGameField &gamefield_msg){
+    nh.getParam("/rcll/gamefield/field_length", gamefield_msg.field_length);
+    nh.getParam("/rcll/gamefield/field_width", gamefield_msg.field_width);
+    nh.getParam("/rcll/gamefield/zones_x", gamefield_msg.zones_x);
+    nh.getParam("/rcll/gamefield/zones_y", gamefield_msg.zones_y);
+    nh.getParam("/rcll/gamefield/insertion_zones", gamefield_msg.insertion_zones);
+    nh.getParam("/rcll/gamefield/walls", gamefield_msg.walls);
+}
+
+void readGame(ros::NodeHandle &nh, DummyGame &game, rcll_vis_msgs::GameInfo &gameinfo_msg){
+    // cyan
+    nh.getParam("/rcll/dummysetup/game/cyan/team_name", game.team_cyan.team_name);
+    nh.getParam("/rcll/dummysetup/game/cyan/points_setup", game.team_cyan.points_setup);
+    nh.getParam("/rcll/dummysetup/game/cyan/points_exploration", game.team_cyan.points_exploration);
+    nh.getParam("/rcll/dummysetup/game/cyan/points_production", game.team_cyan.points_production);
+    nh.getParam("/rcll/dummysetup/game/cyan/points_post_game", game.team_cyan.points_post_game);
+
+    // magenta
+    nh.getParam("/rcll/dummysetup/game/magenta/team_name", game.team_magenta.team_name);
+    nh.getParam("/rcll/dummysetup/game/magenta/points_setup", game.team_magenta.points_setup);
+    nh.getParam("/rcll/dummysetup/game/magenta/points_exploration", game.team_magenta.points_exploration);
+    nh.getParam("/rcll/dummysetup/game/magenta/points_production", game.team_magenta.points_production);
+    nh.getParam("/rcll/dummysetup/game/magenta/points_post_game", game.team_magenta.points_post_game);
+
+    // phase durations
+    nh.getParam("/rcll/dummysetup/game/duration/pre_game", game.duration_pre_game);
+    nh.getParam("/rcll/dummysetup/game/duration/setup", game.duration_setup);
+    nh.getParam("/rcll/dummysetup/game/duration/exploration", game.duration_exploration);
+    nh.getParam("/rcll/dummysetup/game/duration/production", game.duration_production);
+
+    gameinfo_msg.team_name_cyan = game.team_cyan.team_name;
+    gameinfo_msg.team_name_magenta = game.team_magenta.team_name;
+}
+
+void readPose2D(ros::NodeHandle &nh, std::string key, float &pose_x, float &pose_y, float &pose_yaw){
+    std::vector<float> coordinates;
+    nh.getParam(key, coordinates);
+    if (coordinates.size() == 3){
+        pose_x = coordinates[0];
+        pose_y = coordinates[1];
+        pose_yaw = coordinates[2];
+    }
+}
+
+void readMachineStatuses(ros::NodeHandle &nh, std::string key, rcll_vis_msgs::Machine &machine_msg){
+    std::vector<int> statuses;
+    nh.getParam(key, statuses);
+    if (statuses.size() == 3){
+        machine_msg.machine_status_exploration1 = statuses[0];
+        machine_msg.machine_status_exploration2 = statuses[1];
+        machine_msg.machine_status_production = machine_statuses[statuses[2] % machine_statuses.size()];
+    }
+}
+
+void readMachines(ros::NodeHandle &nh, rcll_vis_msgs::Machines &machines_msg){
+    std::vector<std::string> machine_keys;
+    nh.getParam("/rcll/dummysetup/machines/names_short", machine_keys);
+
+    for (size_t i = 0; i < machine_keys.size(); i++){
+        // cyan and magenta
+        rcll_vis_msgs::Machine machine_msg;
+        machine_msg.key = machine_keys[i];
+        machine_msg.name_short = machine_keys[i];
+        nh.getParam("/rcll/dummysetup/machines/" + machine_keys[i] + "/name_long", machine_msg.name_long);
+
+        // cyan
+        machine_msg.team = CYAN;
+        readPose2D(nh, "/rcll/dummysetup/machines/" + machine_keys[i] + "/cyan/pose", machine_msg.x, machine_msg.y, machine_msg.yaw);
+        readMachineStatuses(nh, "/rcll/dummysetup/machines/" + machine_keys[i] + "/cyan/status", machine_msg);
+        machines_msg.machines.push_back(machine_msg);
+
+        // magenta
+        machine_msg.team = MAGENTA;
+        readPose2D(nh, "/rcll/dummysetup/machines/" + machine_keys[i] + "/magenta/pose", machine_msg.x, machine_msg.y, machine_msg.yaw);
+        readMachineStatuses(nh, "/rcll/dummysetup/machines/" + machine_keys[i] + "/magenta/status", machine_msg);
+        machines_msg.machines.push_back(machine_msg);
+    }
+}
+
+void readProducts(ros::NodeHandle &nh, rcll_vis_msgs::Products &products_msg){
+    std::vector<std::string> product_keys;
+    nh.getParam("/rcll/dummysetup/products/list", product_keys);
+    for (size_t i = 0; i < product_keys.size(); i++){
+        rcll_vis_msgs::Product product_msg;
+        // cyan and magenta
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/order_id", product_msg.product_id);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/suborder_id", product_msg.quantity_id);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/complexity", product_msg.complexity);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/structure", product_msg.structure);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/points_max", product_msg.points_max);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/delivery_time", product_msg.end_delivery_time);
+
+        // cyan
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/cyan/step_stati", product_msg.step_stati_cyan);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/cyan/progress", product_msg.progress_cyan);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/cyan/points", product_msg.points_cyan);
+
+        // magenta
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/magenta/step_stati", product_msg.step_stati_magenta);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/magenta/progress", product_msg.progress_magenta);
+        nh.getParam("/rcll/dummysetup/products/" + product_keys[i] + "/magenta/points", product_msg.points_magenta);
+        products_msg.orders.push_back(product_msg);
+    }
+}
+
+void readRobots(ros::NodeHandle &nh, std::vector<DummyRobot> &robots){
+    std::vector<std::string> robot_keys;
+
+    // cyan
+    nh.getParam("/rcll/dummysetup/robots/cyan/keys", robot_keys);
+    for (size_t i = 0; i < robot_keys.size(); i++){
+        DummyRobot robot;
+        robot.key = robot_keys[i];
+        robot.team = CYAN;
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/name", robot.name);
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/id", robot.id);
+        readPose2D(nh, "/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/pose_setup", robot.pose_setup.x, robot.pose_setup.y, robot.pose_setup.rot);
+        readPose2D(nh, "/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/pose_exploration", robot.pose_exploration.x, robot.pose_exploration.y, robot.pose_exploration.rot);
+        readPose2D(nh, "/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/pose_production", robot.pose_production.x, robot.pose_production.y, robot.pose_production.rot);
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/active", robot.active);
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/active_time", robot.active_time);
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/status", robot.status);
+        nh.getParam("/rcll/dummysetup/robots/cyan/" + robot_keys[i] + "/maintenances", robot.maintenances);
+        robots.push_back(robot);
+    }
+
+    // magenta
+    nh.getParam("/rcll/dummysetup/robots/magenta/keys", robot_keys);
+    for (size_t i = 0; i < robot_keys.size(); i++){
+        DummyRobot robot;
+        robot.key = robot_keys[i];
+        robot.team = MAGENTA;
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/name", robot.name);
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/id", robot.id);
+        readPose2D(nh, "/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/pose_setup", robot.pose_setup.x, robot.pose_setup.y, robot.pose_setup.rot);
+        readPose2D(nh, "/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/pose_exploration", robot.pose_exploration.x, robot.pose_exploration.y, robot.pose_exploration.rot);
+        readPose2D(nh, "/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/pose_production", robot.pose_production.x, robot.pose_production.y, robot.pose_production.rot);
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/active", robot.active);
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/active_time", robot.active_time);
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/status", robot.status);
+        nh.getParam("/rcll/dummysetup/robots/magenta/" + robot_keys[i] + "/maintenances", robot.maintenances);
+        robots.push_back(robot);
+    }
+}
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "static_values_publisher");
@@ -48,197 +238,94 @@ int main(int argc, char** argv){
 
     ros::Duration(1.0).sleep();
 
-    std::vector<std::string> machine_statuses = {"IDLE", "BROKEN", "PROCESSING", "PROCESSED", "PREPARED", "DOWN", "READY-AT-OUTPUT", "WAIT-IDLE", "OFFLINE"};
-
-    std::vector<float> walls = {
-        -7.0, 8.0, 7.0, 8.0,
-        -7.0, 6.5, -7.0, 8.0,
-        7.0, 6.5, 7.0, 8.0,
-        -7.0, 1.0, -7.0, 2.0,
-        7.0, 1.0, 7.0, 2.0,
-        -7.0, 1.0, -5.0, 1.0,
-        5.0, 1.0, 7.0, 1.0,
-        -7.0, 0.0, -4.0, 0.0,
-        4.0, 0.0, 7.0, 0.0,
-        -4.0, 0.0, -4.0, 1.0,
-        4.0, 0.0, 4.0, 1.0,
-        -2.0, 0.0, 2.0, 0.0
-    };
-
-    std::vector<int> insertion_zones = {51, 61, 71};
+    DummyGame game;
+    std::vector<DummyRobot> robots;
 
     rcll_vis_msgs::SetGameField gamefield_msg;
-    gamefield_msg.walls = walls;
-    gamefield_msg.insertion_zones = insertion_zones;
-    gamefield_msg.field_length = 14.0;
-    gamefield_msg.field_width = 8.0;
-    gamefield_msg.zones_x = 14;
-    gamefield_msg.zones_y = 8;
-    pub_gamefield.publish(gamefield_msg);
-
+    rcll_vis_msgs::GameInfo gameinfo_msg;
     rcll_vis_msgs::Machines machines_msg;
-    rcll_vis_msgs::Machine machine;
-    std::vector<std::string> machines = {"BS", "DS", "SS", "CS1", "CS2", "RS1", "RS2"};
-    std::vector<std::string> names = {"BaseStation", "DeliveryStation", "StorageStation", "CapStation 1", "CapStation 2", "RingStation 1", "RingStation 2"};
-    std::vector<double> machine_pos_x = {2.5, 6.5, 6.5, 0.5, -4.5, -1.5, 3.5};
-    std::vector<double> machine_pos_y = {2.5, 1.5, 5.5, 3.5, 4.5, 7.5, 6.5};
-    std::vector<int> rot_c = {225, 135, 90, 270, 225, 180, 0};
-    std::vector<int> rot_m = {315, 45, 270, 270, 315, 180, 180};
-    std::vector<int> e1_status = {0, 1, 1, 1, 2, 2, 1};
-    std::vector<int> e2_status = {0, 0, 1, 2, 0, 2, 1};
-
-    for (size_t i = 0; i < machines.size(); i++){
-        // cyan machine
-        machine.name_short = machines[i];
-        machine.name_long = names[i];
-        machine.key = machines[i];
-        machine.team = 0;
-        machine.x = machine_pos_x[i];
-        machine.y = machine_pos_y[i];
-        machine.yaw = rot_c[i] / 180.0 * M_PI;
-        int pstatus = i % machine_statuses.size();
-        machine.machine_status_production = machine_statuses[pstatus];
-        machine.machine_status_exploration1 = e1_status[i];
-        machine.machine_status_exploration2 = e2_status[i];
-        machines_msg.machines.push_back(machine);
-
-        // magenta machine
-        machine.name_short = machines[i];
-        machine.name_long = names[i];
-        machine.key = machines[i];
-        machine.team = 1;
-        machine.x = -machine_pos_x[i];
-        machine.y = machine_pos_y[i];
-        machine.yaw = rot_m[i] / 180.0 * M_PI;
-        pstatus = i % machine_statuses.size();
-        machine.machine_status_production = machine_statuses[pstatus];
-        machine.machine_status_exploration1 = e1_status[machines.size() - i - 1];
-        machine.machine_status_exploration2 = e2_status[machines.size() - i - 1];
-        machines_msg.machines.push_back(machine);
-    }
-    pub_machines.publish(machines_msg);
-
-    rcll_vis_msgs::Robots robots_msg;
-    rcll_vis_msgs::Robot robot;
-    std::vector<std::string> robot_keys = {"R1", "R2", "R3", "R1", "R2", "R3"};
-    std::vector<std::string> robots = {"Ulrich", "Tim", "Christian", "Joerg", "Klaus", "Basti"};
-    std::vector<int> robot_ids = {1, 2, 3, 1, 2, 3};
-    std::vector<int> team = {0, 0, 0, 1, 1, 1};
-    std::vector<double> robot_pos_x = {4.5, 5.5, 6.5, -4.5, -5.5, -6.5};
-    std::vector<double> robot_pos_y = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-    //std::vector<int> robot_rot = {90, 180, 180, 90, 0, 0};
-    std::vector<int> robot_rot = {0, 0, 0, 45, 45, 45};
-    std::vector<bool> robot_active = {true, true, true, true, true, false};
-    std::vector<double> robot_active_time = {0.9, 0.8, 0.7, 1.0, 0.6, 0.0};
-    std::vector<std::string> robot_status = {"Get cap at machine CS1 for product P1",
-                                             "Get ring 2 at machine RS1 for product P7",
-                                             "Deliver product P6 at DS",
-                                             "Get cap at machine CS1 for product P1",
-                                             "Get ring 2 at machine RS1 for product P7",
-                                             ""};
-    std::vector<int> robot_maintenance = {0, 0, 1, 0, 1, 0};
-
     rcll_vis_msgs::Products products_msg;
-    std::vector<int> product_ids = {1, 5, 6, 7};
-    std::vector<int> complexities = {0, 1, 2, 3};
-    std::vector< std::vector<int> > structures = {{2, 0, 0, 0, 2}, {2, 1 , 0, 0, 2}, {1, 2, 3, 0, 1}, {1, 4, 4, 3, 1}};
-    std::vector< std::vector<int> > step_stati_cyan = {{3, 0, 0, 0, 3, 3}, {3, 1, 0, 0, 0, 1}, {3, 3, 1, 0, 0, 1}, {3, 3, 3, 3, 3, 2}};
-    std::vector< std::vector<int> > step_stati_magenta = {{3, 0, 0, 0, 1, 1}, {3, 3, 0, 0, 3, 3}, {3, 3, 3, 3, 3, 2}, {3, 3, 1, 0, 0, 1}};
-    std::vector<double> progresss_cyan = {1.0, 0.33, 0.4, 0.95};
-    std::vector<double> progresss_magenta = {0.33, 1.0, 0.95, 0.5};
-    std::vector<int> points_cyan = {20, 0, 5, 25};
-    std::vector<int> points_magenta = {0, 20, 50, 30};
-    std::vector<int> points_max = {20, 20, 70, 45};
-    std::vector<int> delivery_time = {567, 789, 123, 456};
-    for (size_t i = 0; i < product_ids.size(); i++){
-        rcll_vis_msgs::Product product;
-        product.product_id = product_ids[i];
-        product.quantity_id = 1;
-        product.complexity = complexities[i];
-        product.structure = structures[i];
-        product.step_stati_cyan = step_stati_cyan[i];
-        product.step_stati_magenta = step_stati_magenta[i];
-        product.progress_cyan = progresss_cyan[i];
-        product.progress_magenta = progresss_magenta[i];
-        product.end_delivery_time = delivery_time[i];
-        product.points_cyan = points_cyan[i];
-        product.points_magenta = points_magenta[i];
-        product.points_max = points_max[i];
-        products_msg.orders.push_back(product);
-    }
+    rcll_vis_msgs::Robots robots_msg;
+    rcll_vis_msgs::Robot robot_msg;
 
-    rcll_vis_msgs::GameInfo gameinfo;
-    gameinfo.team_name_cyan = "Carologistics";
-    gameinfo.team_name_magenta = "GRIPS";
-    gameinfo.team_points_cyan = 0;
-    gameinfo.team_points_magenta = 0;
-    gameinfo.game_state = 0;
-    gameinfo.game_phase = 0;
-    gameinfo.phase_time = 0.0;
+    readGame(nh, game, gameinfo_msg);
+    readGameField(nh, gamefield_msg);
+    readMachines(nh, machines_msg);
+    readProducts(nh, products_msg);
+    readRobots(nh, robots);
+
+    pub_gamefield.publish(gamefield_msg);
+    pub_machines.publish(machines_msg);
 
     ROS_INFO("Entering loop");
     while(ros::ok()){
         // gameinfo
-        gameinfo.game_state = 2;
-        gameinfo.phase_time += loop_rate.expectedCycleTime().toSec();
-        if (gameinfo.game_phase == 0 && gameinfo.phase_time > 2){ // set to SETUP
-            gameinfo.phase_time = 0;
-            gameinfo.game_state = 3;
-            gameinfo.team_points_cyan = 0;
-            gameinfo.team_points_magenta = 0;
-            gameinfo.game_phase+=10;
-            robot_pos_x = {4.5, 5.5, 6.5, -4.5, -5.5, -6.5};
-            robot_pos_y = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
-            //robot_rot = {90, 180, 180, 90, 0, 0};
-        } else if (gameinfo.game_phase == 10 && gameinfo.phase_time > 2){ // set to EXPLORATION
-            gameinfo.phase_time = 0;
-            gameinfo.game_state = 2;
-            gameinfo.team_points_cyan = 3;
-            gameinfo.team_points_magenta = 3;
-            gameinfo.game_phase+=10;
-            robot_pos_x = {3.5, -5.0, -2.0, -1.5, 6.5, -6.5};
-            robot_pos_y = {2.5, 5.0, 1.5, 5.5, 3.5, 2.5};
-            //robot_rot = {10, 50, 100, 200, 150, 300};
-        } else if (gameinfo.game_phase == 20 && gameinfo.phase_time > 3){ // set to PRODUCTION
-            gameinfo.phase_time = 0;
-            gameinfo.game_state = 2;
-            gameinfo.team_points_cyan = 53;
-            gameinfo.team_points_magenta = 103;
-            gameinfo.game_phase+=10;
-            robot_pos_x = {2.5, -4.0, -3.0, -4.5, 3.5, -1.5};
-            robot_pos_y = {1.5, 6.0, 3.5, 3.5, 2.5, 5.5};
-            //robot_rot = {50, 60, 220, 100, 300, 250};
-        } else if (gameinfo.game_phase == 30 && gameinfo.phase_time > 10000){ // set to POST_GAME
-            gameinfo.phase_time = 0;
-            gameinfo.game_state = 3;
-            gameinfo.game_phase+=10;
-            gameinfo.team_points_cyan = 120;
-            gameinfo.team_points_magenta = 120;
+        gameinfo_msg.game_state = PAUSED;
+        gameinfo_msg.phase_time += loop_rate.expectedCycleTime().toSec();
+
+        // check for change of gamephase
+        if (gameinfo_msg.game_phase == PRE_GAME && gameinfo_msg.phase_time > game.duration_pre_game){ // set to SETUP
+            gameinfo_msg.phase_time = 0;
+            gameinfo_msg.game_state = RUNNING;
+            gameinfo_msg.game_phase = SETUP;
+            gameinfo_msg.team_points_cyan = game.team_cyan.points_setup;
+            gameinfo_msg.team_points_magenta = game.team_magenta.points_setup;
+        } else if (gameinfo_msg.game_phase == 10 && gameinfo_msg.phase_time > game.duration_setup){ // set to EXPLORATION
+            gameinfo_msg.phase_time = 0;
+            gameinfo_msg.game_state = RUNNING;
+            gameinfo_msg.game_phase = EXPLORATION;
+            gameinfo_msg.team_points_cyan = game.team_cyan.points_exploration;
+            gameinfo_msg.team_points_magenta = game.team_magenta.points_exploration;
+        } else if (gameinfo_msg.game_phase == 20 && gameinfo_msg.phase_time > game.duration_exploration){ // set to PRODUCTION
+            gameinfo_msg.phase_time = 0;
+            gameinfo_msg.game_state = RUNNING;
+            gameinfo_msg.game_phase = PRODUCTION;
+            gameinfo_msg.team_points_cyan = game.team_cyan.points_production;
+            gameinfo_msg.team_points_magenta = game.team_magenta.points_production;
+        } else if (gameinfo_msg.game_phase == 30 && gameinfo_msg.phase_time > game.duration_production){ // set to POST_GAME
+            gameinfo_msg.phase_time = 0;
+            gameinfo_msg.game_state = PAUSED;
+            gameinfo_msg.game_phase = POST_GAME;
+            gameinfo_msg.team_points_cyan = game.team_cyan.points_post_game;
+            gameinfo_msg.team_points_magenta = game.team_magenta.points_post_game;
         }
-        pub_gameinfo.publish(gameinfo);
+        pub_gameinfo.publish(gameinfo_msg);
 
         // robots
         robots_msg.robots.clear();
         for (size_t i = 0; i < robots.size(); i++){
-            robot.key = robot_keys[i];
-            robot.robot_name = robots[i];
-            robot.robot_id = robot_ids[i];
-            robot.team = team[i];
-            robot.active = robot_active[i];
-            robot.x = robot_pos_x[i];
-            robot.y = robot_pos_y[i];
-            robot.yaw = robot_rot[i] / 180.0 * M_PI;
-            robot.active_time = robot_active_time[i];
-            robot.maintenance_count = robot_maintenance[i];
-            robot.status = robot_status[i];
-            robot.stamp.data = ros::Time::now();
+            robot_msg.key = robots[i].key;
+            robot_msg.robot_name = robots[i].name;
+            robot_msg.robot_id = robots[i].id;
+            robot_msg.team = robots[i].team;
+            robot_msg.active = robots[i].active;
+            if (gameinfo_msg.game_phase == PRE_GAME || gameinfo_msg.game_phase == SETUP){
+                robot_msg.x = robots[i].pose_setup.x;
+                robot_msg.y = robots[i].pose_setup.y;
+                robot_msg.yaw = robots[i].pose_setup.rot;
+            } else if (gameinfo_msg.game_phase == EXPLORATION){
+                robot_msg.x = robots[i].pose_exploration.x;
+                robot_msg.y = robots[i].pose_exploration.y;
+                robot_msg.yaw = robots[i].pose_exploration.rot;
+            } else if (gameinfo_msg.game_phase == PRODUCTION || gameinfo_msg.game_phase == POST_GAME){
+                robot_msg.x = robots[i].pose_production.x;
+                robot_msg.y = robots[i].pose_production.y;
+                robot_msg.yaw = robots[i].pose_production.rot;
+            }
 
-            robots_msg.robots.push_back(robot);
+            robot_msg.active_time = robots[i].active_time;
+            robot_msg.maintenance_count = robots[i].maintenances;
+            robot_msg.status = robots[i].status;
+            robot_msg.stamp.data = ros::Time::now();
+
+            robots_msg.robots.push_back(robot_msg);
         }
         pub_robots.publish(robots_msg);
 
-        //machines status
+        // machines
         pub_machines.publish(machines_msg);
+
+        // product
         pub_products.publish(products_msg);
 
         loop_rate.sleep();

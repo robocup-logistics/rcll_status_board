@@ -39,7 +39,7 @@ rcll_draw::AreaProduction::AreaProduction(){
     ri_robotinfo_magenta = RobotInfo(rcll_draw::MAGENTA);
     gf_gamefield = GameField();
 
-    blbl_text.setContent("The goal for the robots is to produce products with the help of the machines.");
+    blbl_text.setContent("The task for the robots is to produce products with the help of the machines.");
     blbl_text.setAlignment(rcll_draw::Alignment::CenterCenter);
     blbl_text.setBackgroundColor(rcll_draw::C_WHITE);
     blbl_text.setBorderColor(rcll_draw::C_WHITE);
