@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
 <launch>
+	<!-- arguments -->
+	<arg name="screen_x" default="1920"/>
+	<arg name="screen_y" default="1080"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
 	<rosparam command="load" ns="/rcll/dummysetup/" file="$(find rcll_status_board)/yaml/DemoSetup.yaml" />
+
+	
 
 	<!-- static value publisher -->
 	<node pkg="rcll_status_board" type="static_values_node" name="dummy" output="screen" />
 
 	<!-- complete status board -->
 	<node pkg="rcll_status_board" type="complete_status_board_node" name="complete" output="screen">
-		<param name="screen_x" value="1920" />
-		<param name="screen_y" value="1080" />
+		<param name="screen_x" value="$(arg screen_x)" />
+		<param name="screen_y" value="$(arg screen_y)" />
 		<param name="fullscreen" value="false" />
 		<param name="image_path" value="$(find rcll_status_board)/img/ppm/" />
 		<param name="paging_time" value="15" />
