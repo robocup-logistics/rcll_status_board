@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
 <launch>
+	<!-- arguments -->
+	<arg name="screen_x" default="1920"/>
+	<arg name="screen_y" default="1080"/>
+	<arg name="refbox_host" default="127.0.0.1"/>
+	<arg name="refbox_remote" default="true"/>
+
 	<!-- LLSF Interface -->
-	<include file="$(find rcll_status_board)/launch/comm.launch"/>
+	<include file="$(find rcll_status_board)/launch/comm.launch">
+		<arg name="refbox_host" value="$(arg refbox_host)"/>
+		<arg name="refbox_remote" value="$(arg refbox_remote)"/>
+	</include>
 
-	<!-- Field Status Board -->
-	<include file="$(find rcll_status_board)/launch/field.launch"/>
-
-	<!-- Team Status Board Cyan -->
-	<include file="$(find rcll_status_board)/launch/cyan.launch"/>
-
-	<!-- Team Status Board Magenta -->
-	<include file="$(find rcll_status_board)/launch/magenta.launch"/>
+	<!-- Complete Status Board -->
+	<include file="$(find rcll_status_board)/launch/complete.launch">
+		<arg name="screen_x" value="$(arg screen_x)"/>
+		<arg name="screen_y" value="$(arg screen_y)"/>
+	</include>
 </launch>

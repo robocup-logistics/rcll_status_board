@@ -6,9 +6,7 @@
 
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
-	<rosparam command="load" ns="/rcll/dummysetup/" file="$(find rcll_status_board)/yaml/DemoSetup.yaml" />
-
-	
+	<rosparam command="load" ns="/rcll/dummysetup/" file="$(find rcll_status_board)/yaml/DemoSetup.yaml" />	
 
 	<!-- static value publisher -->
 	<node pkg="rcll_status_board" type="static_values_node" name="dummy" output="screen" />

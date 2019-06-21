@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <launch>
+	<!-- arguments -->
+	<arg name="screen_x" default="1920"/>
+	<arg name="screen_y" default="1080"/>
+
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
 
-	<!-- Team Status Board Cyan -->
+	<!-- Complete Status Board -->
 	<node pkg="rcll_status_board" type="complete_status_board_node" name="complete" output="screen">
 		<param name="screen_x" value="1920" />
 		<param name="screen_y" value="1080" />
