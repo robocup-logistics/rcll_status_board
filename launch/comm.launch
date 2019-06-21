@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <launch>
+	<!-- arguments -->
+	<arg name="refbox_host" default="127.0.0.1"/>
+	<arg name="refbox_remote" default="true"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" ns="/rcll/gamefield/" file="$(find rcll_status_board)/yaml/Gamefield.yaml" />
