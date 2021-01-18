@@ -57,7 +57,7 @@ void rcll_draw::Circle::setBorderSize(int bordersize){
 void rcll_draw::Circle::draw(cv::Mat &mat){
     if (backgroundcolor != rcll_draw::C_TRANSPARENT){
         // draw background circle
-        cv::circle(mat, cv::Point(x, y), r, getColor(backgroundcolor), CV_FILLED, 8, 0);
+        cv::circle(mat, cv::Point(x, y), r, getColor(backgroundcolor), cv::FILLED, 8, 0);
     }
     if (bordercolor != rcll_draw::C_TRANSPARENT){
         // draw border circle

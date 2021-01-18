@@ -179,7 +179,7 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::ProductPlan plan)
     cv::Mat img_bcg = rcll_draw::readImage("base_background.ppm");
 
     cv::Mat result(img_bcg.rows * 1.75, img_bcg.cols, CV_8UC4);
-    cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 8, 0);
+    cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED, 8, 0);
 
     if (plan.complexity == 0){
         cv::Mat img_base = rcll_draw::readImage(rcll_draw::getFile(plan.base, 1));
@@ -226,7 +226,7 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::ProductPlan plan)
 }
 
 void rcll_draw::ProductLabel::draw(cv::Mat &mat){
-    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
 
     for (size_t i = 0; i < img_step_progress.size(); i++){
         img_step_progress[i].draw(origin);

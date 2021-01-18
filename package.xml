@@ -10,21 +10,21 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>opencv2</build_depend>
+  <build_depend>opencv4</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>rcll_vis_msgs</build_depend>
   <build_depend>protobuf_comm</build_depend>
   <build_depend>llsf_msgs</build_depend>
 
-  <build_export_depend>opencv2</build_export_depend>
+  <build_export_depend>opencv4</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>rcll_vis_msgs</build_export_depend>
   <build_export_depend>protobuf_comm</build_export_depend>
   <build_export_depend>llsf_msgs</build_export_depend>
 
-  <exec_depend>opencv2</exec_depend>
+  <exec_depend>opencv4</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>rcll_vis_msgs</exec_depend>

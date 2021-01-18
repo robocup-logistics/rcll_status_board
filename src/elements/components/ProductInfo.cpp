@@ -74,7 +74,7 @@ void rcll_draw::ProductInfo::prepare_draw(){
     if (display.size() > 0){
         int canvas_w = (display.size() * (w_product + gapsize)) - gapsize;
         canvas = cv::Mat(h, canvas_w, CV_8UC4);
-        cv::rectangle(canvas, cv::Point(0, 0), cv::Point (canvas_w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+        cv::rectangle(canvas, cv::Point(0, 0), cv::Point (canvas_w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
 
         int cur_x = 0;
         for (size_t i = 0; i < display.size(); i++){
@@ -134,7 +134,7 @@ bool rcll_draw::ProductInfo::move(){
 
 void rcll_draw::ProductInfo::draw(cv::Mat &mat, bool show_element_border){
     if (display.size() > 0){
-        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+        cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
 
         cv::Rect roi = cv::Rect(shift, 0, std::min(w, canvas.cols - shift), h);
         crop = canvas(roi);

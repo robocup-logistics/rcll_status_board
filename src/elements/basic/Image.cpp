@@ -58,7 +58,7 @@ void rcll_draw::Image::setImage(cv::Mat image){
 void rcll_draw::Image::loadImage(std::string file){
     this->path = rcll_draw::getImagePath() + file;
 
-    this->image = cv::imread(path, CV_LOAD_IMAGE_UNCHANGED);
+    this->image = cv::imread(path, cv::IMREAD_UNCHANGED);
     if(!this->image.data){
         ROS_WARN("Could not open or find the picture at '%s'", path.c_str());
         return;
