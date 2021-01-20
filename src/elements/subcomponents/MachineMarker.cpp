@@ -118,7 +118,7 @@ void rcll_draw::MachineMarker::recalculate(){
 
     // calculate the unrotated machine image
     cv::Mat tmp = cv::Mat(rcll_draw::machine_length * pixel_per_meter * 2.0, rcll_draw::machine_length * pixel_per_meter * 2.0, CV_8UC4);
-    cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 8, 0);
+    cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED, 8, 0);
     blbl_machine.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter ) / 2);
     if (yaw > M_PI / 2 && yaw <= 3 * M_PI / 2){
         blbl_in.setPos((tmp.cols - rcll_draw::machine_length * pixel_per_meter) / 2, (tmp.rows - rcll_draw::machine_width * pixel_per_meter) / 2 + rcll_draw::machine_width * pixel_per_meter * 0.75);

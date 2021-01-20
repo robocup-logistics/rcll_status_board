@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(rcll_status_board)
 
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -DHAVE_LIBCRYPTO")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -DHAVE_LIBCRYPTO -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -104,7 +107,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
    INCLUDE_DIRS include include/elements include/elements/basic include/elements/subcomponents include/elements/components include/elements/areas
    LIBRARIES rcll_draw
-   CATKIN_DEPENDS opencv2 roscpp rospy protobuf_comm llsf_msgs
+   CATKIN_DEPENDS opencv4 roscpp rospy protobuf_comm llsf_msgs
 #  DEPENDS system_lib
 )
 
@@ -198,7 +201,7 @@ target_link_libraries(team_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRAR
 target_link_libraries(field_status_board_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} rcll_draw)
 target_link_libraries(static_values_node ${catkin_LIBRARIES} rcll_draw)
 target_link_libraries(llsf_interface_node ${catkin_LIBRARIES})
-
+MESSAGE("OpenCV_LIBS: " ${OpenCV_LIBRARIES} )
 #############
 ## Install ##
 #############

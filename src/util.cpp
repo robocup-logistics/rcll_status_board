@@ -79,10 +79,10 @@ std::vector<std::string> rcll_draw::splitString(std::string s){
 cv::Mat rcll_draw::readImage(std::string file){
     tmp = cv::Mat(10, 10, CV_8UC4);
     if (rcll_draw::getImagePath() != "" && file != ""){
-        cv::cvtColor(cv::imread(rcll_draw::getImagePath() + file), tmp, CV_BGR2BGRA);
+        cv::cvtColor(cv::imread(rcll_draw::getImagePath() + file), tmp, cv::COLOR_BGR2BGRA);
     } else {
         tmp = cv::Mat(10, 10, CV_8UC4);
-        cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+        cv::rectangle(tmp, cv::Point(0,0), cv::Point(tmp.cols, tmp.rows), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
     }
     return tmp;
 }

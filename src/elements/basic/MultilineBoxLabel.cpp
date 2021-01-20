@@ -40,7 +40,7 @@ void rcll_draw::MultilineBoxLabel::setLines(int lines){
 void rcll_draw::MultilineBoxLabel::draw(cv::Mat &mat){
     if (backgroundcolor != rcll_draw::C_TRANSPARENT){
         // draw background rectangle
-        cv::rectangle(mat, cv::Point(x, y), cv::Point(x + w, y + h), getColor(backgroundcolor), CV_FILLED, 8, 0);
+        cv::rectangle(mat, cv::Point(x, y), cv::Point(x + w, y + h), getColor(backgroundcolor), cv::FILLED, 8, 0);
     }
 
     if (bordercolor != rcll_draw::C_TRANSPARENT){

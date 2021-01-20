@@ -107,7 +107,7 @@ void rcll_draw::MachineInfoExploration::setMachines(std::vector<rcll_vis_msgs::M
 }
 
 void rcll_draw::MachineInfoExploration::draw(cv::Mat &mat, bool show_element_border){
-    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
 
     blbl_header1.draw(origin);
     blbl_header2.draw(origin);

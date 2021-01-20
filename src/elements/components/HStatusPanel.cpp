@@ -144,7 +144,7 @@ void rcll_draw::HStatusPanel::setContent(rcll_vis_msgs::GameInfo &gameinfo){
 }
 
 void rcll_draw::HStatusPanel::draw(cv::Mat &mat, bool show_element_border){
-    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED);
+    cv::rectangle(origin, cv::Point(0, 0), cv::Point (w-1, h-1), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED);
 
     blbl_state_header.draw(origin);
     blbl_phase_header.draw(origin);

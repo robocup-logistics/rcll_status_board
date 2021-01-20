@@ -121,14 +121,14 @@ int main(int argc, char** argv){
     int bordergapsize = 0.05 * res_y;
     int gapsize = 0.02 * res_y;
 
-    cv::namedWindow(title, CV_WINDOW_NORMAL);
+    cv::namedWindow(title, cv::WINDOW_NORMAL);
 
     if (fullscreen){
-        cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+        cv::setWindowProperty(title, cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
     }
 
     cv::Mat mat(res_y, res_x, CV_8UC4);
-    cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
+    cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED, 0);
 
     area_pregamesetup = rcll_draw::AreaPreGameSetup(team);
     area_pregamesetup.setGeometry(bordergapsize, bordergapsize, res_x - 2 * bordergapsize, res_y - 2 * bordergapsize);
@@ -145,9 +145,9 @@ int main(int argc, char** argv){
 
     ros::spinOnce();
 
-    while(ros::ok() && cvGetWindowHandle(title.c_str())){
+    while(ros::ok() && (cv::getWindowProperty(title.c_str(), cv::WND_PROP_AUTOSIZE)>=0)){
         loop_rate.sleep();
-        cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 0);
+        cv::rectangle(mat, cv::Point(0,0), cv::Point(res_x, res_y), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED, 0);
 
         if(gamephase == rcll_draw::PRE_GAME){
             area_pregamesetup.draw(mat, false);
@@ -164,9 +164,9 @@ int main(int argc, char** argv){
         cv::imshow(title, mat);
         char key = (char)cv::waitKey(1);
         if (key == 27){
-            cv::setWindowProperty(title, 0, CV_WINDOW_NORMAL);
+            cv::setWindowProperty(title, 0, cv::WINDOW_NORMAL);
         } else if (key == 70 || key == 102){
-            cv::setWindowProperty(title, CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+            cv::setWindowProperty(title, cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
         } else if (key == 81 || key == 113){
             return 0;
         }

@@ -353,7 +353,7 @@ cv::Mat rcll_draw::ProductLabel::createProductImage(rcll_draw::Product plan){
     cv::Mat img_bcg = rcll_draw::readImage("base_background.ppm");
 
     cv::Mat result(img_bcg.rows * 1.75, img_bcg.cols, CV_8UC4);
-    cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), CV_FILLED, 8, 0);
+    cv::rectangle(result, cv::Point(0,0), cv::Point(result.cols, result.rows), rcll_draw::getColor(rcll_draw::C_WHITE), cv::FILLED, 8, 0);
 
     if (plan.complexity == 0){
         cv::Mat img_base = rcll_draw::readImage(rcll_draw::getFile(plan.base, 1));
