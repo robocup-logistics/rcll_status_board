@@ -6,9 +6,7 @@ This package provides ROS nodes to visualize the RoboCup Logistics League (RCLL)
 
 ### Prerequisites
 
-The following software is required to run this package:
-
-ROS Indigo (including OpenCV 2.x): (e.g. sudo apt-get install ros-indigo-desktop-full), see [ROS Indigo Install Ubuntu](http://wiki.ros.org/indigo/Installation/Ubuntu) for installation process
+The visualisation is tested to run using ROS-noetic and OpenCV4.
 
 Installed RCLL refbox (see [RCLL refbox installation](https://trac.fawkesrobotics.org/wiki/RCLLRefBox/Install))
 
